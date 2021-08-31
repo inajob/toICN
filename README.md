@@ -12,3 +12,7 @@ javascript:(Array.prototype.slice.bind(document.getElementsByClassName("chord"))
 
 ChordWikiで目的の曲を表示した状態で、登録したブックマークをクリックすると、コード表記がICNに変換されます。
 
+# 既知のバグ
+
+- ハ長調のみ対応しているので、それ以外の曲はChordWikiの移調機能で移調したのちに、このツールを利用してください。
+
