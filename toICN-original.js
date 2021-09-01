@@ -1,4 +1,4 @@
-Array.prototype.slice.bind(document.getElementsByClassName("chord"))().forEach((e) => {
+Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))()).forEach((e) => {
   let raw = ""+ e.firstChild.nodeValue;
   let m = raw.match(/^([A-G]m{0,1})([^/]*)/);
   let s = "-";

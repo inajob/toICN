@@ -1,7 +1,7 @@
 cat << EOS
 # これは何？
 
-ChordWikiのコード譜の表示をInstaChord（インスタコード）のICNに変換するブックマークレットです。
+[ChordWiki](https://ja.chordwiki.org/)と[U-FRET](https://www.ufret.jp/)のコード譜の表示をInstaChord（インスタコード）のICNに変換するブックマークレットです。
 
 # 使い方
 
@@ -16,11 +16,11 @@ cat << EOS
 
 \`\`\`
 
-ChordWikiで目的の曲を表示した状態で、登録したブックマークをクリックすると、コード表記がICNに変換されます。
+ChordWikiかU-FRETで目的の曲を表示した状態で、登録したブックマークをクリックすると、コード表記がICNに変換されます。
 
 # 既知のバグ
 
-- ハ長調のみ対応しているので、それ以外の曲はChordWikiの移調機能で移調したのちに、このツールを利用してください。
+- KEY:C のみ対応しているので、それ以外の曲はChordWikiやU-FRETの移調機能で移調したのちに、このツールを利用してください。
 
 EOS
 
