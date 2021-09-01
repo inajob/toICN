@@ -4,7 +4,7 @@ Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Ar
   let s = "-";
   if(m){
     let base = m[1];
-    let sharp = m[2]
+    let sharp = m[2];
     let q = m[4];
     let swapped = false;
     let noMap = {"C":1, "D":2, "E":3, "F":4, "G":5, "A":6, "B":7};
