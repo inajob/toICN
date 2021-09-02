@@ -1,6 +1,6 @@
 # これは何？
 
-[ChordWiki](https://ja.chordwiki.org/)と[U-FRET](https://www.ufret.jp/)のコード譜の表示をInstaChord（インスタコード）のICNに変換するブックマークレットです。
+[ChordWiki](https://ja.chordwiki.org/)と[U-FRET](https://www.ufret.jp/)のコード譜の表示をInstaChord（インスタコード）での演奏に適した表記法であるICNに変換するブックマークレットです。
 
 # 使い方
 
@@ -14,6 +14,6 @@ ChordWikiかU-FRETで目的の曲を表示した状態で、登録したブッ�
 
 # 既知のバグ
 
-- KEY:C のみ対応しているので、それ以外の曲はChordWikiやU-FRETの移調機能で移調したのちに、このツールを利用してください。
+- KEY:C（ハ長調）のみに対応しているので、それ以外の曲はChordWikiやU-FRETの移調機能で移調したのちに、このツールを利用してください。
 - https://github.com/inajob/toICN/issues に随時起票しています。（コメント、PR募集してます！）
 
