@@ -16,7 +16,17 @@ Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Ar
       swapped = true;
     }
     if(keySignature == "#"){
-      isSharp = true;
+      if(no == 3){no = 4;}
+      else if(no == 7){no = 1;}
+      else{isSharp = true;}
+    }
+    else if(keySignature == "b"){
+      if(no == 1){no = 7;}
+      else if(no == 4){no--;}
+      else{
+        no--;
+        isSharp = true;
+      }
     }
     q = q.replace("7sus4","sus4").replace("dim7","dim").replace("7-5","m7-5");
     if("7,M7,9,6".split(",").includes(q)){
