@@ -3,18 +3,16 @@ Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Ar
   let m = raw.match(/^([A-G])(#|b{0,1})(m{0,1})([^/]*)/);
   let s = "-";
   if(m){
-    let base = m[1]+m[3];
+    let base = m[1];
     let keySignature = m[2];
+    let minorSignature = m[3];
     let q = m[4];
     let swapped = false;
     let noMap = {"C":1, "D":2, "E":3, "F":4, "G":5, "A":6, "B":7};
-    let no = noMap[base[0]];
+    let no = noMap[base];
     let isQAvailable = false;
     let unSupported = false;
     let isSharp = false;
-    if("Cm,D,E,Fm,Gm,A,B".split(",").includes(base)){
-      swapped = true;
-    }
     if(keySignature == "#"){
       if(no == 3){no = 4;}
       else if(no == 7){no = 1;}
@@ -27,6 +25,9 @@ Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Ar
         no--;
         isSharp = true;
       }
+    }
+    if("1m,2,3,4m,5m,6,7".split(",").includes(no+minorSignature)){
+      swapped = true;
     }
     q = q.replace("7sus4","sus4").replace("dim7","dim").replace("7-5","m7-5");
     if("7,M7,9,6".split(",").includes(q)){
