@@ -16,7 +16,9 @@ Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Ar
     if("Cm,D,E,Fm,Gm,A,B".split(",").includes(base)){swapped = true;};
     if(keySignature == "#"){isSharp = true;};
     q = q.replace("7sus4","sus4").replace("dim7","dim").replace("7-5","m7-5");
-    if("dim,7,add9,M7,sus4,aug,m7-5".split(",").includes(q)){isQAvailable = true;}else{if(q.length>0){unSupported = true;}};
+    if("7,M7,9,6".split(",").includes(q)){isQAvailable = true;}
+    else if("sus4,aug,dim,m7-5".split(",").includes(q)){isQAvailable = true;swapped = false;} 
+    else{if(q.length>0){unSupported = true;}};
     s = no + (isSharp?"[#]":"") + (swapped?"~":"") + (isQAvailable?("["+q+"]"):"" + (unSupported?"[!!"+q+"!!]":""));
     e.firstChild.nodeValue = s;
   };
