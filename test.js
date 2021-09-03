@@ -34,6 +34,8 @@ const tests = [
   ["Cdim" ,"1[dim]"],
   ["Cdim7" ,"1[dim]"],
   ["Cadd9" ,"1[add9]"],
+  ["Cmaj7" ,"1[M7]"],
+
 ];
 
 tests.forEach((t) => {
