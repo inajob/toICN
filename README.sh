@@ -23,5 +23,22 @@ ChordWikiかU-FRETで目的の曲を表示した状態で、登録したブッ�
 - KEY:C（ハ長調）のみに対応しているので、それ以外の曲はChordWikiやU-FRETの移調機能で移調したのちに、このツールを利用してください。
 - https://github.com/inajob/toICN/issues に随時起票しています。（コメント、PR募集してます！）
 
+# 開発方法
+
+- toICN-before.js
+- toICN-core.js
+- toICN-after.js
+
+を編集してください。
+
+後工程で各行を連結するので行末にセミコロンを必ずつけてください。
+
+\`node test.js\` でテストを実行できます。
+
+編集が終わったら\`gen.sh\`を実行してください。下記ファイルが自動生成されます。
+
+- toICN.js
+- REAMDE.md
+
 EOS
 

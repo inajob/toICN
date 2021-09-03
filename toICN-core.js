@@ -1,4 +1,4 @@
-function toICN(){
+module.exports = function(raw){
   let scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   let raw = ""+ e.firstChild.nodeValue;
@@ -33,4 +33,4 @@ function toICN(){
     s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""));
     return s;
   }
-}
+};
