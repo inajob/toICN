@@ -11,6 +11,10 @@ module.exports = function(raw){
     let isQAvailable = false;
     let unSupported = false;
     let isSharp = false;
+    let keyNo = scale.indexOf(key);
+    for(let i = 0; i < keyNo; i ++){
+      scale.push(scale.shift());
+    }
     let no = ICNScale[scale.indexOf(base)];
     isSharp = no.includes("#");
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
@@ -30,6 +34,6 @@ module.exports = function(raw){
       }
     }
     s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""));
-    return s;
   }
+  return s;
 };

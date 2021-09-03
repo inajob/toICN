@@ -1,5 +1,7 @@
 var assert = require('assert');
-const toICN = require("./toICN-core.js");
+const toICN = require("./src/toICN-core.js");
+key = "C";
+
 const tests = [
   ["C" ,"1"],
   ["Dm","2"],
@@ -39,10 +41,32 @@ const tests = [
   ["Cm7b5" ,"1[m7-5]"],
   ["Cm7(b5)" ,"1[m7-5]"],
   ["Cm7-5" ,"1[m7-5]"],
+  ["CM7" ,"1[M7]"],
 
+  ["Am7" ,"6[7]"],
+  ["D#dim7" ,"2#[dim]"],
+  ["D#dim" ,"2#[dim]"],
+  ["F#m7-5" ,"4#[m7-5]"],
+
+  ["N.C.",""],
 ];
 
 tests.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(toICN(t[0]), t[1]);
+});
+
+key = "B";
+const tests2 = [
+  ["B",   "1"],
+  ["C#m", "2"],
+  ["D#m", "3"],
+  ["E",   "4"],
+  ["F#",  "5"],
+  ["G#m", "6"],
+  ["A#m", "7"],
+]
+tests2.forEach((t) => {
   console.log(t[0]);
   assert.equal(toICN(t[0]), t[1]);
 });
