@@ -42,7 +42,7 @@ Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Ar
         unSupported = true;
       }
     }
-    s = no + (swapped?"~":"") +(isSharp?"[#]":"") + (isQAvailable?("["+q+"]"):"" + (unSupported?"[!!"+q+"!!]":""));
+    s = no+(isSharp?"#":"")+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""));
     e.firstChild.nodeValue = s;
   }
 })
