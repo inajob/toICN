@@ -17,7 +17,7 @@ module.exports = function(raw){
       swapped = true;
     }
     q = q.replace("7sus4","sus4").replace("dim7","dim").replace("7-5","m7-5");
-    if("7,M7,9,6".split(",").includes(q)){
+    if("7,M7,add9,6".split(",").includes(q)){
       isQAvailable = true;
     }
     else if("sus4,aug,dim,m7-5".split(",").includes(q)){

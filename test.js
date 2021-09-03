@@ -21,8 +21,7 @@ const tests = [
   ["C7sus4" ,"1[sus4]"],
   ["Cdim" ,"1[dim]"],
   ["Cdim7" ,"1[dim]"],
-  ["Dmsus4","2[sus4]"],
-  ["Dmsus4","2[sus4]"],
+  ["Cadd9" ,"1[add9]"],
 ];
 
 tests.forEach((t) => {
