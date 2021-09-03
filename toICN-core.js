@@ -13,7 +13,7 @@ module.exports = function(raw){
     let isSharp = false;
     let no = ICNScale[scale.indexOf(base)];
     isSharp = no.includes("#");
-    if("1m,2,3,4m,5m,6,7".split(",").includes(no[0]+minorSignature)){
+    if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(no+minorSignature)){
       swapped = true;
     }
     q = q.replace("7sus4","sus4").replace("dim7","dim").replace("7-5","m7-5");
