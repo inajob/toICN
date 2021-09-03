@@ -1,7 +1,7 @@
 module.exports = function(raw){
   let scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
-  let m = raw.match(/^([A-G](#|b){0,1})([^/]*)/);
+  let m = raw.match(/^([A-G](#|b|♯|♭){0,1})([^/]*)/);
   let s = "";
   if(m){
     let base = m[1].replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#");
