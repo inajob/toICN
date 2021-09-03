@@ -1,5 +1,6 @@
 var assert = require('assert');
 const toICN = require("./toICN-core.js");
+key = "C";
 const tests = [
   ["C" ,"1"],
   ["Dm","2"],
