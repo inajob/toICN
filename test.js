@@ -40,6 +40,7 @@ const tests = [
   ["Cm7(b5)" ,"1[m7-5]"],
   ["Cm7-5" ,"1[m7-5]"],
 
+  ["N.C.",""],
 ];
 
 tests.forEach((t) => {

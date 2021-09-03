@@ -30,6 +30,6 @@ module.exports = function(raw){
       }
     }
     s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""));
-    return s;
   }
+  return s;
 };
