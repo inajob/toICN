@@ -3,6 +3,10 @@ cat << EOS
 
 [ChordWiki](https://ja.chordwiki.org/)と[U-FRET](https://www.ufret.jp/)のコード譜の表示をInstaChord（インスタコード）での演奏に適した表記法である[ICN](http://instachord.com/instruction/icn/) (InstaChord Number) に変換するブックマークレットです。
 
+- [InstaChord(インスタコード)の購入はこちら](https://c.affitch.com?ref=QEP6CNKKRACV)
+  - アフィリエイトコードが入っています。そういうのが嫌な方は直接検索してください。
+  - インスタコードは代理店を持たず[「紹介パートナー制度」])(https://instachord.com/overview/d2c/)を採用しています。
+
 # 使い方
 
 下記をブックマークとして登録してください。
