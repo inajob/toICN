@@ -1,23 +1,48 @@
 Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))()).forEach((e) => {
   let raw = ""+ e.firstChild.nodeValue;
-  let m = raw.match(/^([A-G](#{0,1})(m{0,1}))([^/]*)/);
+  let m = raw.match(/^([A-G])(#|b{0,1})(m{0,1})([^/]*)/);
   let s = "-";
   if(m){
     let base = m[1];
-    let sharp = m[2];
+    let keySignature = m[2];
+    let minorSignature = m[3];
     let q = m[4];
     let swapped = false;
     let noMap = {"C":1, "D":2, "E":3, "F":4, "G":5, "A":6, "B":7};
-    let no = noMap[base[0]];
+    let no = noMap[base];
     let isQAvailable = false;
     let unSupported = false;
     let isSharp = false;
-    if("C,Dm,Em,F,G,Am,Bm".split(",").includes(base)){};
-    if("Cm,D,E,Fm,Gm,A,B".split(",").includes(base)){swapped = true;};
-    if(sharp == "#"){isSharp = true;};
+    if(keySignature == "#"){
+      if(no == 3){no = 4;}
+      else if(no == 7){no = 1;}
+      else{isSharp = true;}
+    }
+    else if(keySignature == "b"){
+      if(no == 1){no = 7;}
+      else if(no == 4){no--;}
+      else{
+        no--;
+        isSharp = true;
+      }
+    }
+    if("1m,2,3,4m,5m,6,7".split(",").includes(no+minorSignature)){
+      swapped = true;
+    }
     q = q.replace("7sus4","sus4").replace("dim7","dim").replace("7-5","m7-5");
-    if("dim,7,add9,M7,sus4,aug,m7-5".split(",").includes(q)){isQAvailable = true;}else{if(q.length>0){unSupported = true;}};
-    s = no + (isSharp?"[#]":"") + (swapped?"~":"") + (isQAvailable?("["+q+"]"):"" + (unSupported?"[!!"+q+"!!]":""));
+    if("7,M7,9,6".split(",").includes(q)){
+      isQAvailable = true;
+    }
+    else if("sus4,aug,dim,m7-5".split(",").includes(q)){
+      isQAvailable = true;
+      swapped = false;
+    } 
+    else{
+      if(q.length>0){
+        unSupported = true;
+      }
+    }
+    s = no + (swapped?"~":"") +(isSharp?"[#]":"") + (isQAvailable?("["+q+"]"):"" + (unSupported?"[!!"+q+"!!]":""));
     e.firstChild.nodeValue = s;
-  };
+  }
 })
