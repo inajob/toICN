@@ -1,3 +1,10 @@
+  let style = document.createElement('style');
+  document.head.appendChild(style);
+  let sheet = style.sheet;
+  sheet.insertRule('.sharp {background-color:#dbdbdb}');
+  sheet.insertRule('.swap {background-color:#fab9bd}');
+  sheet.insertRule('.sharpswap {background-color:#d19fa0}');
+
   let icn = module.exports(""+e.firstChild.nodeValue);
   let isSharp = false;
   let isSwap = false;
