@@ -1,32 +1,20 @@
 Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))()).forEach((e) => {
+  let scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+  let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   let raw = ""+ e.firstChild.nodeValue;
-  let m = raw.match(/^([A-G])(#|b{0,1})(m{0,1})([^/]*)/);
+  let m = raw.match(/^([A-G]#|b{0,1})(m{0,1})([^/]*)/);
   let s = "-";
   if(m){
-    let base = m[1];
-    let keySignature = m[2];
-    let minorSignature = m[3];
-    let q = m[4];
+    let base = m[1].replace("Db","C#").replace("Eb","D#").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#");
+    let minorSignature = m[2];
+    let q = m[3];
     let swapped = false;
-    let noMap = {"C":1, "D":2, "E":3, "F":4, "G":5, "A":6, "B":7};
-    let no = noMap[base];
     let isQAvailable = false;
     let unSupported = false;
     let isSharp = false;
-    if(keySignature == "#"){
-      if(no == 3){no = 4;}
-      else if(no == 7){no = 1;}
-      else{isSharp = true;}
-    }
-    else if(keySignature == "b"){
-      if(no == 1){no = 7;}
-      else if(no == 4){no--;}
-      else{
-        no--;
-        isSharp = true;
-      }
-    }
-    if("1m,2,3,4m,5m,6,7".split(",").includes(no+minorSignature)){
+    let no = ICNScale[scale.indexOf(base)];
+    isSharp = no.includes("#");
+    if("1m,2,3,4m,5m,6,7".split(",").includes(no[0]+minorSignature)){
       swapped = true;
     }
     q = q.replace("7sus4","sus4").replace("dim7","dim").replace("7-5","m7-5");
@@ -42,7 +30,7 @@ Array.prototype.slice.bind(document.getElementsByClassName("chord"))().concat(Ar
         unSupported = true;
       }
     }
-    s = no+(isSharp?"#":"")+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""));
+    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""));
     e.firstChild.nodeValue = s;
   }
 })
