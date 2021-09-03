@@ -3,7 +3,7 @@ module.exports = function(raw){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   let m = raw.match(/^([A-G](#|b|♯|♭){0,1})([^/]*)/);
   let s = "";
-  let sharpify = (s) => s.replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#");
+  let sharpify = (s) => s.replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
   if(m){
     let base = sharpify(m[1]);
     let minorSignature = "";
