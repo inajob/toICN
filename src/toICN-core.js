@@ -3,15 +3,16 @@ module.exports = function(raw){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   let m = raw.match(/^([A-G](#|b|♯|♭){0,1})([^/]*)/);
   let s = "";
+  let sharpify = (s) => s.replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#");
   if(m){
-    let base = m[1].replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#");
+    let base = sharpify(m[1]);
     let minorSignature = "";
     let q = m[3];
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
     let isSharp = false;
-    let keyNo = scale.indexOf(key);
+    let keyNo = scale.indexOf(sharpify(key));
     for(let i = 0; i < keyNo; i ++){
       scale.push(scale.shift());
     }

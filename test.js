@@ -79,3 +79,14 @@ tests2.forEach((t) => {
   console.log(t[0]);
   assert.equal(toICN(t[0]), t[1]);
 });
+
+key = "Ab";
+const tests3 = [
+  ["Ab",   "1"],
+]
+
+tests3.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(toICN(t[0]), t[1]);
+});
+
