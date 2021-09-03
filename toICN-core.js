@@ -4,7 +4,7 @@ module.exports = function(raw){
   let m = raw.match(/^([A-G](#|b){0,1})([^/]*)/);
   let s = "";
   if(m){
-    let base = m[1].replace("Db","C#").replace("Eb","D#").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#");
+    let base = m[1].replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#");
     let minorSignature = "";
     let q = m[3];
     let swapped = false;
