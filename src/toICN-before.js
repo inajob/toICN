@@ -1,6 +1,7 @@
 let keyElm = document.getElementsByClassName('key')[0];
-let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/: ([A-G](#|b){0,1})m{0,1}$/):null;
+let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/: ([A-G](#|b){0,1})(m{0,1})$/):null;
 let key = keyMatch?keyMatch[1]:"C";
+let keyMinorSignature = keyMatch?keyMatch[3]:"";
 let style = document.createElement('style');
 document.head.appendChild(style);
 let sheet = style.sheet;

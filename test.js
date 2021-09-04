@@ -1,6 +1,7 @@
 var assert = require('assert');
 const toICN = require("./src/toICN-core.js");
 key = "C";
+keyMinorSignature = "";
 
 const tests = [
   ["C" ,"1"],
@@ -92,6 +93,17 @@ const tests3 = [
 ]
 
 tests3.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(toICN(t[0]), t[1]);
+});
+
+key = "D#";
+keyMinorSignature = "m"
+const tests4 = [
+  ["F#",   "1"],
+]
+
+tests4.forEach((t) => {
   console.log(t[0]);
   assert.equal(toICN(t[0]), t[1]);
 });

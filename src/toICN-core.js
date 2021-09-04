@@ -13,6 +13,7 @@ module.exports = function(raw){
     let unSupported = false;
     let isSharp = false;
     let keyNo = scale.indexOf(sharpify(key));
+    if(keyMinorSignature=="m"){keyNo += 3;}
     for(let i = 0; i < keyNo; i ++){
       scale.push(scale.shift());
     }
