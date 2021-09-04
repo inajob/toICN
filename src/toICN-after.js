@@ -13,8 +13,8 @@ if(key == ""){
       detectedKey = key;
     }
   });
+  key = detectedKey;
 };
-key = detectedKey;
 chordElms.forEach((e) => {
   let icn = module.exports(""+e.firstChild.nodeValue);
   let isSharp = false;
