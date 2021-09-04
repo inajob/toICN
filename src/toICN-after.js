@@ -1,14 +1,3 @@
-  let style = document.createElement('style');
-  document.head.appendChild(style);
-  let sheet = style.sheet;
-  sheet.insertRule('.word {color:#b22222}');
-  sheet.insertRule('.wordtop {color:#b22222}');
-  sheet.insertRule('.sharp {background-color:#dbdbdb}');
-  sheet.insertRule('.swap {background-color:#fab9bd}');
-  sheet.insertRule('.sharpswap {background-color:#d19fa0}');
-  sheet.insertRule('.bluechord {color:#1a4a9c !important}');
-  sheet.insertRule('.notbluechord {color:#000000 !important}');
-
   let icn = module.exports(""+e.firstChild.nodeValue);
   let isSharp = false;
   let isSwap = false;
@@ -26,4 +15,4 @@
   else if(!isSharp&&isSwap){e.classList.add("swap");}
   if(isBlueChord){e.classList.add("bluechord");}
   else{e.classList.add("notbluechord");}
-})
+});
