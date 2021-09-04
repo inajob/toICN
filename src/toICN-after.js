@@ -14,6 +14,7 @@ if(key == ""){
     }
   });
   key = detectedKey;
+  alert("Auto Detect Key: " + key);
 };
 chordElms.forEach((e) => {
   let icn = module.exports(""+e.firstChild.nodeValue);
