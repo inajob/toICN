@@ -1,3 +1,5 @@
+let key = "";
+let keyMinorSignature = "";
 //コード譜に書かれてあるキー（調）を取り込む。最初のものを利用
 let keyElm = document.getElementsByClassName('key')[0];
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/: ([A-G](#|b){0,1})(m{0,1})$/):null;

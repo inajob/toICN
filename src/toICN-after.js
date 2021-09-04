@@ -1,3 +1,7 @@
+let keyElm = document.getElementsByClassName('key')[0];
+let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/: ([A-G](#|b){0,1})(m{0,1})$/):null;
+key = keyMatch?keyMatch[1]:"";
+keyMinorSignature = keyMatch?keyMatch[3]:"";
 //キー（調)自動判定関連
 let chordElms = [];
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
