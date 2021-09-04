@@ -28,9 +28,9 @@ ChordWikiにてKeyが明示されている場合はそれに従い、それ以�
 
 # 開発方法
 
-- toICN-before.js
-- toICN-core.js
-- toICN-after.js
+- ./src/toICN-before.js
+- ./src/toICN-core.js
+- ./src/toICN-after.js
 
 を編集してください。
 
