@@ -1,3 +1,21 @@
+let chordElms = [];
+if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
+if(document.title.indexOf("ChordWiki") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("chord"))());}
+let chords = chordElms.map((e) => e.firstChild.nodeValue);
+detectedKey = "";
+if(key == ""){
+  let maxCount = 0;
+  chords.forEach((s) => {
+    key = s;
+    let notSwapCodesCount = chords.map((s) => module.exports(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => (s.indexOf("~") == -1)).length;
+    if(notSwapCodesCount > maxCount){
+      maxCount = notSwapCodesCount;
+      detectedKey = key;
+    }
+  });
+};
+key = detectedKey;
+chordElms.forEach((e) => {
   let icn = module.exports(""+e.firstChild.nodeValue);
   let isSharp = false;
   let isSwap = false;
