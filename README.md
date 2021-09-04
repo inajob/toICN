@@ -21,6 +21,10 @@ ChordWikiかU-FRETで目的の曲を表示した状態で、登録したブッ�
 - ChordWikiにてKeyが明示されている場合は正しく動きますが、それ以外の場合はキーをC(ハ長調)と決め打ちします。
 - https://github.com/inajob/toICN/issues に随時起票しています。（コメント、PR募集してます！）
 
+# 仕様
+
+- ICN、およびこのブックマークレットの仕様について /specification.md をご覧ください。
+
 # 開発方法
 
 - toICN-before.js
