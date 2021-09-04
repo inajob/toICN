@@ -2,6 +2,7 @@ let keyElm = document.getElementsByClassName('key')[0];
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/: ([A-G](#|b){0,1})(m{0,1})$/):null;
 key = keyMatch?keyMatch[1]:"";
 keyMinorSignature = keyMatch?keyMatch[3]:"";
+//キー（調)自動判定関連
 let chordElms = [];
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
 if(document.title.indexOf("ChordWiki") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("chord"))());}
@@ -20,11 +21,13 @@ if(key == ""){
   key = detectedKey;
   alert("Auto Detect Key: " + key);
 };
+//表示書き換え関係
 chordElms.forEach((e) => {
   let icn = module.exports(""+e.firstChild.nodeValue);
   let isSharp = false;
   let isSwap = false;
   let isBlueChord = false;
+  //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
   if(icn!=""){
     e.firstChild.nodeValue = icn;
     if(icn.includes("#")){isSharp = true;}
@@ -33,6 +36,7 @@ chordElms.forEach((e) => {
       isBlueChord = true;
     }
   }
+  //特定の条件を満たすコードに色を付ける
   if(isSharp&&isSwap){e.classList.add("sharpswap");}
   else if(isSharp&&!isSwap){e.classList.add("sharp");}
   else if(!isSharp&&isSwap){e.classList.add("swap");}
