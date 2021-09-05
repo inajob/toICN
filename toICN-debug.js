@@ -90,15 +90,19 @@ if(detectedKey == ""){
   });
   key = "";
   detectedKey = tmpDetectedKey;
-  alert("Auto Detect Key: " + detectedKey);
 }
+var result = prompt("自動検出されたキー:" + detectedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
+let resultKey = (resultMatch?resultMatch[1]:"").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
+let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
+if(scale.includes(resultKey)){isAutoKeyDetection = false;}
 if(isAutoKeyDetection){
   key = detectedKey;
   keyMinorSignature = detectedKeyMinorSignature;
 }
 else{
-  key = "C";
-  keyMinorSignature = "";
+  key = resultKey;
+  keyMinorSignature = resultKeyMinorSignature;
 }
 //表示書き換え関係
 chordElms.forEach((e) => {
