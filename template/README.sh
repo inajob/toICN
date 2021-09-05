@@ -23,8 +23,7 @@ cat << EOS
 \`\`\`
 EOS
 
-cat toICN.js
-
+cat toICN.bookmarklet
 cat << EOS
 
 \`\`\`

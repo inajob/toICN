@@ -29,10 +29,7 @@ module.exports = function(raw){
     let keyNo = scale.indexOf(sharpify(key));
     //短調表記を長調表記に変える
     if(keyMinorSignature=="m"){keyNo += 3;}
-    for(let i = 0; i < keyNo; i ++){
-      scale.push(scale.shift());
-    }
-    let no = ICNScale[scale.indexOf(base)];
+    let no = ICNScale[(scale.indexOf(base) + 12 - keyNo)% 12];
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
     //マイナーのキーかどうかを判定
