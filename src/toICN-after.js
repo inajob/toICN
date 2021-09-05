@@ -5,15 +5,22 @@ let detectedKey = "";
 let detectedKeyMinorSignature = "";
 //chordを読む
 let chordElms = [];
+let keyElm;
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
-if(document.title.indexOf("ChordWiki") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("chord"))());}
+if(document.title.indexOf("ChordWiki") != -1){
+  chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("chord"))());
+  keyElm = document.getElementsByClassName('key')[0];
+}
 if(document.title.indexOf("楽器.me") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))());}
+if(document.title.indexOf("J-Total Music!") != -1){
+  chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))());
+  keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+}
 let chords = chordElms.map((e) => e.firstChild.nodeValue);
 //書かれているキーを読み取り
-let keyElm = document.getElementsByClassName('key')[0];
-let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/: ([A-G](#|b){0,1})(m{0,1})$/):null;
-detectedKey = keyMatch?keyMatch[1]:"";
-detectedKeyMinorSignature = keyMatch?keyMatch[3]:"";
+let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
+detectedKey = keyMatch?keyMatch[2]:"";
+detectedKeyMinorSignature = keyMatch?keyMatch[4]:"";
 if(detectedKey == ""){
   let tmpDetectedKey = "";
   let maxCount = 0;
