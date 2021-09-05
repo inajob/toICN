@@ -52,7 +52,7 @@ module.exports = function(raw){
         unSupported = true;
       }
     }
-    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":"")+(isOnChord?"/"+onChordNo:""));
+    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":"")+(onChordNo!=""?"/"+onChordNo:""));
   }
   return s;
 };
