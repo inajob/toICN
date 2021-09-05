@@ -19,7 +19,7 @@ if(document.title.indexOf("J-Total Music!") != -1){
 let chords = chordElms.map((e) => e.firstChild.nodeValue);
 //書かれているキーを読み取り
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
-detectedKey = keyMatch?keyMatch[2]:"";
+detectedKey = keyMatch?sharpify(keyMatch[2]):"";
 detectedKeyMinorSignature = keyMatch?keyMatch[4]:"";
 if(detectedKey == ""){
   let tmpDetectedKey = "";
