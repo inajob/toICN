@@ -24,6 +24,10 @@ ChordWikiかU-FRETで目的の曲を表示した状態で、登録したブッ�
 
 ChordWikiにてKeyが明示されている場合はそれに従い、それ以外はキーを自動判別します。（間違うこともあります）
 
+# 動画説明
+
+![tutorial](./imgs/tutorial.gif)
+
 # 既知のバグ
 
 - https://github.com/inajob/toICN/issues に随時起票しています。（コメント、PR募集してます！）
