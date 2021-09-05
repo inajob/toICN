@@ -71,6 +71,7 @@ let detectedKeyMinorSignature = "";
 let chordElms = [];
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
 if(document.title.indexOf("ChordWiki") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("chord"))());}
+if(document.title.indexOf("楽器.me") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))());}
 let chords = chordElms.map((e) => e.firstChild.nodeValue);
 //書かれているキーを読み取り
 let keyElm = document.getElementsByClassName('key')[0];
