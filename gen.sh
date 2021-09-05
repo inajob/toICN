@@ -4,4 +4,8 @@ cat ./src/toICN-core.js |sed -e 's/\/\/.*//'|sed -e 's/^ *//g'|tr -d '\n' >> toI
 cat ./src/toICN-after.js |sed -e 's/\/\/.*//'|sed -e 's/^ *//g'|tr -d '\n' >> toICN.js
 echo -n "})();" >> toICN.js
 
+cat ./src/toICN-before.js > toICN-debug.js
+cat ./src/toICN-core.js >> toICN-debug.js
+cat ./src/toICN-after.js >> toICN-debug.js
+
 ./template/README.sh > README.md
