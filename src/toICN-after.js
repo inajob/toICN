@@ -3,6 +3,7 @@ let key = "";
 let keyMinorSignature = "";
 let detectedKey = "";
 let detectedKeyMinorSignature = "";
+let hoge = "test";
 //chordを読む
 let chordElms = [];
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
