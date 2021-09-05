@@ -1,7 +1,13 @@
 cat << EOS
 # これは何？
 
-[ChordWiki](https://ja.chordwiki.org/)と[U-FRET](https://www.ufret.jp/)のコード譜の表示をInstaChord（インスタコード）での演奏に適した表記法である[ICN](http://instachord.com/instruction/icn/) (InstaChord Number) に変換するブックマークレットです。
+楽譜サイトのコード譜の表示をInstaChord（インスタコード）での演奏に適した表記法である[ICN](http://instachord.com/instruction/icn/) (InstaChord Number) に変換するブックマークレットです。
+
+対応サイトは以下です
+
+- [ChordWiki](https://ja.chordwiki.org/)
+- [U-FRET](https://www.ufret.jp/)
+- [楽器.me](https://gakufu.gakki.me/)
 
 - [InstaChord(インスタコード)の購入はこちら](https://c.affitch.com?ref=QEP6CNKKRACV)
   - アフィリエイトコードが入っています。そういうのが嫌な方は直接検索してください。
@@ -20,7 +26,7 @@ cat << EOS
 
 \`\`\`
 
-ChordWikiかU-FRETで目的の曲を表示した状態で、登録したブックマークをクリックすると、コード表記がICNに変換されます。
+対応サイトの楽曲ページで目的の曲を表示した状態で、登録したブックマークをクリックすると、コード表記がICNに変換されます。
 
 ChordWikiにてKeyが明示されている場合はそれに従い、それ以外はキーを自動判別します。（間違うこともあります）
 
