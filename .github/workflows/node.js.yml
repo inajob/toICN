@@ -24,4 +24,4 @@ jobs:
     - run: node --check toICN.js
     - run: node --check toICN-debug.js
     - run: sh gen.sh
-    - run: git diff
+    - run: git --exit-code diff
