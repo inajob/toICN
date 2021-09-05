@@ -21,3 +21,5 @@ jobs:
       with:
         node-version: 14.x
     - run: node test.js
+    - run: node --check toICN.js
+    - run: node --check toICN-debug.js
