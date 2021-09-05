@@ -11,26 +11,30 @@ let chords = chordElms.map((e) => e.firstChild.nodeValue);
 //書かれているキーを読み取り
 let keyElm = document.getElementsByClassName('key')[0];
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/: ([A-G](#|b){0,1})(m{0,1})$/):null;
-key = keyMatch?keyMatch[1]:"";
-keyMinorSignature = keyMatch?keyMatch[3]:"";
-detectedKey = "";
-if(key == ""){
+detectedKey = keyMatch?keyMatch[1]:"";
+detectedKeyMinorSignature = keyMatch?keyMatch[3]:"";
+if(detectedKey == ""){
+  let tmpDetectedKey = "";
   let maxCount = 0;
   scale.forEach((s) => {
     key = s;
     let notSwapCodesCount = chords.slice(0,30).map((s) => module.exports(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
-      detectedKey = key;
+      tmpDetectedKey = key;
     }
   });
-  key = detectedKey;
-  alert("Auto Detect Key: " + key);
+  key = "";
+  detectedKey = tmpDetectedKey;
+  alert("Auto Detect Key: " + detectedKey);
 }
 if(isAutoKeyDetection){
+  key = detectedKey;
+  keyMinorSignature = detectedKeyMinorSignature;
 }
 else{
   key = "C";
+  keyMinorSignature = "";
 }
 //表示書き換え関係
 chordElms.forEach((e) => {
