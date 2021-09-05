@@ -29,8 +29,8 @@ if(detectedKey == ""){
 }
 var result = prompt("自動検出されたキー:" + detectedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
-let resultKey = resultMatch?keyMatch[1]:"";
-let resultKeyMinorSignature = resultMatch?keyMatch[3]:"";
+let resultKey = resultMatch?resultMatch[1]:"";
+let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
 if(scale.includes(resultKey)){isAutoKeyDetection = false;}
 if(isAutoKeyDetection){
   key = detectedKey;
