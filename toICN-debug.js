@@ -98,15 +98,25 @@ if(detectedKey == ""){
   });
   key = "";
   detectedKey = tmpDetectedKey;
+  detectedKeyMinorSignature = "u";
+
 }
-var result = prompt("自動検出されたキー:" + detectedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+let rawScale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
+let minorScale = ["C","C#","D","D#","E","F","F#","G","G#","A","Bb","B"];
+let minorUScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
+let displayedKey = "";
+if(detectedKeyMinorSignature == ""){displayedKey = majorScale[rawScale.indexOf(detectedKey)];}
+else if(detectedKeyMinorSignature == "m"){displayedKey = minorScale[rawScale.indexOf(detectedKey)] + "m";}
+else{displayedKey = majorScale[rawScale.indexOf(detectedKey)] + "/" + minorUScale[rawScale.indexOf(detectedKey)] + "m (コード譜からの自動判定)";}
+var result = prompt("自動検出されたキー:" + displayedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
 let resultKey = (resultMatch?resultMatch[1]:"").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
 if(scale.includes(resultKey)){isAutoKeyDetection = false;}
 if(isAutoKeyDetection){
   key = detectedKey;
-  keyMinorSignature = detectedKeyMinorSignature;
+  keyMinorSignature = detectedKeyMinorSignature=="u"?"":detectedKeyMinorSignature;
 }
 else{
   key = resultKey;
