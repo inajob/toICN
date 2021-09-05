@@ -66,6 +66,7 @@ module.exports = function(raw){
 };
 let isAutoKeyDetection = true;
 let key = "";
+let previousKeyNo = -1;
 let keyMinorSignature = "";
 let detectedKey = "";
 let detectedKeyMinorSignature = "";
@@ -135,6 +136,15 @@ chordElms.forEach((e) => {
       keyMatch = e?e.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
       key = keyMatch?sharpify(keyMatch[2]):"";
       minorSignature = keyMatch?keyMatch[4]:"";
+      let keyNo = scale.indexOf(sharpify(key));
+      if(keyMinorSignature=="m"){keyNo += 3;}
+      if(previousKeyNo != -1){
+        let keyModulationDegree = keyNo - previousKeyNo;
+        if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
+        else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
+        e.firstChild.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
+      }
+      previousKeyNo = keyNo;
     }
   }
   else{
