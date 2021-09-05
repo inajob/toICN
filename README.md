@@ -31,6 +31,15 @@ ChordWikiにてKeyが明示されている場合はそれに従い、それ以�
 
 ![tutorial](./imgs/tutorial.gif)
 
+# スマートフォン・タブレットでの利用
+
+FirefoxやChromeで動作します。
+
+AndroidのChromeで実行する際は「ブックマークレットのタイトルをアドレスバーに入力」してブックマークレットを実行してください。
+（ブックマークメニューから、選択しても実行されないようです。）
+
+参考: https://ametuku.com/archives/6858
+
 # 既知のバグ
 
 - https://github.com/inajob/toICN/issues に随時起票しています。（コメント、PR募集してます！）
