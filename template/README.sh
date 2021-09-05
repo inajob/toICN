@@ -8,6 +8,7 @@ cat << EOS
 - [ChordWiki](https://ja.chordwiki.org/)
 - [U-FRET](https://www.ufret.jp/)
 - [楽器.me](https://gakufu.gakki.me/)
+- [J-Total Music!](https://music.j-total.net/)
 
 - [InstaChord(インスタコード)の購入はこちら](https://c.affitch.com?ref=QEP6CNKKRACV)
   - アフィリエイトコードが入っています。そういうのが嫌な方は直接検索してください。
