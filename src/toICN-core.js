@@ -14,14 +14,12 @@ module.exports = function(raw){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
-    let isOnChord = false;
     let keyNo = scale.indexOf(sharpify(key));
     //短調表記を長調表記に変える
     if(keyMinorSignature=="m"){keyNo += 3;}
     let no = ICNScale[(scale.indexOf(base) + 12 - keyNo)% 12];
     let onChordNo = "";
     if(onChord!=""){
-      isOnChord = true;
       onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - keyNo)% 12];
     }
     // 9を7(9), maj7をM7等表記を置き換える
