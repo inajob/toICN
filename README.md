@@ -9,6 +9,8 @@
 - [楽器.me](https://gakufu.gakki.me/)
 - [J-Total Music!](https://music.j-total.net/)
 
+# InstaChordの入手
+
 - [InstaChord(インスタコード)の購入はこちら](https://c.affitch.com?ref=QEP6CNKKRACV)
   - アフィリエイトコードが入っています。そういうのが嫌な方は直接検索してください。
   - インスタコードは代理店を持たず[「紹介パートナー制度」](https://instachord.com/overview/d2c/)を採用しています。
