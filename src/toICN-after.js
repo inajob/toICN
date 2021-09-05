@@ -27,7 +27,7 @@ if(detectedKey == ""){
   key = "";
   detectedKey = tmpDetectedKey;
 }
-var result = prompt("Auto detected key:" + detectedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)");
+var result = prompt("Auto detected key:" + detectedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/: ([A-G](#|b){0,1})(m{0,1})$/);
 let resultKey = keyMatch?keyMatch[1]:"";
 let resultKeyMinorSignature = keyMatch?keyMatch[3]:"";
