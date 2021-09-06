@@ -45,7 +45,7 @@ else{
 
 let displayedKey = exports.DisplayedKey(detectedKey, detectedMinorSignature);
 // キーの手動設定
-var result = prompt("自動検出されたキー:" + displayedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+var result = prompt("Key:" + displayedKey + isKeyWritten?"(Webサイトが指定したキー)":"(コード譜を元に自動判定されたキー)" +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
 let resultKey = (resultMatch?sharpify(resultMatch[1]):"");
 let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
