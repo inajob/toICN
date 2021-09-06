@@ -14,6 +14,16 @@ sheet.insertRule('.notbluechord {color:#000000 !important}');
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
+
+// "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数
+exports.convertToKeyNo = function(raw){
+  let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
+  let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
+  let tmpMinorSignature = rawMatch[3];
+  if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3)%12;}
+  return tmpKeyNo;
+}
+
 exports.getDisplayedKey = function(key, minorSignature){
   let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
   let minorScale = ["C","C#","D","D#","E","F","F#","G","G#","A","Bb","B"];
@@ -23,6 +33,7 @@ exports.getDisplayedKey = function(key, minorSignature){
   else{displayedKey = majorScale[scale.indexOf(key)] + "/" + minorScale[(scale.indexOf(key)+9) % 12] + "m";}
   return displayedKey;
 };
+
 exports.toICN = function(raw){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
