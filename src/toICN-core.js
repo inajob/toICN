@@ -1,4 +1,4 @@
-let scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 exports.getDisplayedKey = function(key, minorSignature){
