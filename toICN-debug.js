@@ -112,7 +112,7 @@ if(detectedKey == ""){
   detectedKeyMinorSignature = "u";
 }
 
-let displayedKey = exports.DisplayedKey(detectedKey, detectedMinorSignature);
+let displayedKey = exports.getDisplayedKey(detectedKey, detectedKeyMinorSignature);
 // キーの手動設定
 var result = prompt("自動検出されたキー:" + displayedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
