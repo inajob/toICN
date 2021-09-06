@@ -126,3 +126,16 @@ displayedKeyTests.forEach((t) => {
   console.log(t[0]);
   assert.equal(m.getDisplayedKey(t[0], t[1]), t[2]);
 });
+
+console.log("== convertToKeyNo ==")
+const convertToKeyNoTests = [
+  ["C", 0],
+  ["Am", 0],
+  ["C#", 1],
+  ["A#m", 1],
+];
+
+convertToKeyNoTests.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.convertToKeyNo(t[0]), t[1]);
+});
