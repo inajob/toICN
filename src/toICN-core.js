@@ -71,3 +71,46 @@ exports.toICN = function(raw){
   }
   return s;
 };
+exports.updateChords = function(keyChords){
+  keyChords.forEach((e) => {
+    if(e.type == "key"){
+      // 転調の場合
+      if(isAutoKeyDetection){
+        keyMatch = e.v.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/);
+        key = keyMatch?sharpify(keyMatch[2]):"";
+        keyMinorSignature = keyMatch?keyMatch[4]:"";
+        let keyNo = scale.indexOf(sharpify(key));
+        if(keyMinorSignature=="m"){keyNo += 3;}
+        if(previousKeyNo != -1){
+          let keyModulationDegree = keyNo - previousKeyNo;
+          if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
+          else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
+          e.elm.firstChild.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
+        }
+        previousKeyNo = keyNo;
+      }
+    }
+    else{
+      // コードの場合
+      let icn = exports.toICN(e.v);
+      let isSharp = false;
+      let isSwap = false;
+      let isBlueChord = false;
+      //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
+      if(icn!=""){
+        e.elm.firstChild.nodeValue = icn;
+        if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
+        if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
+        if("1[7],1#[7],4[7],4#[7],2[M7],2#[M7],3[M7],5[M7],5#[M7],6[M7],6#[M7],7[M7]".split(",").includes(icn) || /\[sus4\]|\[aug\]|\[dim\]|\[m7\-5\]$/.test(icn)){
+          isBlueChord = true;
+        }
+      }
+      //特定の条件を満たすコードに色を付ける
+      if(isSharp&&isSwap){e.elm.classList.add("sharpswap");}
+      else if(isSharp&&!isSwap){e.elm.classList.add("sharp");}
+      else if(!isSharp&&isSwap){e.elm.classList.add("swap");}
+      if(isBlueChord){e.elm.classList.add("bluechord");}
+      else{e.elm.classList.add("notbluechord");}
+    }
+  });
+};
