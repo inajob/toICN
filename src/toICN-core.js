@@ -7,7 +7,7 @@ exports.getDisplayedKey = function(key, minorSignature){
   let displayedKey = "";
   if(minorSignature == ""){displayedKey = majorScale[scale.indexOf(key)];}
   else if(minorSignature == "m"){displayedKey = minorScale[scale.indexOf(key)] + "m";}
-  else{displayedKey = majorScale[scale.indexOf(key)] + "/" + minorScale[(scale.indexOf(key)+9)%12] + "m (コード譜からの自動判定)";}
+  else{displayedKey = majorScale[scale.indexOf(key)] + "/" + minorScale[(scale.indexOf(key)+9) % 12] + "m";}
   return displayedKey;
 };
 exports.toICN = function(raw){
