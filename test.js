@@ -131,6 +131,8 @@ console.log("== updateChords ==")
 
 key = "C";
 keyMinorSignature = "";
+isAutoKeyDetection = true;
+previousKeyNo = -1;
 
 const updateChordsTest = [
   [
@@ -139,7 +141,20 @@ const updateChordsTest = [
       {type: "chord", v: "Am", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
     ],
     ["1", "6"]
-  ]
+  ],
+  [
+    [ // Key: C -> A -> Am
+      {type: "key", v: "key: C", elm: {firstChild: {nodeValue: "key: C"}, classList: {add: ()=>{}}}},
+      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+      {type: "chord", v: "Am", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+      {type: "key", v: "key: A", elm: {firstChild: {nodeValue: "key: A"}, classList: {add: ()=>{}}}},
+      {type: "chord", v: "A", elm: {firstChild: {nodeValue: "A"}, classList: {add: ()=>{}}}},
+      {type: "key", v: "key: Am", elm: {firstChild: {nodeValue: "key: Am"}, classList: {add: ()=>{}}}},
+      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+    ],
+    ["key: C", "1", "6", "key: A (-3)", "1", "key: Am (+3)", "1"]
+  ],
+
 ];
 
 updateChordsTest.forEach((t) => {
