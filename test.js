@@ -118,8 +118,8 @@ console.log("== displayedKey ==")
 const displayedKeyTests = [
   ["C", "", "C"],
   ["A", "m", "Am"],
-  ["C", "u", "C/Am (コード譜からの自動判定)"],
-  ["G", "u", "G/Em (コード譜からの自動判定)"],
+  ["C", "u", "C/Am"],
+  ["G", "u", "G/Em"],
 ];
 
 displayedKeyTests.forEach((t) => {
