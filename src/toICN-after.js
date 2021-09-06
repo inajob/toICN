@@ -27,7 +27,7 @@ if(detectedKey == ""){
   let maxCount = 0;
   scale.forEach((s) => {
     key = s;
-    let notSwapCodesCount = chords.slice(0,30).map((s) => module.exports(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = key;
@@ -36,12 +36,8 @@ if(detectedKey == ""){
   key = "";
   detectedKeyMinorSignature = "u";
 }
-let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
-let minorScale = ["C","C#","D","D#","E","F","F#","G","G#","A","Bb","B"];
-let displayedKey = "";
-if(detectedKeyMinorSignature == ""){displayedKey = majorScale[scale.indexOf(detectedKey)];}
-else if(detectedKeyMinorSignature == "m"){displayedKey = minorScale[scale.indexOf(detectedKey)] + "m";}
-else{displayedKey = majorScale[scale.indexOf(detectedKey)] + "/" + minorScale[(scale.indexOf(detectedKey)+9)%12] + "m (コード譜からの自動判定)";}
+
+let displayedKey = exports.DisplayedKey(detectedKey, detectedMinorSignature);
 // キーの手動設定
 var result = prompt("自動検出されたキー:" + displayedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
@@ -58,7 +54,7 @@ else{
 }
 //表示書き換え関係
 chordElms.forEach((e) => {
-  let icn = module.exports(""+e.firstChild.nodeValue);
+  let icn = exports.toICN(""+e.firstChild.nodeValue);
   let isSharp = false;
   let isSwap = false;
   let isBlueChord = false;
