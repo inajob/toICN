@@ -3,7 +3,7 @@ let key = "";
 let keyMinorSignature = "";
 let detectedKey = "";
 let detectedKeyMinorSignature = "";
-//chordを読む
+//ChordやKeyを読む
 let chordElms = [];
 let keyElm;
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
@@ -22,6 +22,7 @@ let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1
 detectedKey = keyMatch?sharpify(keyMatch[2]):"";
 detectedKeyMinorSignature = keyMatch?keyMatch[4]:"";
 if(detectedKey == ""){
+  // キーの自動判定
   let tmpDetectedKey = "";
   let maxCount = 0;
   scale.forEach((s) => {
@@ -35,19 +36,17 @@ if(detectedKey == ""){
   key = "";
   detectedKey = tmpDetectedKey;
   detectedKeyMinorSignature = "u";
-
 }
-let rawScale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 let minorScale = ["C","C#","D","D#","E","F","F#","G","G#","A","Bb","B"];
-let minorUScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 let displayedKey = "";
-if(detectedKeyMinorSignature == ""){displayedKey = majorScale[rawScale.indexOf(detectedKey)];}
-else if(detectedKeyMinorSignature == "m"){displayedKey = minorScale[rawScale.indexOf(detectedKey)] + "m";}
-else{displayedKey = majorScale[rawScale.indexOf(detectedKey)] + "/" + minorUScale[rawScale.indexOf(detectedKey)] + "m (コード譜からの自動判定)";}
+if(detectedKeyMinorSignature == ""){displayedKey = majorScale[scale.indexOf(detectedKey)];}
+else if(detectedKeyMinorSignature == "m"){displayedKey = minorScale[scale.indexOf(detectedKey)] + "m";}
+else{displayedKey = majorScale[scale.indexOf(detectedKey)] + "/" + minorScale[(scale.indexOf(detectedKey)+9)%12] + "m (コード譜からの自動判定)";}
+// キーの手動設定
 var result = prompt("自動検出されたキー:" + displayedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
-let resultKey = (resultMatch?resultMatch[1]:"").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
+let resultKey = (resultMatch?sharpify(resultMatch[1]):"");
 let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
 if(scale.includes(resultKey)){isAutoKeyDetection = false;}
 if(isAutoKeyDetection){
