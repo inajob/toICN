@@ -7,9 +7,9 @@ exports.convertToKeyNo = function(raw){
   let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
   let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
   let tmpMinorSignature = rawMatch[3];
-  if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3)%12;}
+  if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
   return tmpKeyNo;
-}
+};
 
 exports.getDisplayedKey = function(key, minorSignature){
   let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
