@@ -20,7 +20,7 @@ if(document.title.indexOf("J-Total Music!") != -1){
   chordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
   keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
 }
-let chords = chordElms.map((e) => {return {type: "chord",v: e.firstChild.nodeValue};});
+let chords = chordElms.map((e) => {return {type: "chord",v: e.firstChild.nodeValue, elm: e};});
 let keyChords = keyChordElms?(keyChordElms.map((e) => {
   if(e){
     if(e.classList.contains("key")){
@@ -41,7 +41,7 @@ if(detectedKey == ""){
   let maxCount = 0;
   scale.forEach((s) => {
     key = s;
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = key;
