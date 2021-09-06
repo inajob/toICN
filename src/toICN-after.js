@@ -65,7 +65,7 @@ else{
     if(isAutoKeyDetection){
       keyMatch = e?e.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
       key = keyMatch?sharpify(keyMatch[2]):"";
-      minorSignature = keyMatch?keyMatch[4]:"";
+      keyMinorSignature = keyMatch?keyMatch[4]:"";
       let keyNo = scale.indexOf(sharpify(key));
       if(keyMinorSignature=="m"){keyNo += 3;}
       if(previousKeyNo != -1){
