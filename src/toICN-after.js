@@ -61,7 +61,7 @@ else{
   keyMinorSignature = resultKeyMinorSignature;
 }
 //表示書き換え関係
-(isKeysOnChordElms?keyChordElms:chordElms).forEach((e) => {
+(keyChordElms.length != 0?keyChordElms:chordElms).forEach((e) => {
   if(isKeysOnChordElms && e.classList.contains("key")){
     if(isAutoKeyDetection){
       keyMatch = e?e.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
