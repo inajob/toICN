@@ -77,7 +77,7 @@ chordElms.forEach((e) => {
     }
   }
   else{
-    let icn = module.exports(""+e.firstChild.nodeValue);
+    let icn = exports.toICN(""+e.firstChild.nodeValue);
     let isSharp = false;
     let isSwap = false;
     let isBlueChord = false;
