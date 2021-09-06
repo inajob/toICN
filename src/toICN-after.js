@@ -8,13 +8,11 @@ let detectedKeyMinorSignature = "";
 let chordElms = [];
 let keyElm;
 let keyChordElms = [];
-let isKeysOnChordElms = false; //これがtrueの場合は、chordElmsにkeyも含まれるようになる
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
 if(document.title.indexOf("ChordWiki") != -1){
   chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("chord"))());
   keyChordElms = chordElms.concat(Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))());
   keyElm = document.getElementsByClassName('key')[0];
-  isKeysOnChordElms = true;
 }
 if(document.title.indexOf("楽器.me") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))());}
 if(document.title.indexOf("J-Total Music!") != -1){
@@ -62,7 +60,7 @@ else{
 }
 //表示書き換え関係
 (keyChordElms.length != 0?keyChordElms:chordElms).forEach((e) => {
-  if(isKeysOnChordElms && e.classList.contains("key")){
+  if(e.classList.contains("key")){
     if(isAutoKeyDetection){
       keyMatch = e?e.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
       key = keyMatch?sharpify(keyMatch[2]):"";
