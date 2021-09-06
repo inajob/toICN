@@ -74,6 +74,7 @@ exports.toICN = function(raw){
   return s;
 };
 let isAutoKeyDetection = true;
+let isKeyWritten = false;
 let key = "";
 let previousKeyNo = -1;
 let keyMinorSignature = "";
