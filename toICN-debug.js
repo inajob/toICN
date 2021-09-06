@@ -96,11 +96,10 @@ if(detectedKey == ""){
     let notSwapCodesCount = chords.slice(0,30).map((s) => module.exports(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
-      tmpDetectedKey = key;
+      detectedKey = key;
     }
   });
   key = "";
-  detectedKey = tmpDetectedKey;
   detectedKeyMinorSignature = "u";
 }
 let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
