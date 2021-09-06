@@ -1,4 +1,4 @@
-module = {exports:{}};
+exports = {};
 //CSS関連
 let style = document.createElement('style');
 document.head.appendChild(style);
@@ -14,7 +14,7 @@ sheet.insertRule('.notbluechord {color:#000000 !important}');
 let scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
-module.exports = function(raw){
+exports.toICN = function(raw){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
@@ -93,7 +93,7 @@ if(detectedKey == ""){
   let maxCount = 0;
   scale.forEach((s) => {
     key = s;
-    let notSwapCodesCount = chords.slice(0,30).map((s) => module.exports(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = key;
@@ -124,7 +124,7 @@ else{
 }
 //表示書き換え関係
 chordElms.forEach((e) => {
-  let icn = module.exports(""+e.firstChild.nodeValue);
+  let icn = exports.toICN(""+e.firstChild.nodeValue);
   let isSharp = false;
   let isSwap = false;
   let isBlueChord = false;

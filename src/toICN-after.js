@@ -27,7 +27,7 @@ if(detectedKey == ""){
   let maxCount = 0;
   scale.forEach((s) => {
     key = s;
-    let notSwapCodesCount = chords.slice(0,30).map((s) => module.exports(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = key;
@@ -58,7 +58,7 @@ else{
 }
 //表示書き換え関係
 chordElms.forEach((e) => {
-  let icn = module.exports(""+e.firstChild.nodeValue);
+  let icn = exports.toICN(""+e.firstChild.nodeValue);
   let isSharp = false;
   let isSwap = false;
   let isBlueChord = false;

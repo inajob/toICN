@@ -1,5 +1,5 @@
 var assert = require('assert');
-const toICN = require("./src/toICN-core.js");
+const m = require("./src/toICN-core.js");
 key = "C";
 keyMinorSignature = "";
 
@@ -73,7 +73,7 @@ const tests = [
 
 tests.forEach((t) => {
   console.log(t[0]);
-  assert.equal(toICN(t[0]), t[1]);
+  assert.equal(m.toICN(t[0]), t[1]);
 });
 
 key = "B";
@@ -88,7 +88,7 @@ const tests2 = [
 ]
 tests2.forEach((t) => {
   console.log(t[0]);
-  assert.equal(toICN(t[0]), t[1]);
+  assert.equal(m.toICN(t[0]), t[1]);
 });
 
 key = "Ab";
@@ -98,7 +98,7 @@ const tests3 = [
 
 tests3.forEach((t) => {
   console.log(t[0]);
-  assert.equal(toICN(t[0]), t[1]);
+  assert.equal(m.toICN(t[0]), t[1]);
 });
 
 key = "D#";
@@ -109,6 +109,6 @@ const tests4 = [
 
 tests4.forEach((t) => {
   console.log(t[0]);
-  assert.equal(toICN(t[0]), t[1]);
+  assert.equal(m.toICN(t[0]), t[1]);
 });
 

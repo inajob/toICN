@@ -1,7 +1,7 @@
 let scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
-module.exports = function(raw){
+exports.toICN = function(raw){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);

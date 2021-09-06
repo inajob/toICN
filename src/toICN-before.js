@@ -1,4 +1,4 @@
-module = {exports:{}};
+exports = {};
 //CSS関連
 let style = document.createElement('style');
 document.head.appendChild(style);
