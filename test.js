@@ -126,3 +126,27 @@ displayedKeyTests.forEach((t) => {
   console.log(t[0]);
   assert.equal(m.getDisplayedKey(t[0], t[1]), t[2]);
 });
+
+console.log("== updateChords ==")
+
+key = "C";
+keyMinorSignature = "";
+
+const updateChordsTest = [
+  [
+    [
+      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+      {type: "chord", v: "Am", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+    ],
+    ["1", "6"]
+  ]
+];
+
+updateChordsTest.forEach((t) => {
+  console.log(t[0]);
+  m.updateChords(t[0]);
+  console.log(t[0].elm);
+  t[0].forEach((e, i) => {
+    assert.equal(e.elm.firstChild.nodeValue, t[1][i]);
+  });
+})
