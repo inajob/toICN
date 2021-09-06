@@ -22,9 +22,13 @@ if(document.title.indexOf("J-Total Music!") != -1){
 }
 let chords = chordElms.map((e) => e.firstChild.nodeValue);
 //書かれているキーを読み取り
+debugger;
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
-detectedKey = keyChordElms?sharpify(keyMatch[2]):"";
+debugger;
+detectedKey = keyMatch?sharpify(keyMatch[2]):"";
+debugger;
 detectedKeyMinorSignature = keyMatch?keyMatch[4]:"";
+debugger;
 if(detectedKey == ""){
   // キーの自動判定
   let tmpDetectedKey = "";
