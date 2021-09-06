@@ -3,6 +3,8 @@ const m = require("./src/toICN-core.js");
 key = "C";
 keyMinorSignature = "";
 
+console.log("== toICN ==")
+
 const tests = [
   ["C" ,"1"],
   ["Dm","2"],
@@ -112,3 +114,15 @@ tests4.forEach((t) => {
   assert.equal(m.toICN(t[0]), t[1]);
 });
 
+console.log("== displayedKey ==")
+const displayedKeyTests = [
+  ["C", "", "C"],
+  ["A", "m", "Am"],
+  ["C", "u", "C/Am (コード譜からの自動判定)"],
+  ["G", "u", "G/Em (コード譜からの自動判定)"],
+];
+
+displayedKeyTests.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.getDisplayedKey(t[0], t[1]), t[2]);
+});
