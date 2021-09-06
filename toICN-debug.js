@@ -112,7 +112,7 @@ else{displayedKey = majorScale[scale.indexOf(detectedKey)] + "/" + minorScale[(s
 // キーの手動設定
 var result = prompt("自動検出されたキー:" + displayedKey + "\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
-let resultKey = (resultMatch?resultMatch[1]:"").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
+let resultKey = (resultMatch?sharpify(resultMatch[1]):"");
 let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
 if(scale.includes(resultKey)){isAutoKeyDetection = false;}
 if(isAutoKeyDetection){
