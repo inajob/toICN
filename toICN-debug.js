@@ -87,7 +87,7 @@ let keyChordElms = [];
 if(document.title.indexOf("U-フレット") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByTagName("rt"))());}
 if(document.title.indexOf("ChordWiki") != -1){
   chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("chord"))());
-  keyChordElms = chordElms.concat(Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))());
+  keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))());
   keyElm = document.getElementsByClassName('key')[0];
 }
 if(document.title.indexOf("楽器.me") != -1){chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))());}
