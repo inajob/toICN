@@ -51,7 +51,7 @@ if(detectedKey.keyNo == -1){
   isAutoDetected = true;
 }
 
-let displayedKey = detectedKey.majorScaleName() + "/" + detectedKey.minorScaleName();
+let displayedKey = isAutoDetected?(detectedKey.majorScaleName()+"/"+detectedKey.minorScaleName()):detectedKey.key();
 // キーの手動設定
 var result = prompt("Key:" + displayedKey + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
