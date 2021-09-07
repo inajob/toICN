@@ -3,7 +3,7 @@ const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
 // "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数
-exports.convertToKeyNo = function(raw, tmpMinorSignature=""){
+exports.convertToKeyNo = function(raw="C", tmpMinorSignature=""){
   raw += tmpMinorSignature;
   let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
   let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
@@ -35,13 +35,11 @@ exports.toICN = function(raw){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
-    let keyNo = scale.indexOf(sharpify(key));
-    //短調表記を長調表記に変える
-    if(keyMinorSignature=="m"){keyNo += 3;}
-    let no = ICNScale[(scale.indexOf(base) + 12 - keyNo)% 12];
+    let tmpKeyNo = exports.convertToKeyNo(key+keyMinorSignature);
+    let no = ICNScale[(scale.indexOf(base) + 12 - tmpKeyNo)% 12];
     let onChordNo = "";
     if(onChord!=""){
-      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - keyNo)% 12];
+      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKeyNo)% 12];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
@@ -80,15 +78,15 @@ exports.updateChords = function(keyChords){
         keyMatch = e.v.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/);
         key = keyMatch?sharpify(keyMatch[2]):"";
         keyMinorSignature = keyMatch?keyMatch[4]:"";
-        let keyNo = scale.indexOf(sharpify(key));
-        if(keyMinorSignature=="m"){keyNo += 3;}
+        let tmpKeyNo = scale.indexOf(sharpify(key));
+        if(keyMinorSignature=="m"){tmpKeyNo += 3;}
         if(previousKeyNo != -1){
-          let keyModulationDegree = keyNo - previousKeyNo;
+          let keyModulationDegree = tmpKeyNo - previousKeyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
           e.elm.firstChild.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
         }
-        previousKeyNo = keyNo;
+        previousKeyNo = tmpKeyNo;
       }
     }
     else{
