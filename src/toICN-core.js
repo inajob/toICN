@@ -98,6 +98,7 @@ exports.updateChords = function(keyChords){
       if(isSharp&&isSwap){e.elm.classList.add("sharpswap");}
       else if(isSharp&&!isSwap){e.elm.classList.add("sharp");}
       else if(!isSharp&&isSwap){e.elm.classList.add("swap");}
+      else{e.elm.classList.add("notsharpswap");}
       if(isBlueChord){e.elm.classList.add("bluechord");}
       else{e.elm.classList.add("notbluechord");}
     }
