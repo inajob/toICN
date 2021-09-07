@@ -37,7 +37,7 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
 }).filter((e) => e != null)):null;
 //書かれているキーを読み取り
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
-detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");//keyMatch?sharpify(keyMatch[2]):"";
+detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
 if(detectedKey.keyNo == -1){
   // キーの自動判定
   let maxCount = 0;
