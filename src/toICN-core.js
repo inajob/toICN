@@ -94,7 +94,7 @@ exports.updateChords = function(keyChords){
           isBlueChord = true;
         }
       }
-      //特定の条件を満たすコードに色を付ける
+      //chordに色を付ける
       if(isSharp&&isSwap){e.elm.classList.add("sharpswap");}
       else if(isSharp&&!isSwap){e.elm.classList.add("sharp");}
       else if(!isSharp&&isSwap){e.elm.classList.add("swap");}
