@@ -20,6 +20,10 @@ exports.Key = class{
   minorScaleName(){
     return this.keyNo==-1?"":minorScale[this.keyNo] + "m";
   }
+  key(){
+    if (this.minorSignature == "m"){return this.minorScaleName();}
+    else{return this.majorScaleName();}
+  }
 };
 
 exports.toICN = function(raw,tmpKey){
