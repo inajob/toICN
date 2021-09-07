@@ -88,24 +88,26 @@ exports.toICN = function(raw,tmpKey){
 };
 
 exports.updateChords = function(keyChords){
+  let currentKey = key;
+  let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
     if(e.type == "key"){
       // 転調の場合
       if(isAutoKeyDetection){
-        keyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
-        key = new exports.Key(keyMatch?keyMatch[2]:"");
+        let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
+        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"");
         if(previousKey.keyNo != -1){
-          let keyModulationDegree = key.keyNo - previousKey.keyNo;
+          let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
           e.elm.firstChild.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
         }
-        previousKey = key;
+        previousKey = currentKey;
       }
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v,key);
+      let icn = exports.toICN(e.v,currentKey);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
@@ -131,7 +133,6 @@ exports.updateChords = function(keyChords){
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
 let key = new exports.Key(); 
-let previousKey = new exports.Key(); 
 let detectedKey = new exports.Key();
 let isAutoDetected = false;
 
@@ -167,19 +168,18 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
 }).filter((e) => e != null)):null;
 //書かれているキーを読み取り
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
-detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");//keyMatch?sharpify(keyMatch[2]):"";
+detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
 if(detectedKey.keyNo == -1){
   // キーの自動判定
   let maxCount = 0;
   scale.forEach((s) => {
-    key = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,key)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let tmpKey = new exports.Key(s);
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
-      detectedKey = key;
+      detectedKey = tmpKey;
     }
   });
-  key = new exports.Key();
   isAutoDetected = true;
 }
 

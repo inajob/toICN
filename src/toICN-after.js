@@ -1,7 +1,6 @@
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
 let key = new exports.Key(); 
-let previousKey = new exports.Key(); 
 let detectedKey = new exports.Key();
 let isAutoDetected = false;
 
@@ -42,14 +41,13 @@ if(detectedKey.keyNo == -1){
   // キーの自動判定
   let maxCount = 0;
   scale.forEach((s) => {
-    key = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,key)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let tmpKey = new exports.Key(s);
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
-      detectedKey = key;
+      detectedKey = tmpKey;
     }
   });
-  key = new exports.Key();
   isAutoDetected = true;
 }
 
