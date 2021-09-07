@@ -8,6 +8,7 @@ sheet.insertRule('.wordtop {color:#b22222}');
 sheet.insertRule('.sharp {background-color:#dbdbdb}');
 sheet.insertRule('.swap {background-color:#fab9bd}');
 sheet.insertRule('.sharpswap {background-color:#d19fa0}');
+sheet.insertRule('.notsharpswap {background-color:#ffffff}');
 sheet.insertRule('.bluechord {color:#1a4a9c !important}');
 sheet.insertRule('.notbluechord {color:#000000 !important}');
 
@@ -107,10 +108,11 @@ exports.updateChords = function(keyChords){
           isBlueChord = true;
         }
       }
-      //特定の条件を満たすコードに色を付ける
+      //chordに色を付ける
       if(isSharp&&isSwap){e.elm.classList.add("sharpswap");}
       else if(isSharp&&!isSwap){e.elm.classList.add("sharp");}
       else if(!isSharp&&isSwap){e.elm.classList.add("swap");}
+      else{e.elm.classList.add("notsharpswap");}
       if(isBlueChord){e.elm.classList.add("bluechord");}
       else{e.elm.classList.add("notbluechord");}
     }
