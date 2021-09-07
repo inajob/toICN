@@ -38,28 +38,7 @@ exports.Key = class{
     return this.keyNo==-1?"":minorScale[this.keyNo] + "m";
   }
 };
-/*
-// "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数、削除予定
-exports.convertToKeyNo = function(raw="C", tmpMinorSignature=""){
-  raw += tmpMinorSignature;
-  let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
-  let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
-  tmpMinorSignature = rawMatch[3];
-  if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
-  return tmpKeyNo;
-};
 
-// 削除予定
-exports.getDisplayedKey = function(key, minorSignature){
-  let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
-  let minorScale = ["C","C#","D","D#","E","F","F#","G","G#","A","Bb","B"];
-  let displayedKey = "";
-  if(minorSignature == ""){displayedKey = majorScale[scale.indexOf(key)];}
-  else if(minorSignature == "m"){displayedKey = minorScale[scale.indexOf(key)] + "m";}
-  else{displayedKey = majorScale[scale.indexOf(key)] + "/" + minorScale[(scale.indexOf(key)+9) % 12] + "m";}
-  return displayedKey;
-};
-*/
 exports.toICN = function(raw,tmpKey){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
@@ -151,12 +130,11 @@ exports.updateChords = function(keyChords){
 };
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let key = new exports.Key(); //key
-let previousKey = new exports.Key(); //previousKeyNo
-//let keyMinorSignature = "";
+let key = new exports.Key(); 
+let previousKey = new exports.Key(); 
 let detectedKey = new exports.Key();
 let isAutoDetected = false;
-//let detectedKeyMinorSignature = "";
+
 //ChordやKeyを読む
 let chordElms;
 let keyElm;

@@ -1,11 +1,10 @@
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let key = new exports.Key(); //key
-let previousKey = new exports.Key(); //previousKeyNo
-//let keyMinorSignature = "";
+let key = new exports.Key(); 
+let previousKey = new exports.Key(); 
 let detectedKey = new exports.Key();
 let isAutoDetected = false;
-//let detectedKeyMinorSignature = "";
+
 //ChordやKeyを読む
 let chordElms;
 let keyElm;
