@@ -46,7 +46,7 @@ exports.getDisplayedKey = function(key, minorSignature){
   return displayedKey;
 };
 */
-exports.toICN = function(raw){
+exports.toICN = function(raw,tmpKey){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
@@ -59,10 +59,10 @@ exports.toICN = function(raw){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
-    let no = ICNScale[(scale.indexOf(base) + 12 - key.keyNo)% 12];
+    let no = ICNScale[(scale.indexOf(base) + 12 - tmpKey.keyNo)% 12];
     let onChordNo = "";
     if(onChord!=""){
-      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - key.keyNo)% 12];
+      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
@@ -112,7 +112,7 @@ exports.updateChords = function(keyChords){
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v);
+      let icn = exports.toICN(e.v,key);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
