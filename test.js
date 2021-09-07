@@ -11,12 +11,10 @@ const keyTests = [
 keyTests.forEach((t) => {
   console.log(t[0]);
   key = new m.Key(t[0]);
+  previousKey = key;
   assert.equal(key.keyNo, t[1]);
   assert.equal(key.majorScaleName(), t[2]);
   assert.equal(key.minorScaleName(), t[3]);
-  degree = Math.floor( Math.random() * 21 ) - 10;
-  key.modulation(degree);
-  assert.equal(key.keyNo, (t[1]+12+degree) % 12);
 });
 
 console.log("== toICN ==")
@@ -137,7 +135,6 @@ console.log("== updateChords ==")
 
 key = new m.Key("C");
 isAutoKeyDetection = true;
-previousKey = new m.Key();
 
 const updateChordsTest = [
   [

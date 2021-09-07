@@ -28,9 +28,6 @@ exports.Key = class{
     this.keyNo = tmpKeyNo;
     this.minorSignature = tmpMinorSignature;
   }
-  modulation(i){
-    this.keyNo = (this.keyNo + 12 + i) % 12;
-  }
   majorScaleName(){
     return this.keyNo==-1?"":majorScale[this.keyNo];
   }
