@@ -7,7 +7,7 @@ exports.convertToKeyNo = function(raw, tmpMinorSignature=""){
   raw += tmpMinorSignature;
   let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
   let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
-  let tmpMinorSignature = rawMatch[3];
+  tmpMinorSignature = rawMatch[3];
   if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
   return tmpKeyNo;
 };
