@@ -12,20 +12,30 @@ sheet.insertRule('.bluechord {color:#1a4a9c !important}');
 sheet.insertRule('.notbluechord {color:#000000 !important}');
 
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
+const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
+
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
-exports.Key = function(raw=""){
-  let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
-  let minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
-  let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
-  let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
-  tmpMinorSignature = rawMatch?rawMatch[3]:"";
-  if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
-  this.keyNo = tmpKeyNo;
-  this.minorSignature = tmpMinorSignature;
-  this.majorScaleName = this.keyNo==-1?"":majorScale[this.keyNo];
-  this.minorScaleName = this.keyNo==-1?"":minorScale[this.keyNo] + "m";
+exports.Key = class{
+  constructor(raw=""){
+    let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
+    let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
+    let tmpMinorSignature = rawMatch?rawMatch[3]:"";
+    if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
+    this.keyNo = tmpKeyNo;
+    this.minorSignature = tmpMinorSignature;
+  }
+  modulation(i){
+    this.keyNo = (this.keyNo + 12 + i) % 12;
+  }
+  majorScaleName(){
+    return this.keyNo==-1?"":majorScale[this.keyNo];
+  }
+  minorScaleName(){
+    return this.keyNo==-1?"":minorScale[this.keyNo] + "m";
+  }
 };
 
 // "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数、削除予定
