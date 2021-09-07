@@ -18,7 +18,6 @@ let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b")
 function Key(raw="C"){
   let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
   let minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
-  raw += tmpMinorSignature;
   let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
   let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
   tmpMinorSignature = rawMatch[3];
@@ -26,7 +25,7 @@ function Key(raw="C"){
   this.keyNo = tmpKeyNo;
   this.minorSignature = tmpMinorSignature;
   this.majorScaleName = majorScale[this.keyNo];
-  this.minorScaleName = minorScale[this.keyNo];
+  this.minorScaleName = minorScale[this.keyNo] + "m";
 }
 
 // "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数、削除予定
