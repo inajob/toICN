@@ -15,7 +15,7 @@ const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
-function Key(raw="C"){
+exports.Key = function(raw="C"){
   let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
   let minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
   let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
@@ -26,7 +26,7 @@ function Key(raw="C"){
   this.minorSignature = tmpMinorSignature;
   this.majorScaleName = majorScale[this.keyNo];
   this.minorScaleName = minorScale[this.keyNo] + "m";
-}
+};
 
 // "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数、削除予定
 exports.convertToKeyNo = function(raw="C", tmpMinorSignature=""){
@@ -38,6 +38,7 @@ exports.convertToKeyNo = function(raw="C", tmpMinorSignature=""){
   return tmpKeyNo;
 };
 
+// 削除予定
 exports.getDisplayedKey = function(key, minorSignature){
   let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
   let minorScale = ["C","C#","D","D#","E","F","F#","G","G#","A","Bb","B"];
