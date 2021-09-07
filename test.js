@@ -128,16 +128,26 @@ displayedKeyTests.forEach((t) => {
 });
 
 console.log("== convertToKeyNo ==")
-const convertToKeyNoTests = [
+const convertToKeyNoTests1 = [
   ["C", 0],
   ["Am", 0],
   ["C#", 1],
   ["A#m", 1],
 ];
 
-convertToKeyNoTests.forEach((t) => {
+convertToKeyNoTests1.forEach((t) => {
   console.log(t[0]);
   assert.equal(m.convertToKeyNo(t[0]), t[1]);
+});
+
+const convertToKeyNoTests2 = [
+  ["A", "m", 0],
+  ["A#", "m", 1],
+];
+
+convertToKeyNoTests2.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.convertToKeyNo(t[0], t[1]), t[2]);
 });
 
 console.log("== updateChords ==")

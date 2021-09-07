@@ -3,7 +3,8 @@ const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
 // "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数
-exports.convertToKeyNo = function(raw){
+exports.convertToKeyNo = function(raw, tmpMinorSignature=""){
+  raw += tmpMinorSignature;
   let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
   let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
   let tmpMinorSignature = rawMatch[3];
