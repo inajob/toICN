@@ -151,7 +151,7 @@ if(document.title.indexOf("楽器.me") != -1){
   chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
 }
 if(document.title.indexOf("J-Total Music!") != -1){
-  chordElms = Array.prototype.slice.bind(document.getElementsByTagName("ttKey")[0].getElementsByTagName("a"))();
+  chordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
   keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
 }
 let chords = chordElms.map((e) => {return {type: "chord",v: e.firstChild.nodeValue, elm: e};});
