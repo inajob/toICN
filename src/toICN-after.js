@@ -1,10 +1,11 @@
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let key = "";
-let previousKeyNo = -1;
-let keyMinorSignature = "";
-let detectedKey = "";
-let detectedKeyMinorSignature = "";
+let key = new exports.Key(); //key
+let previousKey = new exports.Key(); //previousKeyNo
+//let keyMinorSignature = "";
+let detectedKey = new exports.Key();
+let isAutoDetected = false;
+//let detectedKeyMinorSignature = "";
 //ChordやKeyを読む
 let chordElms;
 let keyElm;
@@ -21,7 +22,7 @@ if(document.title.indexOf("楽器.me") != -1){
   chordElms = chordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
 }
 if(document.title.indexOf("J-Total Music!") != -1){
-  chordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
+  chordElms = Array.prototype.slice.bind(document.getElementsByTagName("ttKey")[0].getElementsByTagName("a"))();
   keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
 }
 let chords = chordElms.map((e) => {return {type: "chord",v: e.firstChild.nodeValue, elm: e};});
@@ -36,42 +37,31 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
   }
 }).filter((e) => e != null)):null;
 //書かれているキーを読み取り
-let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
-detectedKey = keyMatch?sharpify(keyMatch[2]):"";
-detectedKeyMinorSignature = keyMatch?keyMatch[4]:"";
-if(detectedKey == ""){
+let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
+detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");//keyMatch?sharpify(keyMatch[2]):"";
+if(detectedKey.keyNo == -1){
   // キーの自動判定
-  let tmpDetectedKey = "";
   let maxCount = 0;
   scale.forEach((s) => {
-    key = s;
+    key = new exports.Key(s);
     let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = key;
     }
   });
-  key = "";
-  detectedKeyMinorSignature = "u";
-}
-else{
-  isKeyWritten = true;
+  key = new exports.Key();
+  isAutoDetected = true;
 }
 
-let displayedKey = exports.getDisplayedKey(detectedKey, detectedKeyMinorSignature);
+let displayedKey = detectedKey.majorScaleName() + "/" + detectedKey.minorScaleName();
 // キーの手動設定
-var result = prompt("Key:" + displayedKey + (isKeyWritten?"(Webサイトが指定したキー)":"(コード譜を元に自動判定されたキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
-let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
-let resultKey = (resultMatch?sharpify(resultMatch[1]):"");
-let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
-if(scale.includes(resultKey)){isAutoKeyDetection = false;}
-if(isAutoKeyDetection){
-  key = detectedKey;
-  keyMinorSignature = detectedKeyMinorSignature=="u"?"":detectedKeyMinorSignature;
-}
-else{
-  key = resultKey;
-  keyMinorSignature = resultKeyMinorSignature;
-}
+var result = prompt("Key:" + displayedKey + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
+let resultKey = new exports.Key(resultMatch?resultMatch[1]:"");
+if(resultKey.keyNo != -1){isAutoKeyDetection = false;}
+if(isAutoKeyDetection){key = detectedKey;}
+else{key = resultKey;}
+
 //表示書き換え関係
 exports.updateChords(keyChords?keyChords:chords);

@@ -24,7 +24,7 @@ exports.Key = class{
     return this.keyNo==-1?"":minorScale[this.keyNo] + "m";
   }
 };
-
+/*
 // "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数、削除予定
 exports.convertToKeyNo = function(raw="C", tmpMinorSignature=""){
   raw += tmpMinorSignature;
@@ -45,7 +45,7 @@ exports.getDisplayedKey = function(key, minorSignature){
   else{displayedKey = majorScale[scale.indexOf(key)] + "/" + minorScale[(scale.indexOf(key)+9) % 12] + "m";}
   return displayedKey;
 };
-
+*/
 exports.toICN = function(raw){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
@@ -59,11 +59,10 @@ exports.toICN = function(raw){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
-    let tmpKeyNo = exports.convertToKeyNo(key+keyMinorSignature);
-    let no = ICNScale[(scale.indexOf(base) + 12 - tmpKeyNo)% 12];
+    let no = ICNScale[(scale.indexOf(base) + 12 - key.keyNo)% 12];
     let onChordNo = "";
     if(onChord!=""){
-      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKeyNo)% 12];
+      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - key.keyNo)% 12];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
@@ -94,23 +93,21 @@ exports.toICN = function(raw){
   }
   return s;
 };
+
 exports.updateChords = function(keyChords){
   keyChords.forEach((e) => {
     if(e.type == "key"){
       // 転調の場合
       if(isAutoKeyDetection){
-        keyMatch = e.v.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/);
-        key = keyMatch?sharpify(keyMatch[2]):"";
-        keyMinorSignature = keyMatch?keyMatch[4]:"";
-        let tmpKeyNo = scale.indexOf(sharpify(key));
-        if(keyMinorSignature=="m"){tmpKeyNo += 3;}
-        if(previousKeyNo != -1){
-          let keyModulationDegree = tmpKeyNo - previousKeyNo;
+        keyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
+        key = new exports.Key(keyMatch?keyMatch[2]:"");
+        if(previousKey.keyNo != -1){
+          let keyModulationDegree = key.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
           e.elm.firstChild.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
         }
-        previousKeyNo = tmpKeyNo;
+        previousKey = key;
       }
     }
     else{
