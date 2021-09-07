@@ -2,17 +2,17 @@ const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
-exports.Key = function(raw="C"){
+exports.Key = function(raw=""){
   let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
   let minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
   let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
-  let tmpKeyNo = scale.indexOf(sharpify(rawMatch[1]));
-  tmpMinorSignature = rawMatch[3];
+  let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
+  tmpMinorSignature = rawMatch?rawMatch[3]:"";
   if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
   this.keyNo = tmpKeyNo;
   this.minorSignature = tmpMinorSignature;
-  this.majorScaleName = majorScale[this.keyNo];
-  this.minorScaleName = minorScale[this.keyNo] + "m";
+  this.majorScaleName = this.keyNo==-1?"":majorScale[this.keyNo];
+  this.minorScaleName = this.keyNo==-1?"":minorScale[this.keyNo] + "m";
 };
 
 // "C" "Am" "C#m" などのキーネームをkeyNoに変換する関数、削除予定
