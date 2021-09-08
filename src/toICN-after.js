@@ -61,4 +61,4 @@ if(isAutoKeyDetection){key = detectedKey;}
 else{key = resultKey;}
 
 //表示書き換え関係
-exports.updateChords(keyChords?keyChords:chords);
+exports.updateChords(keyChords?keyChords:chords, key, isAutoKeyDetection);
