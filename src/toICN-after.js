@@ -1,10 +1,9 @@
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let key = "";
-let previousKeyNo = -1;
-let keyMinorSignature = "";
-let detectedKey = "";
-let detectedKeyMinorSignature = "";
+let key = new exports.Key(); 
+let detectedKey = new exports.Key();
+let isAutoDetected = false;
+
 //ChordやKeyを読む
 let chordElms;
 let keyElm;
@@ -36,42 +35,30 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
   }
 }).filter((e) => e != null)):null;
 //書かれているキーを読み取り
-let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
-detectedKey = keyMatch?sharpify(keyMatch[2]):"";
-detectedKeyMinorSignature = keyMatch?keyMatch[4]:"";
-if(detectedKey == ""){
+let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
+detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
+if(detectedKey.keyNo == -1){
   // キーの自動判定
-  let tmpDetectedKey = "";
   let maxCount = 0;
   scale.forEach((s) => {
-    key = s;
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let tmpKey = new exports.Key(s);
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
-      detectedKey = key;
+      detectedKey = tmpKey;
     }
   });
-  key = "";
-  detectedKeyMinorSignature = "u";
-}
-else{
-  isKeyWritten = true;
+  isAutoDetected = true;
 }
 
-let displayedKey = exports.getDisplayedKey(detectedKey, detectedKeyMinorSignature);
+let displayedKey = isAutoDetected?(detectedKey.majorScaleName()+"/"+detectedKey.minorScaleName()):detectedKey.key();
 // キーの手動設定
-var result = prompt("Key:" + displayedKey + (isKeyWritten?"(Webサイトが指定したキー)":"(コード譜を元に自動判定されたキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
-let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
-let resultKey = (resultMatch?sharpify(resultMatch[1]):"");
-let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
-if(scale.includes(resultKey)){isAutoKeyDetection = false;}
-if(isAutoKeyDetection){
-  key = detectedKey;
-  keyMinorSignature = detectedKeyMinorSignature=="u"?"":detectedKeyMinorSignature;
-}
-else{
-  key = resultKey;
-  keyMinorSignature = resultKeyMinorSignature;
-}
+var result = prompt("Key:" + displayedKey + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
+let resultKey = new exports.Key(resultMatch?resultMatch[1]:"");
+if(resultKey.keyNo != -1){isAutoKeyDetection = false;}
+if(isAutoKeyDetection){key = detectedKey;}
+else{key = resultKey;}
+
 //表示書き換え関係
 exports.updateChords(keyChords?keyChords:chords);

@@ -13,18 +13,34 @@ sheet.insertRule('.bluechord {color:#1a4a9c !important}');
 sheet.insertRule('.notbluechord {color:#000000 !important}');
 
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
+const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
+
 //フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
-exports.getDisplayedKey = function(key, minorSignature){
-  let majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
-  let minorScale = ["C","C#","D","D#","E","F","F#","G","G#","A","Bb","B"];
-  let displayedKey = "";
-  if(minorSignature == ""){displayedKey = majorScale[scale.indexOf(key)];}
-  else if(minorSignature == "m"){displayedKey = minorScale[scale.indexOf(key)] + "m";}
-  else{displayedKey = majorScale[scale.indexOf(key)] + "/" + minorScale[(scale.indexOf(key)+9) % 12] + "m";}
-  return displayedKey;
+
+exports.Key = class{
+  constructor(raw=""){
+    let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
+    let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
+    let tmpMinorSignature = rawMatch?rawMatch[3]:"";
+    if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
+    this.keyNo = tmpKeyNo;
+    this.minorSignature = tmpMinorSignature;
+  }
+  majorScaleName(){
+    return this.keyNo==-1?"":majorScale[this.keyNo];
+  }
+  minorScaleName(){
+    return this.keyNo==-1?"":minorScale[this.keyNo] + "m";
+  }
+  key(){
+    if (this.minorSignature == "m"){return this.minorScaleName();}
+    else{return this.majorScaleName();}
+  }
 };
-exports.toICN = function(raw){
+
+exports.toICN = function(raw,tmpKey){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
@@ -37,13 +53,10 @@ exports.toICN = function(raw){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
-    let keyNo = scale.indexOf(sharpify(key));
-    //短調表記を長調表記に変える
-    if(keyMinorSignature=="m"){keyNo += 3;}
-    let no = ICNScale[(scale.indexOf(base) + 12 - keyNo)% 12];
+    let no = ICNScale[(scale.indexOf(base) + 12 - tmpKey.keyNo)% 12];
     let onChordNo = "";
     if(onChord!=""){
-      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - keyNo)% 12];
+      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
@@ -74,28 +87,28 @@ exports.toICN = function(raw){
   }
   return s;
 };
+
 exports.updateChords = function(keyChords){
+  let currentKey = key;
+  let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
     if(e.type == "key"){
       // 転調の場合
       if(isAutoKeyDetection){
-        keyMatch = e.v.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/);
-        key = keyMatch?sharpify(keyMatch[2]):"";
-        keyMinorSignature = keyMatch?keyMatch[4]:"";
-        let keyNo = scale.indexOf(sharpify(key));
-        if(keyMinorSignature=="m"){keyNo += 3;}
-        if(previousKeyNo != -1){
-          let keyModulationDegree = keyNo - previousKeyNo;
+        let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
+        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"");
+        if(previousKey.keyNo != -1){
+          let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
           e.elm.firstChild.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
         }
-        previousKeyNo = keyNo;
+        previousKey = currentKey;
       }
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v);
+      let icn = exports.toICN(e.v,currentKey);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
@@ -120,11 +133,10 @@ exports.updateChords = function(keyChords){
 };
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let key = "";
-let previousKeyNo = -1;
-let keyMinorSignature = "";
-let detectedKey = "";
-let detectedKeyMinorSignature = "";
+let key = new exports.Key(); 
+let detectedKey = new exports.Key();
+let isAutoDetected = false;
+
 //ChordやKeyを読む
 let chordElms;
 let keyElm;
@@ -156,42 +168,30 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
   }
 }).filter((e) => e != null)):null;
 //書かれているキーを読み取り
-let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1})(m{0,1})$/):null;
-detectedKey = keyMatch?sharpify(keyMatch[2]):"";
-detectedKeyMinorSignature = keyMatch?keyMatch[4]:"";
-if(detectedKey == ""){
+let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
+detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
+if(detectedKey.keyNo == -1){
   // キーの自動判定
-  let tmpDetectedKey = "";
   let maxCount = 0;
   scale.forEach((s) => {
-    key = s;
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let tmpKey = new exports.Key(s);
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
-      detectedKey = key;
+      detectedKey = tmpKey;
     }
   });
-  key = "";
-  detectedKeyMinorSignature = "u";
-}
-else{
-  isKeyWritten = true;
+  isAutoDetected = true;
 }
 
-let displayedKey = exports.getDisplayedKey(detectedKey, detectedKeyMinorSignature);
+let displayedKey = isAutoDetected?(detectedKey.majorScaleName()+"/"+detectedKey.minorScaleName()):detectedKey.key();
 // キーの手動設定
-var result = prompt("Key:" + displayedKey + (isKeyWritten?"(Webサイトが指定したキー)":"(コード譜を元に自動判定されたキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
-let resultMatch = result.match(/([A-G](#|b){0,1})(m{0,1})$/);
-let resultKey = (resultMatch?sharpify(resultMatch[1]):"");
-let resultKeyMinorSignature = resultMatch?resultMatch[3]:"";
-if(scale.includes(resultKey)){isAutoKeyDetection = false;}
-if(isAutoKeyDetection){
-  key = detectedKey;
-  keyMinorSignature = detectedKeyMinorSignature=="u"?"":detectedKeyMinorSignature;
-}
-else{
-  key = resultKey;
-  keyMinorSignature = resultKeyMinorSignature;
-}
+var result = prompt("Key:" + displayedKey + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
+let resultKey = new exports.Key(resultMatch?resultMatch[1]:"");
+if(resultKey.keyNo != -1){isAutoKeyDetection = false;}
+if(isAutoKeyDetection){key = detectedKey;}
+else{key = resultKey;}
+
 //表示書き換え関係
 exports.updateChords(keyChords?keyChords:chords);

@@ -1,9 +1,26 @@
 var assert = require('assert');
 const m = require("./src/toICN-core.js");
-key = "C";
-keyMinorSignature = "";
+
+console.log("== Key ==");
+const keyTests = [
+  ["C",0,"C","Am","C"],
+  ["B",11,"B","G#m","B"],
+  ["Ab",8,"Ab","Fm","Ab"],
+  ["D#m",6,"F#","D#m","D#m"],
+];
+keyTests.forEach((t) => {
+  console.log(t[0]);
+  key = new m.Key(t[0]);
+  previousKey = key;
+  assert.equal(key.keyNo, t[1]);
+  assert.equal(key.majorScaleName(), t[2]);
+  assert.equal(key.minorScaleName(), t[3]);
+  assert.equal(key.key(), t[4]);
+});
 
 console.log("== toICN ==")
+
+key = new m.Key("C");
 
 const tests = [
   ["C" ,"1"],
@@ -75,10 +92,11 @@ const tests = [
 
 tests.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0]), t[1]);
+  assert.equal(m.toICN(t[0],key), t[1]);
 });
 
-key = "B";
+key = new m.Key("B");
+
 const tests2 = [
   ["B",   "1"],
   ["C#m", "2"],
@@ -90,49 +108,34 @@ const tests2 = [
 ]
 tests2.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0]), t[1]);
+  assert.equal(m.toICN(t[0],key), t[1]);
 });
 
-key = "Ab";
+key = new m.Key("Ab");
 const tests3 = [
   ["Ab",   "1"],
 ]
 
 tests3.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0]), t[1]);
+  assert.equal(m.toICN(t[0],key), t[1]);
 });
 
-key = "D#";
-keyMinorSignature = "m"
+key = new m.Key("D#m");
+
 const tests4 = [
   ["F#",   "1"],
 ]
 
 tests4.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0]), t[1]);
-});
-
-console.log("== displayedKey ==")
-const displayedKeyTests = [
-  ["C", "", "C"],
-  ["A", "m", "Am"],
-  ["C", "u", "C/Am"],
-  ["G", "u", "G/Em"],
-];
-
-displayedKeyTests.forEach((t) => {
-  console.log(t[0]);
-  assert.equal(m.getDisplayedKey(t[0], t[1]), t[2]);
+  assert.equal(m.toICN(t[0],key), t[1]);
 });
 
 console.log("== updateChords ==")
 
-key = "C";
-keyMinorSignature = "";
+key = new m.Key("C");
 isAutoKeyDetection = true;
-previousKeyNo = -1;
 
 const updateChordsTest = [
   [
