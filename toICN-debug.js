@@ -169,7 +169,13 @@ detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
 // キーが書かれていないときは、キーを自動判定する
 if(detectedKey.keyNo == -1){
   let maxCount = 0;
-  let chords = keyChordElms.map((e) => {return {type: "chord",v: e.firstChild.nodeValue, elm: e};});
+  let chords = keyChords?(keyChords.map((e) => {
+    if(e.type == "chord"){
+      return e;
+    }else{
+      return null;
+    }
+  }).filter((e) => e != null)):null;
   scale.forEach((s) => {
     let tmpKey = new exports.Key(s);
     let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
