@@ -133,7 +133,6 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
 };
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let key = new exports.Key(); 
 let detectedKey = new exports.Key();
 let isAutoDetected = false;
 
@@ -188,10 +187,8 @@ let displayedKey = isAutoDetected?(detectedKey.majorScaleName()+"/"+detectedKey.
 // キーの手動設定
 var result = prompt("Key:" + displayedKey + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
-let resultKey = new exports.Key(resultMatch?resultMatch[1]:"");
-if(resultKey.keyNo != -1){isAutoKeyDetection = false;}
-if(isAutoKeyDetection){key = detectedKey;}
-else{key = resultKey;}
+let specifiedKey = new exports.Key(resultMatch?resultMatch[1]:"");
+if(specifiedKey.keyNo != -1){isAutoKeyDetection = false;}
 
 //表示書き換え関係
-exports.updateChords(keyChords?keyChords:chords, key, isAutoKeyDetection);
+exports.updateChords(keyChords?keyChords:chords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
