@@ -88,13 +88,13 @@ exports.toICN = function(raw,tmpKey){
   return s;
 };
 
-exports.updateChords = function(keyChords){
-  let currentKey = key;
+exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
+  let currentKey = tmpKey;
   let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
     if(e.type == "key"){
       // 転調の場合
-      if(isAutoKeyDetection){
+      if(tmpIsAutoKeyDetection){
         let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
         currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"");
         if(previousKey.keyNo != -1){
@@ -194,4 +194,4 @@ if(isAutoKeyDetection){key = detectedKey;}
 else{key = resultKey;}
 
 //表示書き換え関係
-exports.updateChords(keyChords?keyChords:chords);
+exports.updateChords(keyChords?keyChords:chords, key, isAutoKeyDetection);
