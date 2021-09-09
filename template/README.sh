@@ -1,4 +1,6 @@
 cat << EOS
+![cover](./imgs/cover.png)
+
 # これは何？
 
 楽譜サイトのコード譜の表示をInstaChord（インスタコード）での演奏に適した表記法である[ICN](http://instachord.com/instruction/icn/) (InstaChord Number) に変換するブックマークレットです。
