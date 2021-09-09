@@ -14,7 +14,7 @@ if(document.title.indexOf("ChordWiki") != -1){
 if(document.title.indexOf("楽器.me") != -1){
   keyChordElms = Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))();
   // for コード名表示
-  keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
+  keyChordElms = Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))();
 }
 if(document.title.indexOf("J-Total Music!") != -1){
   keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
