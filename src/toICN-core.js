@@ -6,23 +6,20 @@ const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
 exports.Key = class{
-  constructor(raw=""){
+  constructor(raw="",determinable=false){ // keyがメジャーかマイナーか特定できる場合は determinable=true
     let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
     let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
     let tmpMinorSignature = rawMatch?rawMatch[3]:"";
     if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
     this.keyNo = tmpKeyNo;
-    this.minorSignature = tmpMinorSignature;
-  }
-  majorScaleName(){
-    return this.keyNo==-1?"":majorScale[this.keyNo];
-  }
-  minorScaleName(){
-    return this.keyNo==-1?"":minorScale[this.keyNo] + "m";
-  }
-  key(){
-    if (this.minorSignature == "m"){return this.minorScaleName();}
-    else{return this.majorScaleName();}
+    this.minorSignature = determinable?tmpMinorSignature:"u";
+
+    this.majorScaleName = this.keyNo==-1?"":majorScale[this.keyNo];
+    this.minorScaleName = this.keyNo==-1?"":minorScale[this.keyNo] + "m";
+
+    if (this.minorSignature == ""){this.key = this.majorScaleName;}
+    else if (this.minorSignature == "m"){this.key = this.minorScaleName;}
+    else{this.key = this.majorScaleName + "/" + this.minorScaleName;}
   }
 };
 
@@ -82,7 +79,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
       // 転調の場合
       if(tmpIsAutoKeyDetection){
         let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
-        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"");
+        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
         if(previousKey.keyNo != -1){
           let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
