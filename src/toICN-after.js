@@ -30,21 +30,13 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
     return null;
   }
 }).filter((e) => e != null)):null;
+
 //書かれているキーを読み取り
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
 detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
 // キーが書かれていないときは、キーを自動判定する
 if(detectedKey.keyNo == -1){
-  let maxCount = 0;
-  let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
-  scale.forEach((s) => {
-    let tmpKey = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
-    if(notSwapCodesCount > maxCount){
-      maxCount = notSwapCodesCount;
-      detectedKey = tmpKey;
-    }
-  });
+  detectedKey = exports.autoDetectKey(keyChords);
   isAutoDetected = true;
 }
 
