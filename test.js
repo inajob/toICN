@@ -3,19 +3,18 @@ const m = require("./src/toICN-core.js");
 
 console.log("== Key ==");
 const keyTests = [
-  ["C",0,"C","Am","C"],
-  ["B",11,"B","G#m","B"],
-  ["Ab",8,"Ab","Fm","Ab"],
-  ["D#m",6,"F#","D#m","D#m"],
+  ["C",false,0,"C","Am","C/Am"],
+  ["B",false,11,"B","G#m","B/G#m"],
+  ["Ab",true,8,"Ab","Fm","Ab"],
+  ["D#m",true,6,"F#","D#m","D#m"],
 ];
 keyTests.forEach((t) => {
   console.log(t[0]);
-  key = new m.Key(t[0]);
-  previousKey = key;
-  assert.equal(key.keyNo, t[1]);
-  assert.equal(key.majorScaleName(), t[2]);
-  assert.equal(key.minorScaleName(), t[3]);
-  assert.equal(key.key(), t[4]);
+  key = new m.Key(t[0],t[1]);
+  assert.equal(key.keyNo, t[2]);
+  assert.equal(key.majorScaleName, t[3]);
+  assert.equal(key.minorScaleName, t[4]);
+  assert.equal(key.key, t[5]);
 });
 
 console.log("== toICN ==")

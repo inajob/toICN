@@ -32,25 +32,16 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
 }).filter((e) => e != null)):null;
 //書かれているキーを読み取り
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
-detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
+detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
 // キーが書かれていないときは、キーを自動判定する
 if(detectedKey.keyNo == -1){
-  let maxCount = 0;
-  let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
-  scale.forEach((s) => {
-    let tmpKey = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
-    if(notSwapCodesCount > maxCount){
-      maxCount = notSwapCodesCount;
-      detectedKey = tmpKey;
-    }
-  });
+  detectedKey = exports.autoDetectKey(keyChords);
+
   isAutoDetected = true;
 }
 
-let displayedKey = isAutoDetected?(detectedKey.majorScaleName()+"/"+detectedKey.minorScaleName()):detectedKey.key();
 // キーの手動設定
-var result = prompt("Key:" + displayedKey + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+var result = prompt("Key:" + detectedKey.key + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
 let specifiedKey = new exports.Key(resultMatch?resultMatch[1]:"");
 if(specifiedKey.keyNo != -1){isAutoKeyDetection = false;}

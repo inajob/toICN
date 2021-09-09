@@ -20,24 +20,35 @@ const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
 exports.Key = class{
-  constructor(raw=""){
+  constructor(raw="",canDetectMajorOrMinor=false){ // keyがメジャーかマイナーか特定できる場合は canDetectMajorOrMinor=true
     let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
     let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
     let tmpMinorSignature = rawMatch?rawMatch[3]:"";
     if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
     this.keyNo = tmpKeyNo;
-    this.minorSignature = tmpMinorSignature;
+    this.minorSignature = canDetectMajorOrMinor?tmpMinorSignature:"u";
+
+    this.majorScaleName = this.keyNo==-1?"":majorScale[this.keyNo];
+    this.minorScaleName = this.keyNo==-1?"":minorScale[this.keyNo] + "m";
+
+    if (this.minorSignature == ""){this.key = this.majorScaleName;}
+    else if (this.minorSignature == "m"){this.key = this.minorScaleName;}
+    else{this.key = this.majorScaleName + "/" + this.minorScaleName;}
   }
-  majorScaleName(){
-    return this.keyNo==-1?"":majorScale[this.keyNo];
-  }
-  minorScaleName(){
-    return this.keyNo==-1?"":minorScale[this.keyNo] + "m";
-  }
-  key(){
-    if (this.minorSignature == "m"){return this.minorScaleName();}
-    else{return this.majorScaleName();}
-  }
+};
+
+exports.autoDetectKey = function(keyChords){
+  let maxCount = 0;
+  let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
+  scale.forEach((s) => {
+    let tmpKey = new exports.Key(s);
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    if(notSwapCodesCount > maxCount){
+      maxCount = notSwapCodesCount;
+      detectedKey = tmpKey;
+    }
+  });
+  return detectedKey;
 };
 
 exports.toICN = function(raw,tmpKey){
@@ -96,7 +107,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
       // 転調の場合
       if(tmpIsAutoKeyDetection){
         let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
-        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"");
+        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
         if(previousKey.keyNo != -1){
           let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
@@ -165,25 +176,16 @@ let keyChords = keyChordElms?(keyChordElms.map((e) => {
 }).filter((e) => e != null)):null;
 //書かれているキーを読み取り
 let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
-detectedKey = new exports.Key(keyMatch?keyMatch[2]:"");
+detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
 // キーが書かれていないときは、キーを自動判定する
 if(detectedKey.keyNo == -1){
-  let maxCount = 0;
-  let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
-  scale.forEach((s) => {
-    let tmpKey = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
-    if(notSwapCodesCount > maxCount){
-      maxCount = notSwapCodesCount;
-      detectedKey = tmpKey;
-    }
-  });
+  detectedKey = exports.autoDetectKey(keyChords);
+
   isAutoDetected = true;
 }
 
-let displayedKey = isAutoDetected?(detectedKey.majorScaleName()+"/"+detectedKey.minorScaleName()):detectedKey.key();
 // キーの手動設定
-var result = prompt("Key:" + displayedKey + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
+var result = prompt("Key:" + detectedKey.key + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。");
 let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
 let specifiedKey = new exports.Key(resultMatch?resultMatch[1]:"");
 if(specifiedKey.keyNo != -1){isAutoKeyDetection = false;}
