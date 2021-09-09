@@ -23,6 +23,20 @@ exports.Key = class{
   }
 };
 
+exports.autoDetectKey = function(keyChords){
+  let maxCount = 0;
+  let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
+  scale.forEach((s) => {
+    let tmpKey = new exports.Key(s);
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    if(notSwapCodesCount > maxCount){
+      maxCount = notSwapCodesCount;
+      detectedKey = tmpKey;
+    }
+  });
+  return detectedKey;
+};
+
 exports.toICN = function(raw,tmpKey){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
