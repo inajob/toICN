@@ -139,42 +139,42 @@ key = new m.Key("C");
 const updateChordsTest = [
   [
     [
-      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "Am", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+      {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "Am", elm: {nodeValue: "C", parentNode:{ classList: {add: ()=>{}}}}},
     ],
     true,
     ["1", "6"]
   ],
   [
     [
-      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "Am", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+      {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "Am", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
     ],
     false,
     ["1", "6"]
   ],
   [
     [ // Key: C -> A -> Am
-      {type: "key", v: "key: C", elm: {firstChild: {nodeValue: "key: C"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "Am", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
-      {type: "key", v: "key: A", elm: {firstChild: {nodeValue: "key: A"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "A", elm: {firstChild: {nodeValue: "A"}, classList: {add: ()=>{}}}},
-      {type: "key", v: "key: Am", elm: {firstChild: {nodeValue: "key: Am"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+      {type: "key", v: "key: C", elm: {nodeValue: "key: C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "Am", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "key: A", elm: {nodeValue: "key: A", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "A", elm: {nodeValue: "A", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "key: Am", elm: {nodeValue: "key: Am", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
     ],
     true,
     ["key: C", "1", "6", "key: A (-3)", "1", "key: Am (+3)", "1"]
   ],
   [
     [ // Key: C -> A -> Am
-      {type: "key", v: "key: C", elm: {firstChild: {nodeValue: "key: C"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "Am", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
-      {type: "key", v: "key: A", elm: {firstChild: {nodeValue: "key: A"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "A", elm: {firstChild: {nodeValue: "A"}, classList: {add: ()=>{}}}},
-      {type: "key", v: "key: Am", elm: {firstChild: {nodeValue: "key: Am"}, classList: {add: ()=>{}}}},
-      {type: "chord", v: "C", elm: {firstChild: {nodeValue: "C"}, classList: {add: ()=>{}}}},
+      {type: "key", v: "key: C", elm: {nodeValue: "key: C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "Am", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "key: A", elm: {nodeValue: "key: A", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "A", elm: {nodeValue: "A", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "key: Am", elm: {nodeValue: "key: Am", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
     ],
     false,
     ["key: C", "1", "6", "key: A", "6~", "key: Am", "1"]
@@ -186,6 +186,6 @@ updateChordsTest.forEach((t) => {
   m.updateChords(t[0], key, t[1]);
   console.log(t[0].elm);
   t[0].forEach((e, i) => {
-    assert.equal(e.elm.firstChild.nodeValue, t[2][i]);
+    assert.equal(e.elm.nodeValue, t[2][i]);
   });
 })

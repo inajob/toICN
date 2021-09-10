@@ -46,26 +46,34 @@ exports.Key = class{
 exports.readKeyChords = function(webSiteName){
   let keyElm;
   let keyChordElms;
-  if(webSiteName == "ufret"){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))();}
+  if(webSiteName == "ufret"){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))().map((e => e.firstChild));}
   if(webSiteName == "chordwiki"){
-    keyChordElms = Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))();
+    keyChordElms = Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))().map((e => e.firstChild));
     keyElm = document.getElementsByClassName('key')[0];
   }
   if(webSiteName == "gakki.me"){
-    keyChordElms = Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))();
+    let elms = Array.prototype.slice.bind(document.querySelectorAll(".cd_fontpos, .cd_font"))();
+    keyChordElms = elms.map((e) => {
+      if(e.firstChild.nodeType == Node.TEXT_NODE){
+        return e.firstChild;
+      }else if(e.firstChild.nextSibling && e.firstChild.nextSibling.nodeType == Node.TEXT_NODE){
+        return e.firstChild.nextSibling;
+      }
+      return null;
+    }).filter((e) => e != null);
     // for コード名表示
-    keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
+    keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))().map((e => e.firstChild)));
   }
   if(webSiteName == "j-total"){
-    keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
+    keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))().map((e => e.firstChild));
     keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
   }
   let keyChords = keyChordElms?(keyChordElms.map((e) => {
     if(e){
-      if(e.classList.contains("key")){
-        return {type: "key",v: e.firstChild.nodeValue, elm: e};
+      if(e.parentNode.classList.contains("key")){
+        return {type: "key",v: e.nodeValue, elm: e};
       }
-      return {type: "chord",v: e.firstChild.nodeValue, elm: e}
+      return {type: "chord",v: e.nodeValue, elm: e}
     }else{
       return null;
     }
@@ -151,7 +159,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
           let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.firstChild.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
+          e.elm.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
         }
         previousKey = currentKey;
       }
@@ -164,7 +172,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
       let isBlueChord = false;
       //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
       if(icn!=""){
-        e.elm.firstChild.nodeValue = icn;
+        e.elm.nodeValue = icn;
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
         if("1[7],1#[7],4[7],4#[7],2[M7],2#[M7],3[M7],5[M7],5#[M7],6[M7],6#[M7],7[M7]".split(",").includes(icn) || /\[sus4\]|\[aug\]|\[dim\]|\[m7\-5\]$/.test(icn)){
@@ -172,12 +180,12 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
         }
       }
       //chordに色を付ける
-      if(isSharp&&isSwap){e.elm.classList.add("sharpswap");}
-      else if(isSharp&&!isSwap){e.elm.classList.add("sharp");}
-      else if(!isSharp&&isSwap){e.elm.classList.add("swap");}
-      else{e.elm.classList.add("notsharpswap");}
-      if(isBlueChord){e.elm.classList.add("bluechord");}
-      else{e.elm.classList.add("notbluechord");}
+      if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
+      else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
+      else if(!isSharp&&isSwap){e.elm.parentNode.classList.add("swap");}
+      else{e.elm.parentNode.classList.add("notsharpswap");}
+      if(isBlueChord){e.elm.parentNode.classList.add("bluechord");}
+      else{e.elm.parentNode.classList.add("notbluechord");}
     }
   });
 };
