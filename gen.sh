@@ -11,4 +11,7 @@ cat ./src/toICN-before.js > toICN-debug.js
 cat ./src/toICN-core.js >> toICN-debug.js
 cat ./src/toICN-after.js >> toICN-debug.js
 
+cat ./template/user.js.header > toICN.user.js
+cat ./toICN-debug.js >> toICN.user.js
+
 ./template/README.sh > README.md
