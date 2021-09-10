@@ -1,6 +1,6 @@
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let detectedKey = new exports.Key();
+let detectedKey;
 let keyChords;
 let isAutoDetected = false;
 
