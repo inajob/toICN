@@ -2,6 +2,12 @@ exports = {};
 //CSS関連
 let style = document.createElement('style');
 document.head.appendChild(style);
+let webSiteName = "";
+if(document.title.indexOf("U-フレット") != -1){webSiteName = "ufret"};
+if(document.title.indexOf("ChordWiki") != -1){webSiteName = "chordwiki"};
+if(document.title.indexOf("楽器.me") != -1){webSiteName = "gakki.me"};
+if(document.title.indexOf("J-Total Music!") != -1){webSiteName = "j-total"};
+
 let sheet = style.sheet;
 sheet.insertRule('.word {color:#b22222}');
 sheet.insertRule('.wordtop {color:#b22222}');
@@ -35,6 +41,39 @@ exports.Key = class{
     else if (this.minorSignature == "m"){this.key = this.minorScaleName;}
     else{this.key = this.majorScaleName + "/" + this.minorScaleName;}
   }
+};
+
+exports.readKeyChords = function(webSiteName){
+  let keyElm;
+  let keyChordElms;
+  if(webSiteName == "ufret"){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))();}
+  if(webSiteName == "chordwiki"){
+    keyChordElms = Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))();
+    keyElm = document.getElementsByClassName('key')[0];
+  }
+  if(webSiteName == "gakki.me"){
+    keyChordElms = Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))();
+    // for コード名表示
+    keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
+  }
+  if(webSiteName == "j-total"){
+    keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
+    keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+  }
+  let keyChords = keyChordElms?(keyChordElms.map((e) => {
+    if(e){
+      if(e.classList.contains("key")){
+        return {type: "key",v: e.firstChild.nodeValue, elm: e};
+      }
+      return {type: "chord",v: e.firstChild.nodeValue, elm: e}
+    }else{
+      return null;
+    }
+  }).filter((e) => e != null)):null;
+  //書かれているキーを読み取り
+  let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
+ let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
+  return {keyChords: keyChords, key:detectedKey};
 };
 
 exports.autoDetectKey = function(keyChords){
@@ -144,39 +183,15 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
 };
 let isAutoKeyDetection = true;
 let isKeyWritten = false;
-let detectedKey = new exports.Key();
+let detectedKey;
+let keyChords;
 let isAutoDetected = false;
 
 //ChordやKeyを読む
-let keyElm;
-let keyChordElms;
-if(document.title.indexOf("U-フレット") != -1){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))();}
-if(document.title.indexOf("ChordWiki") != -1){
-  keyChordElms = Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))();
-  keyElm = document.getElementsByClassName('key')[0];
-}
-if(document.title.indexOf("楽器.me") != -1){
-  keyChordElms = Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))();
-  // for コード名表示
-  keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
-}
-if(document.title.indexOf("J-Total Music!") != -1){
-  keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
-  keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
-}
-let keyChords = keyChordElms?(keyChordElms.map((e) => {
-  if(e){
-    if(e.classList.contains("key")){
-      return {type: "key",v: e.firstChild.nodeValue, elm: e};
-    }
-    return {type: "chord",v: e.firstChild.nodeValue, elm: e}
-  }else{
-    return null;
-  }
-}).filter((e) => e != null)):null;
-//書かれているキーを読み取り
-let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
-detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
+let rawKeyChords = exports.readKeyChords(webSiteName);
+keyChords = rawKeyChords.keyChords;
+detectedKey = rawKeyChords.key;
+
 // キーが書かれていないときは、キーを自動判定する
 if(detectedKey.keyNo == -1){
   detectedKey = exports.autoDetectKey(keyChords);

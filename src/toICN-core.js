@@ -23,6 +23,39 @@ exports.Key = class{
   }
 };
 
+exports.readKeyChords = function(webSiteName){
+  let keyElm;
+  let keyChordElms;
+  if(webSiteName == "ufret"){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))();}
+  if(webSiteName == "chordwiki"){
+    keyChordElms = Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))();
+    keyElm = document.getElementsByClassName('key')[0];
+  }
+  if(webSiteName == "gakki.me"){
+    keyChordElms = Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))();
+    // for コード名表示
+    keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
+  }
+  if(webSiteName == "j-total"){
+    keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
+    keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+  }
+  let keyChords = keyChordElms?(keyChordElms.map((e) => {
+    if(e){
+      if(e.classList.contains("key")){
+        return {type: "key",v: e.firstChild.nodeValue, elm: e};
+      }
+      return {type: "chord",v: e.firstChild.nodeValue, elm: e}
+    }else{
+      return null;
+    }
+  }).filter((e) => e != null)):null;
+  //書かれているキーを読み取り
+  let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
+ let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
+  return {keyChords: keyChords, key:detectedKey};
+};
+
 exports.autoDetectKey = function(keyChords){
   let maxCount = 0;
   let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
