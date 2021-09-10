@@ -52,7 +52,7 @@ exports.readKeyChords = function(webSiteName){
   }).filter((e) => e != null)):null;
   //書かれているキーを読み取り
   let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
-  detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
+ let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
   return {keyChords: keyChords, key:detectedKey};
 };
 
