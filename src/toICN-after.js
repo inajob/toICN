@@ -6,17 +6,17 @@ let isAutoDetected = false;
 //ChordやKeyを読む
 let keyElm;
 let keyChordElms;
-if(document.title.indexOf("U-フレット") != -1){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))();}
-if(document.title.indexOf("ChordWiki") != -1){
+if(webSiteName == "ufret"){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))();}
+if(webSiteName == "chordwiki"){
   keyChordElms = Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))();
   keyElm = document.getElementsByClassName('key')[0];
 }
-if(document.title.indexOf("楽器.me") != -1){
+if(webSiteName == "gakki.me"){
   keyChordElms = Array.prototype.slice.bind(document.getElementsByClassName("cd_fontpos"))();
   // for コード名表示
   keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))());
 }
-if(document.title.indexOf("J-Total Music!") != -1){
+if(webSiteName == "j-total"){
   keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))();
   keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
 }
