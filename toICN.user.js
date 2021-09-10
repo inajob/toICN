@@ -1,3 +1,14 @@
+// ==UserScript==
+// @name         toInstaChord ICN
+// @namespace    https://github.com/inajob/toICN
+// @version      0.1
+// @homepage     https://github.com/inajob/toICN
+// @match        https://ja.chordwiki.org/wiki*
+// @match        https://www.ufret.jp/song.php?data=*
+// @match        https://gakufu.gakki.me/m/data/*
+// @match        https://music.j-total.net/data/*
+// @grant        none
+// ==/UserScript==
 exports = {};
 //CSS関連
 let style = document.createElement('style');
