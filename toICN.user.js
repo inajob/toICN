@@ -3,9 +3,9 @@
 // @namespace    https://github.com/inajob/toICN
 // @version      0.1
 // @homepage     https://github.com/inajob/toICN
-// @match        https://ja.chordwiki.org/wiki*
+// @match        https://ja.chordwiki.org/wiki/*
 // @match        https://www.ufret.jp/song.php?data=*
-// @match        https://gakufu.gakki.me/m/data/*
+// @match        https://gakufu.gakki.me/m/*
 // @match        https://music.j-total.net/data/*
 // @grant        none
 // ==/UserScript==
@@ -231,7 +231,7 @@ function main () {
   exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
 };
 
-function waitElement(cb) {
+function waitElement(webSiteName, cb) {
   let selector;
   if (webSiteName === "ufret") {
     selector = '#my-chord-data .chord ruby rt';
@@ -248,7 +248,7 @@ function waitElement(cb) {
 }
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  waitElement(main);
+  waitElement(webSiteName, main);
 } else {
-  document.addEventListener('DOMContentLoaded', function () {waitElement(main)});
+  document.addEventListener('DOMContentLoaded', function () {waitElement(webSiteName, main)});
 }

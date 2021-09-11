@@ -29,7 +29,7 @@ function main () {
   exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
 };
 
-function waitElement(cb) {
+function waitElement(webSiteName, cb) {
   let selector;
   if (webSiteName === "ufret") {
     selector = '#my-chord-data .chord ruby rt';
@@ -46,7 +46,7 @@ function waitElement(cb) {
 }
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  waitElement(main);
+  waitElement(webSiteName, main);
 } else {
-  document.addEventListener('DOMContentLoaded', function () {waitElement(main)});
+  document.addEventListener('DOMContentLoaded', function () {waitElement(webSiteName, main)});
 }
