@@ -5,7 +5,7 @@
 // @homepage     https://github.com/inajob/toICN
 // @match        https://ja.chordwiki.org/wiki/*
 // @match        https://www.ufret.jp/song.php?data=*
-// @match        https://gakufu.gakki.me/m/data/*
+// @match        https://gakufu.gakki.me/m/*
 // @match        https://music.j-total.net/data/*
 // @grant        none
 // ==/UserScript==
