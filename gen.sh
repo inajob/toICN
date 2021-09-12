@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo -n "javascript:(function(){" > toICN.js
 cat ./src/toICN-before.js |sed -e 's/\/\/.*//'|sed -e 's/^ *//g'|tr -d '\n' >> toICN.js
 cat ./src/toICN-core.js |sed -e 's/\/\/.*//'|sed -e 's/^ *//g'|tr -d '\n' >> toICN.js

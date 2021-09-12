@@ -119,7 +119,7 @@ exports.toICN = function(raw,tmpKey){
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
     //マイナーのキーかどうかを判定
-    if("m,m7,mM7,m9,m6".split(",").includes(q)){
+    if(q[0] == "m" && q.indexOf("m7-5") == -1){
       minorSignature = "m";
       q = q.replace("m","");
     }
