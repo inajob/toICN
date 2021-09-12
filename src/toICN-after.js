@@ -5,6 +5,7 @@ let keyChords;
 let isAutoDetected = false;
 
 function main () {
+  document.body.insertAdjacentHTML('afterbegin', '<div class="toicnbar">ここにパラメーター等が表示されます</div>');
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
