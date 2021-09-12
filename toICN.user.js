@@ -228,8 +228,8 @@ function main () {
   if(specifiedKey.keyNo != -1){isAutoKeyDetection = false;}
 
   //表示書き換え関係
-  exports.updateChords(keyChords.map(e => Object.assign({}, e)), isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
-  };
+  exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
+};
 
 function waitElement(webSiteName, cb) {
   let selector;
