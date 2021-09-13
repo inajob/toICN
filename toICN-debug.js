@@ -211,8 +211,8 @@ function main () {
   // キーの手動設定
 
   let barText = '';
-  barText += '<div class="toicnbar">';
-  barText += '<div class="dispayedkey" style="font-weight: bold; font-size: 150%;">';
+  barText += '<div class="toicnbar" style="background-color: #f4ffa2; margin-top: 5px; margin-bottom: 5px; padding: .75rem 1.25rem;">';
+  barText += '<div class="dispayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">';
   barText += "Key: " + detectedKey.key;
   barText += '</div>';
   barText += '<label style = "display: inline-block;">Key:';
@@ -236,7 +236,7 @@ function main () {
   
   if(webSiteName == "ufret"){document.getElementById('my-chord-data').insertAdjacentHTML('beforebegin', barText);}
   if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
-  if(webSiteName == "gakki.me"){document.body.insertAdjacentHTML('afterbegin', barText);}
+  if(webSiteName == "gakki.me"){document.getElementById('chord_area').insertAdjacentHTML('beforebegin', barText);}
   if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 
   var result = prompt("Key:" + detectedKey.key + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。\nキャンセルを押すと変換しません。");
