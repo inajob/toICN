@@ -209,6 +209,36 @@ function main () {
   }
 
   // キーの手動設定
+
+  let barText = '';
+  barText += '<div class="toicnbar">';
+  barText += '<div class="dispayedkey" style="font-weight: bold; font-size: 150%;">';
+  barText += "Key: " + detectedKey.key;
+  barText += '</div>';
+  barText += '<label style = "display: inline-block;">Key:';
+  barText += '<select class="selectedkey" name="selectedkey">';
+  barText += '<option value=-1>Auto</option>';
+  barText += '<option value=0>C/Am</option>';
+  barText += '<option value=1>Db/Bbm</option>';
+  barText += '<option value=2>D/Bm</option>';
+  barText += '<option value=3>Eb/Cm</option>';
+  barText += '<option value=4>E/C#m</option>';
+  barText += '<option value=5>F/Dm</option>';
+  barText += '<option value=6>F#/D#m</option>';
+  barText += '<option value=7>G/Em</option>';
+  barText += '<option value=8>Ab/Fm</option>';
+  barText += '<option value=9>A/F#m</option>';
+  barText += '<option value=10>Bb/Gm</option>';
+  barText += '<option value=11>B/G#m</option>';
+  barText += '</select>';
+  barText += '</label>';
+  barText += '</div>';
+  
+  if(webSiteName == "ufret"){document.getElementById('my-chord-data').insertAdjacentHTML('beforebegin', barText);}
+  if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
+  if(webSiteName == "gakki.me"){document.body.insertAdjacentHTML('afterbegin', barText);}
+  if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
+
   var result = prompt("Key:" + detectedKey.key + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。\nキャンセルを押すと変換しません。");
   // キャンセルされると置き換えを実行しない
   if (result === null) return;

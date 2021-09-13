@@ -41,14 +41,12 @@ function main () {
   barText += '<option value=11>B/G#m</option>';
   barText += '</select>';
   barText += '</label>';
-  barText += '    ';
-  barText += '<div style = "display: inline-block;">';
-  barText += '<input type="checkbox" id="selectexpert" name="selectexpert">';
-  barText += '<label for="selectexpert">Expert</label>';
   barText += '</div>';
-  barText += '</div>';
-                              
-  document.body.insertAdjacentHTML('afterbegin', barText);
+  
+  if(webSiteName == "ufret"){document.getElementById('my-chord-data').insertAdjacentHTML('beforebegin', barText);}
+  if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
+  if(webSiteName == "gakki.me"){document.body.insertAdjacentHTML('afterbegin', barText);}
+  if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 
   var result = prompt("Key:" + detectedKey.key + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。\nキャンセルを押すと変換しません。");
   // キャンセルされると置き換えを実行しない
