@@ -139,7 +139,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
           let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
+          e.elm.nodeValue = "Key: " + currentKey.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
         }
         previousKey = currentKey;
       }
