@@ -248,13 +248,6 @@ function main () {
   if(webSiteName == "gakki.me"){document.getElementById('chord_area').insertAdjacentHTML('beforebegin', barText);}
   if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 
-  var result = prompt("Key:" + detectedKey.key + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。\nキャンセルを押すと変換しません。");
-  // キャンセルされると置き換えを実行しない
-  if (result === null) return;
-  let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
-  let specifiedKey = new exports.Key(resultMatch?resultMatch[1]:"");
-  if(specifiedKey.keyNo != -1){isAutoKeyDetection = false;}
-
   //表示書き換え関係
   exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
 
