@@ -159,8 +159,8 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
           isBlueChord = true;
         }
       }
-      //chordの色を解除する
-      //e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");
+      //chordの色を解除する。test.js対策のためtry-catch
+      try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
       //chordに色を付ける
       if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
       else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
