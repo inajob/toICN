@@ -6,13 +6,20 @@ const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
 exports.Key = class{
-  constructor(raw="",canDetectMajorOrMinor=false){ // keyがメジャーかマイナーか特定できる場合は canDetectMajorOrMinor=true
-    let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
-    let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
-    let tmpMinorSignature = rawMatch?rawMatch[3]:"";
-    if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
-    this.keyNo = tmpKeyNo;
-    this.minorSignature = canDetectMajorOrMinor?tmpMinorSignature:"u";
+  constructor(raw=-1,canDetectMajorOrMinor=false){ // keyがメジャーかマイナーか特定できる場合は canDetectMajorOrMinor=true
+
+    if(typeof(raw) === "string"){
+      let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
+      let tmpKeyNo = rawMatch?scale.indexOf(sharpify(rawMatch[1])):-1;
+      let tmpMinorSignature = rawMatch?rawMatch[3]:"";
+      this.keyNo = tmpKeyNo;
+      this.minorSignature = canDetectMajorOrMinor?tmpMinorSignature:"u";
+      if(tmpMinorSignature == "m"){tmpKeyNo = (tmpKeyNo+3) % 12;}
+    }
+    else{
+      this.keyNo = raw;
+      this.minorSignature = "u";
+    }
 
     this.majorScaleName = this.keyNo==-1?"":majorScale[this.keyNo];
     this.minorScaleName = this.keyNo==-1?"":minorScale[this.keyNo] + "m";

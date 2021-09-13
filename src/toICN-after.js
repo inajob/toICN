@@ -57,6 +57,10 @@ function main () {
 
   //表示書き換え関係
   exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
+  
+  document.querySelector('.selectedkey').addEventListener('change', (event) => {
+    console.log(event.target.value);
+  });
 };
 
 function waitElement(webSiteName, cb) {
