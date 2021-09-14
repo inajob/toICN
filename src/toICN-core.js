@@ -78,7 +78,7 @@ exports.autoDetectKey = function(keyChords){
   return detectedKey;
 };
 
-exports.toICN = function(raw,tmpKey){
+exports.toICN = function(raw,tmpKey,level=2){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
@@ -98,6 +98,8 @@ exports.toICN = function(raw,tmpKey){
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
+    // level 2のときは、インスタコードで弾けるキーに置き換える
+    if(level == 2){q = q.replace(/^7\(9\)$/, "7");}
     //マイナーのキーかどうかを判定
     if(q[0] == "m" && q.indexOf("m7-5") == -1){
       minorSignature = "m";
@@ -121,12 +123,14 @@ exports.toICN = function(raw,tmpKey){
         unSupported = true;
       }
     }
-    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""))+(onChordNo!=""?"/"+onChordNo:"");
+    s = no+(swapped?"~":"");
+    if(level >= 2){s += isQAvailable?("["+q+"]"):"";}
+    if(level >= 3){s += (unSupported?("[!!"+q+"!!]"):"") + (onChordNo!=""?"/"+onChordNo:"");}
   }
   return s;
 };
 
-exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
+exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=2){
   let currentKey = tmpKey;
   let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
@@ -146,7 +150,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v,currentKey);
+      let icn = exports.toICN(e.v,currentKey,level);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
