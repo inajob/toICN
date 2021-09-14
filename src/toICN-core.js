@@ -46,7 +46,9 @@ exports.readKeyChords = function(webSiteName){
   }
   if(webSiteName == "j-total"){
     keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))().map((e => e.firstChild));
+    try{
     keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+    }catch(e){}
   }
   let keyChords = keyChordElms?(keyChordElms.map((e) => {
     if(e){
