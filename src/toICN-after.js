@@ -41,7 +41,7 @@ function main () {
 function waitElement(webSiteName, cb) {
   let selector;
   if (webSiteName === "ufret") {
-    selector = '#my-chord-data .chord ruby rt';
+    selector = 'ruby rt';
   }
   if (!selector) return cb();
 

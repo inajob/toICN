@@ -46,7 +46,12 @@ exports.readKeyChords = function(webSiteName){
   }
   if(webSiteName == "j-total"){
     keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))().map((e => e.firstChild));
-    keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+    try{
+      keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+    }catch(e){}
+    if(!keyElm){ // 古いスタイルのHTMLに対応するため
+      keyElm = document.querySelectorAll("tr td font")[5];
+    }
   }
   let keyChords = keyChordElms?(keyChordElms.map((e) => {
     if(e){
