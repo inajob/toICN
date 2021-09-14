@@ -84,7 +84,6 @@ if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].
 if(webSiteName == "gakki.me"){document.getElementById('chord_area').insertAdjacentHTML('beforebegin', barText);}
 if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 
-
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   waitElement(webSiteName, main);
 } else {
