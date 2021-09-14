@@ -71,17 +71,17 @@ const tests = [
   ["Cm7-5" ,"1[m7-5]"],
   ["CM7" ,"1[M7]"],
 
-  ["C/E" ,"1/3"],
-  ["ConE" ,"1/3"],
+  ["C/E" ,"1"],
+  ["ConE" ,"1"],
 
-  ["Am7(9)" ,"6[!!7(9)!!]"],
+  ["Am7(9)" ,"6[9]"],
   ["Am7" ,"6[7]"],
   ["Ddim7" ,"2[dim]"],
   ["D#dim7" ,"2#[dim]"],
   ["D#dim" ,"2#[dim]"],
   ["F#m7-5" ,"4#[m7-5]"],
 
-  ["C9" ,"1[!!7(9)!!]"],
+  ["C9" ,"1[7]"],
 
   ["C♯","1#"],
   ["D♭","1#"],
@@ -93,6 +93,19 @@ const tests = [
 tests.forEach((t) => {
   console.log(t[0]);
   assert.equal(m.toICN(t[0],key), t[1]);
+});
+
+const testslv3 = [
+  ["C/E" ,"1/3"],
+  ["ConE" ,"1/3"],
+
+  ["Am7(9)" ,"6[!!7(9)!!]"],
+  ["C9" ,"1[!!7(9)!!]"],
+];
+
+testslv3.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.toICN(t[0],key,3), t[1]);
 });
 
 key = new m.Key("B");
