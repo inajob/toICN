@@ -55,7 +55,7 @@ function waitElement(webSiteName, cb) {
 }
 
 let barText = '';
-barText += '<div class="toicnbar" style="background-color: #f4ffa2; margin-top: 5px; margin-bottom: 5px; padding: .75rem 1.25rem;">';
+barText += '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">';
 barText += '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">';
 barText += '</div>';
 barText += '<label style = "display: inline-block;">Key:';
