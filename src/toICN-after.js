@@ -82,7 +82,7 @@ barText += '</div>';
 if(webSiteName == "ufret"){document.getElementById('my-chord-data').insertAdjacentHTML('beforebegin', barText);}
 if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
 if(webSiteName == "gakki.me"){document.getElementById('chord_area').insertAdjacentHTML('beforebegin', barText);}
-if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
+if(webSiteName == "j-total"){document.getElementsByTagName("tt")[0].insertAdjacentHTML('afterbegin', barText);}
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   waitElement(webSiteName, main);
