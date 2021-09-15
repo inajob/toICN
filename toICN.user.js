@@ -263,30 +263,30 @@ function waitElement(webSiteName, cb) {
   }, 300);
 }
 
-let barText = '';
-barText += '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">';
-barText += '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">';
-barText += '</div>';
-barText += '<label style = "display: inline-block;">Key:';
-barText += '<select class="selectedkey" name="selectedkey">';
-barText += '<option value=-1>Auto(推奨)</option>';
-barText += '<option value=0>C/Am</option>';
-barText += '<option value=1>Db/Bbm</option>';
-barText += '<option value=2>D/Bm</option>';
-barText += '<option value=3>Eb/Cm</option>';
-barText += '<option value=4>E/C#m</option>';
-barText += '<option value=5>F/Dm</option>';
-barText += '<option value=6>F#/D#m</option>';
-barText += '<option value=7>G/Em</option>';
-barText += '<option value=8>Ab/Fm</option>';
-barText += '<option value=9>A/F#m</option>';
-barText += '<option value=10>Bb/Gm</option>';
-barText += '<option value=11>B/G#m</option>';
-barText += '</select>';
-barText += '</label>';
-barText += '<div id="toicnmessage">';
-barText += '</div>';
-barText += '</div>';
+let barText = 
+'<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
++ '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">'
++ '</div>'
++ '<label style = "display: inline-block;">Key:'
++ '<select class="selectedkey" name="selectedkey">'
++ '<option value=-1>Auto(推奨)</option>'
++ '<option value=0>C/Am</option>'
++ '<option value=1>Db/Bbm</option>'
++ '<option value=2>D/Bm</option>'
++ '<option value=3>Eb/Cm</option>'
++ '<option value=4>E/C#m</option>'
++ '<option value=5>F/Dm</option>'
++ '<option value=6>F#/D#m</option>'
++ '<option value=7>G/Em</option>'
++ '<option value=8>Ab/Fm</option>'
++ '<option value=9>A/F#m</option>'
++ '<option value=10>Bb/Gm</option>'
++ '<option value=11>B/G#m</option>'
++ '</select>'
++ '</label>'
++ '<div id="toicnmessage">'
++ '</div>'
++ '</div>';
 
 if(webSiteName == "ufret"){
   let e = document.getElementById('my-chord-data');
