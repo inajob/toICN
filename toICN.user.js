@@ -295,7 +295,7 @@ if(webSiteName == "ufret"){
 }
 if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
 if(webSiteName == "gakki.me"){document.getElementsByClassName("music_func")[0].insertAdjacentHTML('afterend', barText);}
-if(webSiteName == "j-total"){document.getElementsByTagName("tt")[0].insertAdjacentHTML('beforebegin', barText);}
+if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   waitElement(webSiteName, main);
