@@ -264,7 +264,7 @@ function waitElement(webSiteName, cb) {
 }
 
 let barText = '';
-barText += '<div class="toicnbar" style="background-color: #f4ffa2; margin-top: 5px; margin-bottom: 5px; padding: .75rem 1.25rem;">';
+barText += '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">';
 barText += '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">';
 barText += '</div>';
 barText += '<label style = "display: inline-block;">Key:';
@@ -288,11 +288,14 @@ barText += '<div id="toicnmessage">';
 barText += '</div>';
 barText += '</div>';
 
-if(webSiteName == "ufret"){document.getElementById('my-chord-data').insertAdjacentHTML('beforebegin', barText);}
+if(webSiteName == "ufret"){
+  let e = document.getElementById('my-chord-data');
+  if(e){e.insertAdjacentHTML('beforebegin', barText);}
+  else{document.getElementsByClassName('row')[6].insertAdjacentHTML('afterend', barText);}
+}
 if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
-if(webSiteName == "gakki.me"){document.getElementById('chord_area').insertAdjacentHTML('beforebegin', barText);}
-if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
-
+if(webSiteName == "gakki.me"){document.getElementsByClassName("music_func")[0].insertAdjacentHTML('afterend', barText);}
+if(webSiteName == "j-total"){document.getElementsByTagName("tt")[0].insertAdjacentHTML('beforebegin', barText);}
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   waitElement(webSiteName, main);

@@ -82,11 +82,11 @@ barText += '</div>';
 if(webSiteName == "ufret"){
   let e = document.getElementById('my-chord-data');
   if(e){e.insertAdjacentHTML('beforebegin', barText);}
-  else{document.getElementsByClassName("my-auto")[0].insertAdjacentHTML('afterend', barText);}
+  else{document.getElementsByClassName('row')[6].insertAdjacentHTML('afterend', barText);}
 }
 if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
-if(webSiteName == "gakki.me"){document.getElementById('chord_area').insertAdjacentHTML('beforebegin', barText);}
-if(webSiteName == "j-total"){document.getElementsByTagName("tt")[0].insertAdjacentHTML('afterbegin', barText);}
+if(webSiteName == "gakki.me"){document.getElementsByClassName("music_func")[0].insertAdjacentHTML('afterend', barText);}
+if(webSiteName == "j-total"){document.getElementsByTagName("tt")[0].insertAdjacentHTML('beforebegin', barText);}
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   waitElement(webSiteName, main);
