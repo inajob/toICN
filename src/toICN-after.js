@@ -79,7 +79,11 @@ barText += '<div id="toicnmessage">';
 barText += '</div>';
 barText += '</div>';
 
-if(webSiteName == "ufret"){document.getElementById('my-chord-data').insertAdjacentHTML('beforebegin', barText);}
+if(webSiteName == "ufret"){
+  let e = document.getElementById('my-chord-data');
+  if(e){e.insertAdjacentHTML('beforebegin', barText);}
+  else{document.getElementsByClassName("my-auto")[0].insertAdjacentHTML('afterend', barText);}
+}
 if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
 if(webSiteName == "gakki.me"){document.getElementById('chord_area').insertAdjacentHTML('beforebegin', barText);}
 if(webSiteName == "j-total"){document.getElementsByTagName("tt")[0].insertAdjacentHTML('afterbegin', barText);}
