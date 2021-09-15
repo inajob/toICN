@@ -33,7 +33,7 @@ function main () {
       let selectedKey = new exports.Key(scale[event.target.value]);
       exports.updateChords(keyChords, selectedKey, false);
       document.getElementById('displayedkey').innerText = "Key: " + selectedKey.key + " (selected)";
-      document.getElementById('toicnmessage').innerText = "# や ~ の付いたコードがたくさん表示される場合は、選択されたキーが正しくない可能性があります。その場合はKeyをAutoにしてください。";
+      document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体側のキー設定を変更してください。";
     }
   });
 };
