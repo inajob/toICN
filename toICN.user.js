@@ -175,7 +175,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
           let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
+          e.elm.nodeValue = "Key: " + currentKey.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
         }
         previousKey = currentKey;
       }
@@ -195,6 +195,8 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
           isBlueChord = true;
         }
       }
+      //chordの色を解除する。test.js対策のためtry-catch
+      try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
       //chordに色を付ける
       if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
       else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
@@ -225,15 +227,24 @@ function main () {
   }
 
   // キーの手動設定
-  var result = prompt("Key:" + detectedKey.key + (isAutoDetected?"(コード譜を元に自動判定されたキー)":"(Webサイトが指定したキー)") +"\n別のキーを指定したい場合は、下にキーを入力してください。(例:C)\nよくわからなければ、そのままOKを押してください。\nキャンセルを押すと変換しません。");
-  // キャンセルされると置き換えを実行しない
-  if (result === null) return;
-  let resultMatch = result.match(/([A-G](#|b){0,1}m{0,1})$/);
-  let specifiedKey = new exports.Key(resultMatch?resultMatch[1]:"");
-  if(specifiedKey.keyNo != -1){isAutoKeyDetection = false;}
 
   //表示書き換え関係
   exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
+  document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+
+  document.querySelector('.selectedkey').addEventListener('change', (event) => {
+    if(event.target.value == -1){ //Auto
+      exports.updateChords(keyChords, detectedKey, true);
+      document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+      document.getElementById('toicnmessage').innerText = "";
+    }
+    else{
+      let selectedKey = new exports.Key(scale[event.target.value]);
+      exports.updateChords(keyChords, selectedKey, false);
+      document.getElementById('displayedkey').innerText = "Key: " + selectedKey.key + " (selected)";
+      document.getElementById('toicnmessage').innerText = "# や ~ の付いたコードがたくさん表示される場合は、選択されたキーが正しくない可能性があります。その場合はKeyをAutoにしてください。";
+    }
+  });
 };
 
 function waitElement(webSiteName, cb) {
@@ -251,6 +262,40 @@ function waitElement(webSiteName, cb) {
     if (!!document.querySelector(selector)) resolve();
   }, 300);
 }
+
+let barText = 
+'<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
++ '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">'
++ '</div>'
++ '<label style = "display: inline-block;">Key:'
++ '<select class="selectedkey" name="selectedkey">'
++ '<option value=-1>Auto(推奨)</option>'
++ '<option value=0>C/Am</option>'
++ '<option value=1>Db/Bbm</option>'
++ '<option value=2>D/Bm</option>'
++ '<option value=3>Eb/Cm</option>'
++ '<option value=4>E/C#m</option>'
++ '<option value=5>F/Dm</option>'
++ '<option value=6>F#/D#m</option>'
++ '<option value=7>G/Em</option>'
++ '<option value=8>Ab/Fm</option>'
++ '<option value=9>A/F#m</option>'
++ '<option value=10>Bb/Gm</option>'
++ '<option value=11>B/G#m</option>'
++ '</select>'
++ '</label>'
++ '<div id="toicnmessage">'
++ '</div>'
++ '</div>';
+
+if(webSiteName == "ufret"){
+  let e = document.getElementById('my-chord-data');
+  if(e){e.insertAdjacentHTML('beforebegin', barText);}
+  else{document.getElementsByClassName('row')[6].insertAdjacentHTML('afterend', barText);}
+}
+if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
+if(webSiteName == "gakki.me"){document.getElementsByClassName("music_func")[0].insertAdjacentHTML('afterend', barText);}
+if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   waitElement(webSiteName, main);

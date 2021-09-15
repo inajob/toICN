@@ -144,7 +144,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
           let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
+          e.elm.nodeValue = "Key: " + currentKey.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
         }
         previousKey = currentKey;
       }
@@ -164,6 +164,8 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
           isBlueChord = true;
         }
       }
+      //chordの色を解除する。test.js対策のためtry-catch
+      try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
       //chordに色を付ける
       if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
       else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
