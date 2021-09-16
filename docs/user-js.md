@@ -24,7 +24,7 @@ toICNのユーザースクリプト版を利用することでコード譜ペー
 
 ## Safari(macOS)
 
-[Tampermonkey • Home](https://www.tampermonkey.net/?ext=dhdg&browser=firefox)
+[Tampermonkey • Home](https://www.tampermonkey.net/?browser=safari)
 
 Mac App Storeから入手することも出来ますが、そちらは機能は同じで有料です。 [‎Tampermonkey on the Mac App Store](https://apps.apple.com/app/apple-store/id1482490089?mt=8)
 
