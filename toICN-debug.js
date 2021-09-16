@@ -122,14 +122,14 @@ exports.toICN = function(raw,tmpKey,level=2){
       onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
     // レベルを問わず、9を7(9), maj7をM7等表記を置き換える
-    q = q.replace(/^9$/,"7(9)").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
-    // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if(level <= 3){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7");}
+    q = q.replace(/9$/,"7(9)").replace(/^maj$/,"").replace(/^min$/,"m").replace(/maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
     //マイナーのキーかどうかを判定
     if(q[0] == "m" && q.indexOf("m7-5") == -1){
       minorSignature = "m";
       q = q.replace("m","");
     }
+    // level 3以下のときは、インスタコードで弾けるキーに置き換える
+    if(level <= 3){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7");}
     //スワップキーかどうかを判定
     if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(no+minorSignature)){
       swapped = true;
