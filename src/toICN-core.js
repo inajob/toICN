@@ -101,9 +101,10 @@ exports.toICN = function(raw,tmpKey,level=2){
     if(onChord!=""){
       onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
-    // 9を7(9), maj7をM7等表記を置き換える
-    q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
-    // level 2のときは、インスタコードで弾けるキーに置き換える
+    // レベルを問わず、9を7(9), maj7をM7等表記を置き換える
+    q = q.replace(/^9$/,"7(9)").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
+    // level 3以下のときは、インスタコードで弾けるキーに置き換える
+    if(level <= 3){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7");}
     //マイナーのキーかどうかを判定
     if(q[0] == "m" && q.indexOf("m7-5") == -1){
       minorSignature = "m";
@@ -113,25 +114,22 @@ exports.toICN = function(raw,tmpKey,level=2){
     if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(no+minorSignature)){
       swapped = true;
     }
-    if(level == 2){q = q.replace(/^7\(9\)$/, "7");}
-    if("7,M7,9,6".split(",").includes(q)){
-      isQAvailable = true;
-    }
-    //sus4,aug,dim,m7-5の場合はスワップさせない
+    //sus4,aug,dim,m7-5の場合はスワップさせない、レベルを問わず表示
     if("sus4,aug,dim,m7-5".split(",").includes(q)){
       isQAvailable = true;
       swapped = false;
     }
-    //サポートされていない記号である場合の処理
+    // Level 1のときは、7・M7・9・6を表示しない
+    if("7,M7,9,6".split(",").includes(q) && level >= 2){
+      isQAvailable = true;
+    }
+    //サポートされていない記号である場合の処理（レベル4のときのみ表示）
     else{
-      if(q.length>0){
+      if(q.length>0 && level >= 4){
         unSupported = true;
       }
     }
-    s = no+(swapped?"~":"");
-    if(level >= 2){s += isQAvailable?("["+q+"]"):"";}
-    if(level >= 3){s += (unSupported?("[!!"+q+"!!]"):"") + (onChordNo!=""?"/"+onChordNo:"");}
-  }
+    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""))+((onChordNo!=""&&level>=3)?"/"+onChordNo:"");  }
   return s;
 };
 
