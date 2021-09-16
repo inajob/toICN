@@ -169,29 +169,29 @@ const updateChordsTest = [
   ],
   [
     [ // Key: C -> A -> Am
-      {type: "key", v: "key: C", elm: {nodeValue: "key: C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "Key: C", elm: {nodeValue: "Key: C", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "Am", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
-      {type: "key", v: "key: A", elm: {nodeValue: "key: A", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "Key: A", elm: {nodeValue: "Key: A", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "A", elm: {nodeValue: "A", parentNode:{classList: {add: ()=>{}}}}},
-      {type: "key", v: "key: Am", elm: {nodeValue: "key: Am", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "Key: Am", elm: {nodeValue: "Key: Am", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
     ],
     true,
-    ["key: C", "1", "6", "key: A (-3)", "1", "key: Am (+3)", "1"]
+    ["Key: C", "1", "6", "Key: A (-3)", "1", "Key: Am (+3)", "1"]
   ],
   [
     [ // Key: C -> A -> Am
-      {type: "key", v: "key: C", elm: {nodeValue: "key: C", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "Key: C", elm: {nodeValue: "Key: C", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "Am", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
-      {type: "key", v: "key: A", elm: {nodeValue: "key: A", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "Key: A", elm: {nodeValue: "Key: A", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "A", elm: {nodeValue: "A", parentNode:{classList: {add: ()=>{}}}}},
-      {type: "key", v: "key: Am", elm: {nodeValue: "key: Am", parentNode:{classList: {add: ()=>{}}}}},
+      {type: "key", v: "Key: Am", elm: {nodeValue: "Key: Am", parentNode:{classList: {add: ()=>{}}}}},
       {type: "chord", v: "C", elm: {nodeValue: "C", parentNode:{classList: {add: ()=>{}}}}},
     ],
     false,
-    ["key: C", "1", "6", "key: A", "6~", "key: Am", "1"]
+    ["Key: C", "1", "6", "Key: A", "6~", "Key: Am", "1"]
   ],
 ];
 

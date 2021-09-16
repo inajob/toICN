@@ -46,7 +46,12 @@ exports.readKeyChords = function(webSiteName){
   }
   if(webSiteName == "j-total"){
     keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))().map((e => e.firstChild));
-    keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+    try{
+      keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
+    }catch(e){}
+    if(!keyElm){ // 古いスタイルのHTMLに対応するため
+      keyElm = document.querySelectorAll("tr td font")[5];
+    }
   }
   let keyChords = keyChordElms?(keyChordElms.map((e) => {
     if(e){
@@ -143,7 +148,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
           let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.nodeValue += (" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")");
+          e.elm.nodeValue = "Key: " + currentKey.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
         }
         previousKey = currentKey;
       }
@@ -163,6 +168,8 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
           isBlueChord = true;
         }
       }
+      //chordの色を解除する。test.js対策のためtry-catch
+      try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
       //chordに色を付ける
       if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
       else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
