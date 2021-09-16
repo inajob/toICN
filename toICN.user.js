@@ -133,12 +133,13 @@ exports.toICN = function(raw,tmpKey,level=2){
       onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
     // レベルを問わず、9を7(9), maj7をM7等表記を置き換える
-    q = q.replace(/9$/,"7(9)").replace(/^maj$/,"").replace(/^min$/,"m").replace(/maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
+    q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
     //マイナーのキーかどうかを判定
     if(q[0] == "m" && q.indexOf("m7-5") == -1){
       minorSignature = "m";
       q = q.replace("m","");
     }
+    q = q.replace(/^9$/,"7(9)");
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
     if(level <= 3){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7");}
     //スワップキーかどうかを判定
@@ -214,15 +215,13 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
     }
   });
 };
-let isAutoKeyDetection = true;
-let isKeyWritten = false;
-let detectedKey;
-let keyChords;
-let isAutoDetected = false;
-
 function main () {
+  let isAutoKeyDetection = true;
+  let detectedKey;
+  let keyChords;  
   let key;
   let level = 2;
+  
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
@@ -231,8 +230,6 @@ function main () {
   // キーが書かれていないときは、キーを自動判定する
   if(detectedKey.keyNo == -1){
     detectedKey = exports.autoDetectKey(keyChords);
-
-    isAutoDetected = true;
   }
 
   // キーの手動設定
@@ -253,16 +250,18 @@ function main () {
     }
     else{
       key = new exports.Key(scale[event.target.value]);
-      isAutoKeyDetection = tfalse;
+      isAutoKeyDetection = false;
       document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
     exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   });
+  
   document.querySelector('.selectedlevel').addEventListener('change', (event) => {
     level = event.target.value;
     exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   });
+  
 };
 
 function waitElement(webSiteName, cb) {
