@@ -136,16 +136,11 @@ exports.toICN = function(raw,tmpKey,level=2){
       swapped = true;
     }
     // Level 1のときは、7・M7・9・6を表示しない
-    if("7,M7,9,6".split(",").includes(q) && level >= 2){
+    if("7,M7,9,add9,6".split(",").includes(q) && level >= 2){
       isQAvailable = true;
     }
     //sus4,aug,dim,m7-5の場合はスワップさせない、レベル3以下用
-    if("sus4,aug,dim,m7-5".split(",").includes(q) && level <= 3){
-      isQAvailable = true;
-      swapped = false;
-    }
-    //同上、レベル4以上用
-    if("7sus4,aug,dim7,m7-5".split(",").includes(q) && level >= 4){
+    if("sus4,7sus4,aug,dim,dim7,m7-5".split(",").includes(q)){
       isQAvailable = true;
       swapped = false;
     }
