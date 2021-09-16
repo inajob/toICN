@@ -145,14 +145,19 @@ exports.toICN = function(raw,tmpKey,level=2){
     if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(no+minorSignature)){
       swapped = true;
     }
-    //sus4,aug,dim,m7-5の場合はスワップさせない、レベルを問わず表示
-    if("sus4,aug,dim,m7-5".split(",").includes(q)){
-      isQAvailable = true;
-      swapped = false;
-    }
     // Level 1のときは、7・M7・9・6を表示しない
     if("7,M7,9,6".split(",").includes(q) && level >= 2){
       isQAvailable = true;
+    }
+    //sus4,aug,dim,m7-5の場合はスワップさせない、レベル3以下用
+    if("sus4,aug,dim,m7-5".split(",").includes(q) && level <= 3){
+      isQAvailable = true;
+      swapped = false;
+    }
+    //同上、レベル4以上用
+    if("7sus4,aug,dim7,m7-5".split(",").includes(q) && level >= 4){
+      isQAvailable = true;
+      swapped = false;
     }
     //サポートされていない記号である場合の処理（レベル4のときのみ表示）
     else{
@@ -160,7 +165,7 @@ exports.toICN = function(raw,tmpKey,level=2){
         unSupported = true;
       }
     }
-    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""))+((onChordNo!=""&&level>=3)?"/"+onChordNo:"");  }
+    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!"+q+"!]":""))+((onChordNo!=""&&level>=3)?"/"+onChordNo:"");  }
   return s;
 };
 
