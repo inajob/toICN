@@ -205,6 +205,8 @@ let keyChords;
 let isAutoDetected = false;
 
 function main () {
+  let key;
+  let level = 2;
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
@@ -220,21 +222,30 @@ function main () {
   // キーの手動設定
 
   //表示書き換え関係
-  exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
+
+  key = detectedKey;
+  
+  exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
-      exports.updateChords(keyChords, detectedKey, true);
-      document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+      key = detectedKey;
+      isAutoKeyDetection = true;
+      document.getElementById('displayedkey').innerText = "Original Key: " + key.key;
       document.getElementById('toicnmessage').innerText = "";
     }
     else{
-      let selectedKey = new exports.Key(scale[event.target.value]);
-      exports.updateChords(keyChords, selectedKey, false);
-      document.getElementById('displayedkey').innerText = "Key: " + selectedKey.key + " (selected)";
+      key = new exports.Key(scale[event.target.value]);
+      isAutoKeyDetection = tfalse;
+      document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+  });
+  document.querySelector('.selectedlevel').addEventListener('change', (event) => {
+    level = event.target.value;
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   });
 };
 
@@ -273,6 +284,14 @@ let barText =
 + '<option value=9>A/F#m</option>'
 + '<option value=10>Bb/Gm</option>'
 + '<option value=11>B/G#m</option>'
++ '</select>'
++ '</label>'
++ '<label style = "display: inline-block;">Level:'
++ '<select class="selectedlevel" name="selectedlevel">'
++ '<option value=1>1(初心者向け)</option>'
++ '<option value=2 selected>2(標準)</option>'
++ '<option value=3>3(オンコード対応)</option>'
++ '<option value=4>4(上級者向け)</option>'
 + '</select>'
 + '</label>'
 + '<div id="toicnmessage">'
