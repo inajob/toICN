@@ -139,7 +139,7 @@ exports.toICN = function(raw,tmpKey,level=2){
     if("7,M7,9,add9,6".split(",").includes(q) && level >= 2){
       isQAvailable = true;
     }
-    //sus4,aug,dim,m7-5の場合はスワップさせない、レベル3以下用
+    //sus4,aug,dim,m7-5の場合はスワップさせない
     if("sus4,7sus4,aug,dim,dim7,m7-5".split(",").includes(q)){
       isQAvailable = true;
       swapped = false;
