@@ -1,10 +1,10 @@
-let isAutoKeyDetection = true;
-let isKeyWritten = false;
-let detectedKey;
-let keyChords;
-let isAutoDetected = false;
-
 function main () {
+  let isAutoKeyDetection = true;
+  let detectedKey;
+  let keyChords;  
+  let key;
+  let level = 2;
+  
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
@@ -13,29 +13,38 @@ function main () {
   // キーが書かれていないときは、キーを自動判定する
   if(detectedKey.keyNo == -1){
     detectedKey = exports.autoDetectKey(keyChords);
-
-    isAutoDetected = true;
   }
 
   // キーの手動設定
 
   //表示書き換え関係
-  exports.updateChords(keyChords, isAutoKeyDetection?detectedKey:specifiedKey, isAutoKeyDetection);
+
+  key = detectedKey;
+  
+  exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
-      exports.updateChords(keyChords, detectedKey, true);
-      document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+      key = detectedKey;
+      isAutoKeyDetection = true;
+      document.getElementById('displayedkey').innerText = "Original Key: " + key.key;
       document.getElementById('toicnmessage').innerText = "";
     }
     else{
-      let selectedKey = new exports.Key(scale[event.target.value]);
-      exports.updateChords(keyChords, selectedKey, false);
-      document.getElementById('displayedkey').innerText = "Key: " + selectedKey.key + " (selected)";
+      key = new exports.Key(scale[event.target.value]);
+      isAutoKeyDetection = false;
+      document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   });
+  
+  document.querySelector('.selectedlevel').addEventListener('change', (event) => {
+    level = event.target.value;
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+  });
+  
 };
 
 function waitElement(webSiteName, cb) {
@@ -58,6 +67,15 @@ let barText =
 '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
 + '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">'
 + '</div>'
++ '<label style = "display: inline-block;">Level:'
++ '<select class="selectedlevel" name="selectedlevel">'
++ '<option value=1>1(初心者向け)</option>'
++ '<option value=2 selected>2(標準)</option>'
++ '<option value=3>3(オンコード有)</option>'
++ '<option value=4>4(上級者向け)</option>'
++ '</select>'
++ '</label>'
++ ' '
 + '<label style = "display: inline-block;">Key:'
 + '<select class="selectedkey" name="selectedkey">'
 + '<option value=-1>Auto(推奨)</option>'

@@ -83,7 +83,7 @@ exports.autoDetectKey = function(keyChords){
   return detectedKey;
 };
 
-exports.toICN = function(raw,tmpKey){
+exports.toICN = function(raw,tmpKey,level=2){
   let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
   //chordを取り込む
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
@@ -101,37 +101,40 @@ exports.toICN = function(raw,tmpKey){
     if(onChord!=""){
       onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
-    // 9を7(9), maj7をM7等表記を置き換える
-    q = q.replace(/^9$/,"7(9)").replace(/^add9$/,"9").replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace("7sus4","sus4").replace("dim7","dim").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
+    // レベルを問わず、9を7(9), maj7をM7等表記を置き換える
+    q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
     //マイナーのキーかどうかを判定
     if(q[0] == "m" && q.indexOf("m7-5") == -1){
       minorSignature = "m";
       q = q.replace("m","");
     }
+    q = q.replace(/^9$/,"7(9)");
+    // level 3以下のときは、インスタコードで弾けるキーに置き換える
+    if(level <= 3){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7");}
     //スワップキーかどうかを判定
     if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(no+minorSignature)){
       swapped = true;
     }
-    if("7,M7,9,6".split(",").includes(q)){
+    // Level 1のときは、7・M7・9・6を表示しない
+    if("7,M7,9,add9,6".split(",").includes(q) && level >= 2){
       isQAvailable = true;
     }
     //sus4,aug,dim,m7-5の場合はスワップさせない
-    if("sus4,aug,dim,m7-5".split(",").includes(q)){
+    if("sus4,7sus4,aug,dim,dim7,m7-5".split(",").includes(q)){
       isQAvailable = true;
       swapped = false;
     }
-    //サポートされていない記号である場合の処理
+    //サポートされていない記号である場合の処理（レベル4のときのみ表示）
     else{
-      if(q.length>0){
+      if(q.length>0 && level >= 4){
         unSupported = true;
       }
     }
-    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!!"+q+"!!]":""))+(onChordNo!=""?"/"+onChordNo:"");
-  }
+    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!"+q+"!]":""))+((onChordNo!=""&&level>=3)?"/"+onChordNo:"");  }
   return s;
 };
 
-exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
+exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=2){
   let currentKey = tmpKey;
   let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
@@ -151,7 +154,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection){
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v,currentKey);
+      let icn = exports.toICN(e.v,currentKey,level);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
