@@ -1,3 +1,4 @@
+const ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
@@ -22,7 +23,15 @@ exports.Key = class{
     else{this.key = this.majorScaleName + "/" + this.minorScaleName;}
   }
 };
-
+exports.Chord = class{
+  constructor(no, onChordNo, q){
+    this.no = no; // ICNScale
+    this.onChordNo = onChordNo; // ICNScale
+    this.q = q; // 7, M7, 6, add9, aug, sus4, m, m7, mM7, m6, madd9, dim, m7-5
+    this.isMinor = "m,m7,mM7,m6,madd9,dim,m7-5,m7(9)".split(",").includes(q);
+  }
+};
+ 
 exports.readKeyChords = function(webSiteName){
   let keyElm;
   let keyChordElms;
@@ -83,38 +92,41 @@ exports.autoDetectKey = function(keyChords){
   return detectedKey;
 };
 
-exports.toICN = function(raw,tmpKey,level=2){
-  let ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
-  //chordを取り込む
+exports.parseChord = function(raw, tmpKey){
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
-  let s = "";
   if(m){
-    let base = sharpify(m[1]);
-    let minorSignature = "";
+    let base = sharpify(m[1]); // E
     let q = m[3];
     let onChord = sharpify(m[5]);
-    let swapped = false;
-    let isQAvailable = false;
-    let unSupported = false;
     let no = ICNScale[(scale.indexOf(base) + 12 - tmpKey.keyNo)% 12];
     let onChordNo = "";
     if(onChord!=""){
       onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
-    // レベルを問わず、9を7(9), maj7をM7等表記を置き換える
-    q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5");
-    //マイナーのキーかどうかを判定
-    if(q[0] == "m" && q.indexOf("m7-5") == -1){
-      minorSignature = "m";
-      q = q.replace("m","");
-    }
-    q = q.replace(/^9$/,"7(9)");
+    // 9を7(9), maj7をM7等表記を置き換える
+    q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
+    return new exports.Chord(no, onChordNo, q);
+  }
+  return null;
+};
+
+exports.toICN = function(raw,tmpKey,level=2){
+  let s = "";
+  let chord = exports.parseChord(raw, tmpKey);
+  if(chord){
+    let swapped = false;
+    let isQAvailable = false;
+    let unSupported = false;
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if(level <= 3){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7");}
+    if(level <= 3){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
-    if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(no+minorSignature)){
+    if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":""))){
       swapped = true;
     }
+    let q = chord.q;
+    // 処理しやすいようにマイナー記号を消す(m7-5だけは例外）
+    if(q[0] == "m" && q != "m7-5"){q = q.replace(/^m/,"")}
+
     // Level 1のときは、7・M7・9・6を表示しない
     if("7,M7,9,add9,6".split(",").includes(q) && level >= 2){
       isQAvailable = true;
@@ -130,7 +142,10 @@ exports.toICN = function(raw,tmpKey,level=2){
         unSupported = true;
       }
     }
-    s = no+(swapped?"~":"")+(isQAvailable?("["+q+"]"):""+(unSupported?"[!"+q+"!]":""))+((onChordNo!=""&&level>=3)?"/"+onChordNo:"");  }
+    s = chord.no+(swapped?"~":"")+
+      (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
+      ((chord.onChordNo!=""&&level>=3)?"/"+chord.onChordNo:"");
+  }
   return s;
 };
 
