@@ -29,7 +29,7 @@ sheet.insertRule('.notsharpswap {background-color:#ffffff}');
 sheet.insertRule('.bluechord {color:#1a4a9c !important}');
 sheet.insertRule('.notbluechord {color:#000000 !important}');
 
-const ICNScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
+const NScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
@@ -56,13 +56,13 @@ exports.Key = class{
 };
 exports.Chord = class{
   constructor(no, onChordNo, q){
-    this.no = no; // ICNScale
-    this.onChordNo = onChordNo; // ICNScale
-    this.q = q; // 7, M7, 6, add9, aug, sus4, m, m7, mM7, m6, madd9, dim, m7-5
+    this.no = no; // NScale
+    this.onChordNo = onChordNo; // NScale
+    this.q = q; // 7, M7, 6, add9, aug, sus4, m, m7, mM7, m6, madd9, dim, m7-5, m7(9), 7(9)
     this.isMinor = "m,m7,mM7,m6,madd9,dim,m7-5,m7(9)".split(",").includes(q);
   }
 };
- 
+
 exports.readKeyChords = function(webSiteName){
   let keyElm;
   let keyChordElms;
@@ -126,13 +126,13 @@ exports.autoDetectKey = function(keyChords){
 exports.parseChord = function(raw, tmpKey){
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
   if(m){
-    let base = sharpify(m[1]); // E
+    let base = sharpify(m[1]);
     let q = m[3];
     let onChord = sharpify(m[5]);
-    let no = ICNScale[(scale.indexOf(base) + 12 - tmpKey.keyNo)% 12];
+    let no = NScale[(scale.indexOf(base) + 12 - tmpKey.keyNo)% 12];
     let onChordNo = "";
     if(onChord!=""){
-      onChordNo = ICNScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
+      onChordNo = NScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");

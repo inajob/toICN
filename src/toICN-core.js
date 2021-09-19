@@ -27,11 +27,11 @@ exports.Chord = class{
   constructor(no, onChordNo, q){
     this.no = no; // NScale
     this.onChordNo = onChordNo; // NScale
-    this.q = q; // 7, M7, 6, add9, aug, sus4, m, m7, mM7, m6, madd9, dim, m7-5
+    this.q = q; // 7, M7, 6, add9, aug, sus4, m, m7, mM7, m6, madd9, dim, m7-5, m7(9), 7(9)
     this.isMinor = "m,m7,mM7,m6,madd9,dim,m7-5,m7(9)".split(",").includes(q);
   }
 };
- 
+
 exports.readKeyChords = function(webSiteName){
   let keyElm;
   let keyChordElms;
