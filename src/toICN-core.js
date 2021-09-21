@@ -54,7 +54,7 @@ exports.readKeyChords = function(webSiteName){
     keyChordElms = keyChordElms.concat(Array.prototype.slice.bind(document.getElementById("chord_area").getElementsByTagName("u"))().map((e => e.firstChild)));
   }
   if(webSiteName == "j-total"){
-    keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("tt")[0].getElementsByTagName("a"))().map((e => e.firstChild));
+    keyChordElms = Array.prototype.slice.bind(document.querySelectorAll("tt a"))().map((e => e.firstChild));
     try{
       keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
     }catch(e){}
