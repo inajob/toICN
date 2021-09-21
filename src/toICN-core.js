@@ -43,10 +43,12 @@ exports.readKeyChords = function(webSiteName){
   if(webSiteName == "gakki.me"){
     let elms = Array.prototype.slice.bind(document.querySelectorAll(".cd_fontpos, .cd_font"))();
     keyChordElms = elms.map((e) => {
-      if(e.firstChild.nodeType == Node.TEXT_NODE){
-        return e.firstChild;
-      }else if(e.firstChild.nextSibling && e.firstChild.nextSibling.nodeType == Node.TEXT_NODE){
-        return e.firstChild.nextSibling;
+      if(e.firstChild){
+        if(e.firstChild.nodeType == Node.TEXT_NODE){
+          return e.firstChild;
+        }else if(e.firstChild.nextSibling && e.firstChild.nextSibling.nodeType == Node.TEXT_NODE){
+          return e.firstChild.nextSibling;
+        }
       }
       return null;
     }).filter((e) => e != null);
