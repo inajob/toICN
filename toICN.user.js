@@ -138,7 +138,7 @@ exports.parseChord = function(raw, tmpKey, minorMode=false){
     let onChordNo = "";
     if(onChord!=""){
       let onChordNoIndex = (scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12;
-      onChordNo = minorMode?MinorNScale[onChrodNoIndex]:NScale[onChordNoIndex];
+      onChordNo = minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
@@ -237,6 +237,7 @@ function main () {
   let detectedKey;
   let keyChords;  
   let key;
+  let minorMode = false;
   let level = 2;
   
   //ChordやKeyを読む
@@ -255,7 +256,7 @@ function main () {
 
   key = detectedKey;
   
-  exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+  exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
   document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
   document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
@@ -276,12 +277,17 @@ function main () {
     }
     document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
     document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
   document.querySelector('.selectedlevel').addEventListener('change', (event) => {
     level = event.target.value;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+  });
+
+  document.querySelector('.minormode').addEventListener('change', (event) => {
+    minorMode = (event.target.value==1);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
 };

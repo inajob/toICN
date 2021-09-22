@@ -3,6 +3,7 @@ function main () {
   let detectedKey;
   let keyChords;  
   let key;
+  let minorMode = false;
   let level = 2;
   
   //ChordやKeyを読む
@@ -21,7 +22,7 @@ function main () {
 
   key = detectedKey;
   
-  exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+  exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
   document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
   document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
@@ -42,12 +43,17 @@ function main () {
     }
     document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
     document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
   document.querySelector('.selectedlevel').addEventListener('change', (event) => {
     level = event.target.value;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+  });
+
+  document.querySelector('.minormode').addEventListener('change', (event) => {
+    minorMode = (event.target.value==1);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
 };

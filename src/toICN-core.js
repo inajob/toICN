@@ -107,7 +107,7 @@ exports.parseChord = function(raw, tmpKey, minorMode=false){
     let onChordNo = "";
     if(onChord!=""){
       let onChordNoIndex = (scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12;
-      onChordNo = minorMode?MinorNScale[onChrodNoIndex]:NScale[onChordNoIndex];
+      onChordNo = minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
