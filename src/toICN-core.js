@@ -156,7 +156,7 @@ exports.toICN = function(raw,tmpKey,level=2, minorMode=false){
   return s;
 };
 
-exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=2){
+exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=2, minorMode=false){
   let currentKey = tmpKey;
   let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
@@ -176,7 +176,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v,currentKey,level);
+      let icn = exports.toICN(e.v,currentKey,level, minorMode);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
@@ -185,10 +185,9 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
         e.elm.nodeValue = icn;
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
-        if((/\[7\]|\[M7\]|\[m7\-5\]$/.test(icn) && !(/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn))) 
-        || /\[sus4\]|\[aug\]|\[dim\]$/.test(icn)){
-          isBlueChord = true;
-        }
+        if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
+        if(!minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        if(minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
       }
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
