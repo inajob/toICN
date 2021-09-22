@@ -216,9 +216,9 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
         e.elm.nodeValue = icn;
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
-        if(/\[7\]|\[M7\]|\[m7\-5\]$/.test(icn))isBlueChord = true;
+        if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
         if(!minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
-        if(/\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
+        if(minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
       }
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
@@ -257,6 +257,8 @@ function main () {
   
   exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+  document.getElementById('minormodelabel').innerText =  "1=" + key.minorScaleName;
+
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
@@ -271,6 +273,7 @@ function main () {
       document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
+    document.getElementById('minormodelabel').innerText =  "1=" + key.minorScaleName;
     exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   });
   
@@ -327,6 +330,11 @@ let barText =
 + '<option value=11>B/G#m</option>'
 + '</select>'
 + '</label>'
++ ' '
++ '<div style = "display: inline-block;">'
++ '<input type="checkbox" id="minormode" name="minormode">'
++ '<label id="minormodelabel" for="minormode"></label>'
++ '</div>'
 + '<div id="toicnmessage">'
 + '</div>'
 + '</div>';

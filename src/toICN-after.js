@@ -23,6 +23,8 @@ function main () {
   
   exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+  document.getElementById('minormodelabel').innerText =  "1=" + key.minorScaleName;
+
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
@@ -37,6 +39,7 @@ function main () {
       document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
+    document.getElementById('minormodelabel').innerText =  "1=" + key.minorScaleName;
     exports.updateChords(keyChords, key, isAutoKeyDetection, level);
   });
   
@@ -93,6 +96,11 @@ let barText =
 + '<option value=11>B/G#m</option>'
 + '</select>'
 + '</label>'
++ ' '
++ '<div style = "display: inline-block;">'
++ '<input type="checkbox" id="minormode" name="minormode">'
++ '<label id="minormodelabel" for="minormode"></label>'
++ '</div>'
 + '<div id="toicnmessage">'
 + '</div>'
 + '</div>';
