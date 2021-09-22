@@ -23,6 +23,7 @@ exports.Key = class{
     else{this.key = this.majorScaleName + "/" + this.minorScaleName;}
   }
 };
+
 exports.Chord = class{
   constructor(no, onChordNo, q){
     this.no = no; // NScale
