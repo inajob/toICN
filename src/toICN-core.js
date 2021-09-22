@@ -185,7 +185,8 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
         e.elm.nodeValue = icn;
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
-        if("1[7],1#[7],4[7],4#[7],2[M7],2#[M7],3[M7],5[M7],5#[M7],6[M7],6#[M7],7[M7]".split(",").includes(icn) || /\[sus4\]|\[aug\]|\[dim\]|\[m7\-5\]$/.test(icn)){
+        if((/\[7\]|\[M7\]|\[m7\-5\]$/.test(icn) && !(/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn))) 
+        || /\[sus4\]|\[aug\]|\[dim\]$/.test(icn)){
           isBlueChord = true;
         }
       }
