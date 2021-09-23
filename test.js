@@ -95,6 +95,19 @@ tests.forEach((t) => {
   assert.equal(m.toICN(t[0],key), t[1]);
 });
 
+const testsMinor = [
+  ["Am" ,"1"],
+  ["A" ,"1~"],
+  ["C" ,"3"],
+  ["Cm" ,"3~"],
+];
+
+testsMinor.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.toICN(t[0],key,2,true), t[1]);
+});
+
+
 const testslv1 = [
   ["C7" ,"1"],
   ["C" ,"1"],
@@ -135,6 +148,19 @@ tests2.forEach((t) => {
   console.log(t[0]);
   assert.equal(m.toICN(t[0],key), t[1]);
 });
+
+const tests2Minor = [
+  ["G#m" ,"1"],
+  ["G#" ,"1~"],
+  ["B" ,"3"],
+  ["Bm" ,"3~"],
+];
+
+tests2Minor.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.toICN(t[0],key,2,true), t[1]);
+});
+
 
 key = new m.Key("Ab");
 const tests3 = [

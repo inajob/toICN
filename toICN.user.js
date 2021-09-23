@@ -30,6 +30,7 @@ sheet.insertRule('.bluechord {color:#1a4a9c !important}');
 sheet.insertRule('.notbluechord {color:#000000 !important}');
 
 const NScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
+const MinorNScale = ["3","3#","4","4#","5","6","6#","7","7#","1","1#","2"];
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
@@ -54,6 +55,7 @@ exports.Key = class{
     else{this.key = this.majorScaleName + "/" + this.minorScaleName;}
   }
 };
+
 exports.Chord = class{
   constructor(no, onChordNo, q){
     this.no = no; // NScale
@@ -125,16 +127,18 @@ exports.autoDetectKey = function(keyChords){
   return detectedKey;
 };
 
-exports.parseChord = function(raw, tmpKey){
+exports.parseChord = function(raw, tmpKey, minorMode=false){
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
   if(m){
     let base = sharpify(m[1]);
     let q = m[3];
     let onChord = sharpify(m[5]);
-    let no = NScale[(scale.indexOf(base) + 12 - tmpKey.keyNo)% 12];
+    let noIndex = (scale.indexOf(base) + 12 - tmpKey.keyNo)% 12;
+    let no = minorMode?MinorNScale[noIndex]:NScale[noIndex];
     let onChordNo = "";
     if(onChord!=""){
-      onChordNo = NScale[(scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12];
+      let onChordNoIndex = (scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12;
+      onChordNo = minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
@@ -143,9 +147,9 @@ exports.parseChord = function(raw, tmpKey){
   return null;
 };
 
-exports.toICN = function(raw,tmpKey,level=2){
+exports.toICN = function(raw,tmpKey,level=2, minorMode=false){
   let s = "";
-  let chord = exports.parseChord(raw, tmpKey);
+  let chord = exports.parseChord(raw, tmpKey, minorMode);
   if(chord){
     let swapped = false;
     let isQAvailable = false;
@@ -153,7 +157,8 @@ exports.toICN = function(raw,tmpKey,level=2){
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
     if(level <= 3){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
-    if("1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":""))){
+    if((!minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))||
+    (minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))){
       swapped = true;
     }
     let q = chord.q;
@@ -182,7 +187,7 @@ exports.toICN = function(raw,tmpKey,level=2){
   return s;
 };
 
-exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=2){
+exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=2, minorMode=false){
   let currentKey = tmpKey;
   let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
@@ -202,7 +207,7 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v,currentKey,level);
+      let icn = exports.toICN(e.v,currentKey,level, minorMode);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
@@ -211,9 +216,9 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
         e.elm.nodeValue = icn;
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
-        if("1[7],1#[7],4[7],4#[7],2[M7],2#[M7],3[M7],5[M7],5#[M7],6[M7],6#[M7],7[M7]".split(",").includes(icn) || /\[sus4\]|\[aug\]|\[dim\]|\[m7\-5\]$/.test(icn)){
-          isBlueChord = true;
-        }
+        if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
+        if(!minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        if(minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
       }
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
@@ -232,6 +237,7 @@ function main () {
   let detectedKey;
   let keyChords;  
   let key;
+  let minorMode = false;
   let level = 2;
   
   //ChordやKeyを読む
@@ -250,8 +256,11 @@ function main () {
 
   key = detectedKey;
   
-  exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+  exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+  document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
+  document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
+
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
@@ -266,12 +275,19 @@ function main () {
       document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
+    document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
   document.querySelector('.selectedlevel').addEventListener('change', (event) => {
     level = event.target.value;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+  });
+
+  document.querySelector('.minormode').addEventListener('change', (event) => {
+    minorMode = (event.target.value==1);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
 };
@@ -320,6 +336,13 @@ let barText =
 + '<option value=9>A/F#m</option>'
 + '<option value=10>Bb/Gm</option>'
 + '<option value=11>B/G#m</option>'
++ '</select>'
++ '</label>'
++ ' '
++ '<label style = "display: inline-block;">Disp:'
++ '<select class="minormode" name="minormode">'
++ '<option id="majorlabel" value=0></option>'
++ '<option id="minorlabel" value=1></option>'
 + '</select>'
 + '</label>'
 + '<div id="toicnmessage">'

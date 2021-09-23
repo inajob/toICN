@@ -3,6 +3,7 @@ function main () {
   let detectedKey;
   let keyChords;  
   let key;
+  let minorMode = false;
   let level = 2;
   
   //ChordやKeyを読む
@@ -21,8 +22,11 @@ function main () {
 
   key = detectedKey;
   
-  exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+  exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
+  document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
+  document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
+
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
@@ -37,12 +41,19 @@ function main () {
       document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
+    document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
   document.querySelector('.selectedlevel').addEventListener('change', (event) => {
     level = event.target.value;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+  });
+
+  document.querySelector('.minormode').addEventListener('change', (event) => {
+    minorMode = (event.target.value==1);
+    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
   });
   
 };
@@ -91,6 +102,13 @@ let barText =
 + '<option value=9>A/F#m</option>'
 + '<option value=10>Bb/Gm</option>'
 + '<option value=11>B/G#m</option>'
++ '</select>'
++ '</label>'
++ ' '
++ '<label style = "display: inline-block;">Disp:'
++ '<select class="minormode" name="minormode">'
++ '<option id="majorlabel" value=0></option>'
++ '<option id="minorlabel" value=1></option>'
 + '</select>'
 + '</label>'
 + '<div id="toicnmessage">'
