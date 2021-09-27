@@ -160,24 +160,25 @@ exports.toICN = function(raw, settings){
 
 exports.updateChords = function(keyChords, settings){
   let previousKey = new exports.Key(); 
+  let currentSettings = {...settings};
   keyChords.forEach((e) => {
     if(e.type == "key"){
       // 転調の場合
-      if(settings.isAutoKeyDetection){
+      if(currentSettings.isAutoKeyDetection){
         let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
-        settings.key = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
+        currentSettings.key = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
         if(previousKey.keyNo != -1){
-          let keyModulationDegree = settings.key.keyNo - previousKey.keyNo;
+          let keyModulationDegree = currentSettings.key.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.nodeValue = "Key: " + settings.key.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
+          e.elm.nodeValue = "Key: " + currentSettings.key.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
         }
-        previousKey = settings.key;
+        previousKey = currentSettings.key;
       }
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v,settings);
+      let icn = exports.toICN(e.v,currentSettings);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
@@ -187,8 +188,8 @@ exports.updateChords = function(keyChords, settings){
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
         if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
-        if(!settings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
-        if(settings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        if(!currentSettings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        if(currentSettings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
       }
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
