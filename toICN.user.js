@@ -1,8 +1,10 @@
 // ==UserScript==
 // @name         toInstaChord ICN
 // @namespace    https://github.com/inajob/toICN
-// @version      0.1
+// @version      1.0.0
 // @homepage     https://github.com/inajob/toICN
+// @updateURL    https://github.com/inajob/toICN/raw/main/toICN.user.js
+// @downloadURL  https://github.com/inajob/toICN/raw/main/toICN.user.js
 // @match        https://ja.chordwiki.org/wiki/*
 // @match        https://www.ufret.jp/song.php?data=*
 // @match        https://gakufu.gakki.me/m/*
