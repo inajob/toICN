@@ -159,21 +159,20 @@ exports.toICN = function(raw, settings){
 };
 
 exports.updateChords = function(keyChords, settings){
-  let currentKey = settings.key;
   let previousKey = new exports.Key(); 
   keyChords.forEach((e) => {
     if(e.type == "key"){
       // 転調の場合
       if(settings.isAutoKeyDetection){
         let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
-        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
+        settings.key = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
         if(previousKey.keyNo != -1){
-          let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
+          let keyModulationDegree = settings.key.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.nodeValue = "Key: " + currentKey.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
+          e.elm.nodeValue = "Key: " + settings.key.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
         }
-        previousKey = currentKey;
+        previousKey = settings.key;
       }
     }
     else{
