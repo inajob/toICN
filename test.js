@@ -1,6 +1,13 @@
 var assert = require('assert');
 const m = require("./src/toICN-core.js");
 
+let settings = {
+  key: null,
+  isAutoKeyDetection: true,
+  level: 2,
+  minorMode: false,
+};
+
 console.log("== Key ==");
 const keyTests = [
   ["C",false,0,"C","Am","C/Am"],
@@ -19,7 +26,7 @@ keyTests.forEach((t) => {
 
 console.log("== toICN ==")
 
-key = new m.Key("C");
+settings.key = new m.Key("C");
 
 const tests = [
   ["C" ,"1"],
@@ -92,8 +99,10 @@ const tests = [
 
 tests.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key), t[1]);
+  assert.equal(m.toICN(t[0],settings), t[1]);
 });
+
+settings.minorMode = true;
 
 const testsMinor = [
   ["Am" ,"1"],
@@ -104,9 +113,12 @@ const testsMinor = [
 
 testsMinor.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key,2,true), t[1]);
-});
+  assert.equal(m.toICN(t[0],settings), t[1]);
+})
 
+settings.minorMode = false;
+
+settings.level = 1;
 
 const testslv1 = [
   ["C7" ,"1"],
@@ -117,8 +129,10 @@ const testslv1 = [
 
 testslv1.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key,1), t[1]);
+  assert.equal(m.toICN(t[0],settings), t[1]);
 });
+
+settings.level = 4;
 
 const testslv4 = [
   ["C/E" ,"1/3"],
@@ -130,10 +144,11 @@ const testslv4 = [
 
 testslv4.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key,4), t[1]);
+  assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-key = new m.Key("B");
+settings.level = 2;
+settings.key = new m.Key("B");
 
 const tests2 = [
   ["B",   "1"],
@@ -146,8 +161,10 @@ const tests2 = [
 ]
 tests2.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key), t[1]);
+  assert.equal(m.toICN(t[0],settings), t[1]);
 });
+
+settings.minorMode = true;
 
 const tests2Minor = [
   ["G#m" ,"1"],
@@ -158,21 +175,22 @@ const tests2Minor = [
 
 tests2Minor.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key,2,true), t[1]);
+  assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
+settings.minorMode = false;
 
-key = new m.Key("Ab");
+settings.key = new m.Key("Ab");
 const tests3 = [
   ["Ab",   "1"],
 ]
 
 tests3.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key), t[1]);
+  assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-key = new m.Key("D#m");
+settings.key = new m.Key("D#m");
 
 const tests4 = [
   ["F#",   "1"],
@@ -180,12 +198,12 @@ const tests4 = [
 
 tests4.forEach((t) => {
   console.log(t[0]);
-  assert.equal(m.toICN(t[0],key), t[1]);
+  assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
 console.log("== updateChords ==")
 
-key = new m.Key("C");
+settings.key = new m.Key("C");
 // TODO: isAutokeyDetection test
 
 const updateChordsTest = [
@@ -235,7 +253,8 @@ const updateChordsTest = [
 
 updateChordsTest.forEach((t) => {
   console.log(t[0]);
-  m.updateChords(t[0], key, t[1]);
+  settings.isAutoKeyDetection = t[1]
+  m.updateChords(t[0], settings);
   console.log(t[0].elm);
   t[0].forEach((e, i) => {
     assert.equal(e.elm.nodeValue, t[2][i]);
