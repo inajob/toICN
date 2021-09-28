@@ -109,8 +109,16 @@ exports.readKeyChords = function(webSiteName){
   }).filter((e) => e != null)):null;
   //書かれているキーを読み取り
   let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
- let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
-  return {keyChords: keyChords, key:detectedKey};
+  let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
+
+  let originalKey = new exports.Key();
+
+  if(webSiteName == "j-total"){
+    let originalKeyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
+    originalKey = new exports.Key(originalKeyMatch[1],true);
+  }
+
+  return {keyChords: keyChords, key:detectedKey, originalKey:originalKey};
 };
 
 exports.autoDetectKey = function(keyChords){
@@ -274,15 +282,7 @@ function main () {
     }
   }
   if(webSiteName == "j-total"){
-    let keyElm;
-    try{
-      keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
-    }catch(e){}
-    if(!keyElm){ // 古いスタイルのHTMLに対応するため
-      keyElm = document.querySelectorAll("tr td font")[5];
-    }
-    let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
-    originalKey = new exports.Key(keyMatch[1],true);
+    originalKey = rawKeyChords.originalKey;
   }
 
   //表示書き換え関係

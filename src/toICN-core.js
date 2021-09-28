@@ -78,8 +78,16 @@ exports.readKeyChords = function(webSiteName){
   }).filter((e) => e != null)):null;
   //書かれているキーを読み取り
   let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
- let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
-  return {keyChords: keyChords, key:detectedKey};
+  let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
+
+  let originalKey = new exports.Key();
+
+  if(webSiteName == "j-total"){
+    let originalKeyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
+    originalKey = new exports.Key(originalKeyMatch[1],true);
+  }
+
+  return {keyChords: keyChords, key:detectedKey, originalKey:originalKey};
 };
 
 exports.autoDetectKey = function(keyChords){

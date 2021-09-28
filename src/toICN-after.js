@@ -38,15 +38,7 @@ function main () {
     }
   }
   if(webSiteName == "j-total"){
-    let keyElm;
-    try{
-      keyElm = document.getElementsByClassName("box2")[0].getElementsByTagName("h3")[0];
-    }catch(e){}
-    if(!keyElm){ // 古いスタイルのHTMLに対応するため
-      keyElm = document.querySelectorAll("tr td font")[5];
-    }
-    let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
-    originalKey = new exports.Key(keyMatch[1],true);
+    originalKey = rawKeyChords.originalKey;
   }
 
   //表示書き換え関係
