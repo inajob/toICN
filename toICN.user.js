@@ -250,7 +250,6 @@ function main () {
     kantanon();
   }
 
-
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
@@ -261,6 +260,7 @@ function main () {
     detectedKey = exports.autoDetectKey(keyChords);
   }
 
+  // 原曲のキーを取得する
   if(webSiteName == "ufret" || webSiteName =="chordwiki"){
     originalKey = detectedKey;
   }
