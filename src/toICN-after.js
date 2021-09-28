@@ -1,10 +1,12 @@
 function main () {
-  let isAutoKeyDetection = true;
   let detectedKey;
   let keyChords;  
-  let key;
-  let minorMode = false;
-  let level = 2;
+  let settings = {
+    key: null,
+    isAutoKeyDetection: true,
+    level: 2,
+    minorMode: false,
+  };
   
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
@@ -20,40 +22,40 @@ function main () {
 
   //表示書き換え関係
 
-  key = detectedKey;
+  settings.key = detectedKey;
   
-  exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+  exports.updateChords(keyChords, settings);
   document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
-  document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
-  document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
+  document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName;
+  document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName;
 
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
-      key = detectedKey;
-      isAutoKeyDetection = true;
-      document.getElementById('displayedkey').innerText = "Original Key: " + key.key;
+      settings.key = detectedKey;
+      settings.isAutoKeyDetection = true;
+      document.getElementById('displayedkey').innerText = "Original Key: " + settings.key.key;
       document.getElementById('toicnmessage').innerText = "";
     }
     else{
-      key = new exports.Key(scale[event.target.value]);
-      isAutoKeyDetection = false;
-      document.getElementById('displayedkey').innerText = "Key: " + key.key + " (selected)";
+      settings.key = new exports.Key(scale[event.target.value]);
+      settings.isAutoKeyDetection = false;
+      document.getElementById('displayedkey').innerText = "Key: " + settings.key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     }
-    document.getElementById('majorlabel').innerText =  "1=" + key.majorScaleName;
-    document.getElementById('minorlabel').innerText =  "1=" + key.minorScaleName;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+    document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName;
+    document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName;
+    exports.updateChords(keyChords, settings);
   });
   
   document.querySelector('.selectedlevel').addEventListener('change', (event) => {
-    level = event.target.value;
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+    settings.level = event.target.value;
+    exports.updateChords(keyChords, settings);
   });
 
   document.querySelector('.minormode').addEventListener('change', (event) => {
-    minorMode = (event.target.value==1);
-    exports.updateChords(keyChords, key, isAutoKeyDetection, level, minorMode);
+    settings.minorMode = (event.target.value==1);
+    exports.updateChords(keyChords, settings);
   });
   
 };

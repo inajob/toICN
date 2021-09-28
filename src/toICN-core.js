@@ -87,7 +87,7 @@ exports.autoDetectKey = function(keyChords){
   let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
   scale.forEach((s) => {
     let tmpKey = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,tmpKey)).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,{key:tmpKey, minorMode:false, level:2})).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = tmpKey;
@@ -96,18 +96,18 @@ exports.autoDetectKey = function(keyChords){
   return detectedKey;
 };
 
-exports.parseChord = function(raw, tmpKey, minorMode=false){
+exports.parseChord = function(raw, settings){
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
   if(m){
     let base = sharpify(m[1]);
     let q = m[3];
     let onChord = sharpify(m[5]);
-    let noIndex = (scale.indexOf(base) + 12 - tmpKey.keyNo)% 12;
-    let no = minorMode?MinorNScale[noIndex]:NScale[noIndex];
+    let noIndex = (scale.indexOf(base) + 12 - settings.key.keyNo)% 12;
+    let no = settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
     let onChordNo = "";
     if(onChord!=""){
-      let onChordNoIndex = (scale.indexOf(onChord) + 12 - tmpKey.keyNo)% 12;
-      onChordNo = minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
+      let onChordNoIndex = (scale.indexOf(onChord) + 12 - settings.key.keyNo)% 12;
+      onChordNo = settings.minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
@@ -116,18 +116,18 @@ exports.parseChord = function(raw, tmpKey, minorMode=false){
   return null;
 };
 
-exports.toICN = function(raw,tmpKey,level=2, minorMode=false){
+exports.toICN = function(raw, settings){
   let s = "";
-  let chord = exports.parseChord(raw, tmpKey, minorMode);
+  let chord = exports.parseChord(raw, settings);
   if(chord){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if(level <= 3){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
+    if(settings.level <= 3){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
-    if((!minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))||
-    (minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))){
+    if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))||
+    (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))){
       swapped = true;
     }
     let q = chord.q;
@@ -135,48 +135,50 @@ exports.toICN = function(raw,tmpKey,level=2, minorMode=false){
     if(q[0] == "m" && q != "m7-5"){q = q.replace(/^m/,"")}
 
     // Level 1のときは、7・M7・9・6を表示しない
-    if("7,M7,9,add9,6".split(",").includes(q) && level >= 2){
-      isQAvailable = true;
+    if("7,M7,9,add9,6".split(",").includes(q)){
+      if(settings.level >= 2){
+        isQAvailable = true;
+      }
     }
     //sus4,aug,dim,m7-5の場合はスワップさせない
-    if("sus4,7sus4,aug,dim,dim7,m7-5".split(",").includes(q)){
+    else if("sus4,7sus4,aug,dim,dim7,m7-5".split(",").includes(q)){
       isQAvailable = true;
       swapped = false;
     }
     //サポートされていない記号である場合の処理（レベル4のときのみ表示）
     else{
-      if(q.length>0 && level >= 4){
+      if(q.length>0 && settings.level >= 4){
         unSupported = true;
       }
     }
     s = chord.no+(swapped?"~":"")+
       (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
-      ((chord.onChordNo!=""&&level>=3)?"/"+chord.onChordNo:"");
+      ((chord.onChordNo!=""&&settings.level>=3)?"/"+chord.onChordNo:"");
   }
   return s;
 };
 
-exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=2, minorMode=false){
-  let currentKey = tmpKey;
+exports.updateChords = function(keyChords, settings){
   let previousKey = new exports.Key(); 
+  let currentSettings = {...settings};
   keyChords.forEach((e) => {
     if(e.type == "key"){
       // 転調の場合
-      if(tmpIsAutoKeyDetection){
+      if(currentSettings.isAutoKeyDetection){
         let tmpKeyMatch = e.v.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/);
-        currentKey = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
+        currentSettings.key = new exports.Key(tmpKeyMatch?tmpKeyMatch[2]:"", true);
         if(previousKey.keyNo != -1){
-          let keyModulationDegree = currentKey.keyNo - previousKey.keyNo;
+          let keyModulationDegree = currentSettings.key.keyNo - previousKey.keyNo;
           if(keyModulationDegree >= 7){keyModulationDegree -= 12;}
           else if(keyModulationDegree <= -6){keyModulationDegree += 12;}
-          e.elm.nodeValue = "Key: " + currentKey.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
+          e.elm.nodeValue = "Key: " + currentSettings.key.key +" ("+(keyModulationDegree>0?"+":"")+keyModulationDegree+")";
         }
-        previousKey = currentKey;
+        previousKey = currentSettings.key;
       }
     }
     else{
       // コードの場合
-      let icn = exports.toICN(e.v,currentKey,level, minorMode);
+      let icn = exports.toICN(e.v,currentSettings);
       let isSharp = false;
       let isSwap = false;
       let isBlueChord = false;
@@ -186,8 +188,8 @@ exports.updateChords = function(keyChords, tmpKey, tmpIsAutoKeyDetection, level=
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
         if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
         if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
-        if(!minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
-        if(minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        if(!currentSettings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        if(currentSettings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
       }
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
