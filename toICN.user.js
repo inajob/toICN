@@ -247,9 +247,7 @@ function main () {
   // ufretの場合は原曲キーに戻し、押さえ方を非表示にする
   if(webSiteName == "ufret"){
     showChordNameOnly(true);
-    try{
-      document.getElementsByName("keyselect")[0].options[2].selected = true;
-    }catch(e){}
+    kantanon();
   }
 
   //ChordやKeyを読む
