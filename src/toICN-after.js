@@ -7,7 +7,13 @@ function main () {
     level: 2,
     minorMode: false,
   };
-  
+  // ufretの場合は原曲キーに戻し、押さえ方を非表示にする
+  if(webSiteName == "ufret"){
+    showChordNameOnly(true);
+    kantanon();
+  }
+
+
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
