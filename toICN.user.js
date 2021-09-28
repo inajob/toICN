@@ -265,7 +265,13 @@ function main () {
     originalKey = detectedKey;
   }
   if(webSiteName == "gakki.me"){
-    originalKey = detectedKey;
+    try{
+      let capoElm = document.getElementsByClassName("gakufu_btn_capo")[0].childNodes[1];
+      let capoMatch = capoElm?capoElm.firstChild.nodeValue.match(/^capo (.*)/):null;
+      originalKey = new exports.Key(scale[(detectedKey.keyNo + Number(capoMatch[1])+12)%12]);
+    }catch(e){
+      originalKey = detectedKey;
+    }
   }
   if(webSiteName == "j-total"){
     let keyElm;
@@ -285,7 +291,8 @@ function main () {
   
   exports.updateChords(keyChords, settings);
   document.getElementById('displayedkey').innerText = "Original Key: " + originalKey.key;
-
+  document.getElementById('majorlabel').innerText =  "1=" + originalKey.majorScaleName;
+  document.getElementById('minorlabel').innerText =  "1=" + originalKey.minorScaleName;
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
