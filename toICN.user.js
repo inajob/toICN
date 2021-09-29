@@ -279,10 +279,6 @@ function main () {
   detectedKey = rawKeyChords.key;
   originalKey = rawKeyChords.originalKey;
 
-
-
-
-
   //表示書き換え関係
 
   settings.key = detectedKey;
@@ -300,7 +296,6 @@ function main () {
       document.getElementById('toicnmessage').innerText = "";
       document.getElementById('majorlabel').innerText =  "1=" + originalKey.majorScaleName;
       document.getElementById('minorlabel').innerText =  "1=" + originalKey.minorScaleName;
-    
     }
     else{
       settings.key = new exports.Key(scale[event.target.value]);
@@ -322,7 +317,6 @@ function main () {
     settings.minorMode = (event.target.value==1);
     exports.updateChords(keyChords, settings);
   });
-  
 };
 
 function waitElement(webSiteName, cb) {
