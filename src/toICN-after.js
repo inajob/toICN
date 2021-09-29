@@ -13,28 +13,11 @@ function main () {
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
   detectedKey = rawKeyChords.key;
+  originalKey = rawKeyChords.originalKey;
 
 
 
-  // 原曲のキーを取得する
-  if(webSiteName == "ufret"){
-    originalKey = new exports.Key(scale[(detectedKey.keyNo - Number(document.getElementsByName("keyselect")[0].value)+12)%12]);
-  }
-  if(webSiteName =="chordwiki"){
-    originalKey = detectedKey;
-  }
-  if(webSiteName == "gakki.me"){
-    try{
-      let capoElm = document.getElementsByClassName("gakufu_btn_capo")[0].childNodes[1];
-      let capoMatch = capoElm?capoElm.firstChild.nodeValue.match(/^capo (.*)/):null;
-      originalKey = new exports.Key(scale[(detectedKey.keyNo + Number(capoMatch[1])+12)%12]);
-    }catch(e){
-      originalKey = detectedKey;
-    }
-  }
-  if(webSiteName == "j-total"){
-    originalKey = rawKeyChords.originalKey;
-  }
+
 
   //表示書き換え関係
 

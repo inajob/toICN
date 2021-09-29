@@ -79,14 +79,29 @@ exports.readKeyChords = function(webSiteName){
   //書かれているキーを読み取り
   let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
   let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
-
   let originalKey = new exports.Key();
 
-    // キーが書かれていないときは、キーを自動判定する
+  // キーが書かれていないときは、キーを自動判定する
   if(detectedKey.keyNo == -1){
     detectedKey = exports.autoDetectKey(keyChords);
   }
 
+  // 原曲のキーを取得する
+  if(webSiteName == "ufret"){
+    originalKey = new exports.Key(scale[(detectedKey.keyNo - Number(document.getElementsByName("keyselect")[0].value)+12)%12]);
+  }
+  if(webSiteName =="chordwiki"){
+    originalKey = detectedKey;
+  }
+  if(webSiteName == "gakki.me"){
+    try{
+      let capoElm = document.getElementsByClassName("gakufu_btn_capo")[0].childNodes[1];
+      let capoMatch = capoElm?capoElm.firstChild.nodeValue.match(/^capo (.*)/):null;
+      originalKey = new exports.Key(scale[(detectedKey.keyNo + Number(capoMatch[1])+12)%12]);
+    }catch(e){
+      originalKey = detectedKey;
+    }
+  }
   if(webSiteName == "j-total"){
     let originalKeyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
     originalKey = new exports.Key(originalKeyMatch[1],true);
