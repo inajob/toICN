@@ -8,11 +8,6 @@ function main () {
     level: 2,
     minorMode: false,
   };
-  // ufretの場合は原曲キーに戻し、押さえ方を非表示にする
-  if(webSiteName == "ufret"){
-    showChordNameOnly(true);
-    kantanon();
-  }
 
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
@@ -25,7 +20,10 @@ function main () {
   }
 
   // 原曲のキーを取得する
-  if(webSiteName == "ufret" || webSiteName =="chordwiki"){
+  if(webSiteName == "ufret"){
+    originalKey = new exports.Key(scale[(detectedKey.keyNo - Number(document.getElementsByName("keyselect")[0].value)+12)%12]);
+  }
+  if(webSiteName =="chordwiki"){
     originalKey = detectedKey;
   }
   if(webSiteName == "gakki.me"){
