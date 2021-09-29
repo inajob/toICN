@@ -14,10 +14,7 @@ function main () {
   keyChords = rawKeyChords.keyChords;
   detectedKey = rawKeyChords.key;
 
-  // キーが書かれていないときは、キーを自動判定する
-  if(detectedKey.keyNo == -1){
-    detectedKey = exports.autoDetectKey(keyChords);
-  }
+
 
   // 原曲のキーを取得する
   if(webSiteName == "ufret"){

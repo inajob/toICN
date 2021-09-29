@@ -113,6 +113,11 @@ exports.readKeyChords = function(webSiteName){
 
   let originalKey = new exports.Key();
 
+    // キーが書かれていないときは、キーを自動判定する
+  if(detectedKey.keyNo == -1){
+    detectedKey = exports.autoDetectKey(keyChords);
+  }
+
   if(webSiteName == "j-total"){
     let originalKeyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
     originalKey = new exports.Key(originalKeyMatch[1],true);
