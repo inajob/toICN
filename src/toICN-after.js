@@ -1,5 +1,6 @@
 function main () {
   let detectedKey;
+  let originalKey;
   let keyChords;  
   let settings = {
     key: null,
@@ -7,44 +8,39 @@ function main () {
     level: 2,
     minorMode: false,
   };
-  
+
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
   keyChords = rawKeyChords.keyChords;
   detectedKey = rawKeyChords.key;
-
-  // キーが書かれていないときは、キーを自動判定する
-  if(detectedKey.keyNo == -1){
-    detectedKey = exports.autoDetectKey(keyChords);
-  }
-
-  // キーの手動設定
+  originalKey = rawKeyChords.originalKey;
 
   //表示書き換え関係
 
   settings.key = detectedKey;
   
   exports.updateChords(keyChords, settings);
-  document.getElementById('displayedkey').innerText = "Original Key: " + detectedKey.key;
-  document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName;
-  document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName;
-
+  document.getElementById('displayedkey').innerText = "Original Key: " + originalKey.key;
+  document.getElementById('majorlabel').innerText =  "1=" + originalKey.majorScaleName;
+  document.getElementById('minorlabel').innerText =  "1=" + originalKey.minorScaleName;
 
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     if(event.target.value == -1){ //Auto
       settings.key = detectedKey;
       settings.isAutoKeyDetection = true;
-      document.getElementById('displayedkey').innerText = "Original Key: " + settings.key.key;
+      document.getElementById('displayedkey').innerText = "Original Key: " + originalKey.key;
       document.getElementById('toicnmessage').innerText = "";
+      document.getElementById('majorlabel').innerText =  "1=" + originalKey.majorScaleName;
+      document.getElementById('minorlabel').innerText =  "1=" + originalKey.minorScaleName;
     }
     else{
       settings.key = new exports.Key(scale[event.target.value]);
       settings.isAutoKeyDetection = false;
       document.getElementById('displayedkey').innerText = "Key: " + settings.key.key + " (selected)";
       document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
+      document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName;
+      document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName;  
     }
-    document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName;
-    document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName;
     exports.updateChords(keyChords, settings);
   });
   
@@ -57,7 +53,6 @@ function main () {
     settings.minorMode = (event.target.value==1);
     exports.updateChords(keyChords, settings);
   });
-  
 };
 
 function waitElement(webSiteName, cb) {
