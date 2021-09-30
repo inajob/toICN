@@ -10,7 +10,7 @@ function main () {
     exports.updateSettings(rawKeyChords);
   });
   
-  document.querySelector('.selectedlevel').addEventListener('change', (event) => {
+  document.querySelector('.selectedmode').addEventListener('change', (event) => {
     exports.updateSettings(rawKeyChords);
   });
 

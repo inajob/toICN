@@ -75,12 +75,12 @@ exports.addToICNBar = function(){
     '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
     + '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">'
     + '</div>'
-    + '<label style = "display: inline-block;">Level:'
-    + '<select class="selectedlevel" name="selectedlevel">'
-    + '<option value=1>1(初心者向け)</option>'
-    + '<option value=2 selected>2(標準)</option>'
-    + '<option value=3>3(オンコード有)</option>'
-    + '<option value=4>4(上級者向け)</option>'
+    + '<label>Mode:'
+    + '<select class="selectedmode" name="selectedmode">'
+    + '<option value=1>InstaChord Lv.1(初心者向け)</option>'
+    + '<option value=2 selected>InstaChord Lv.2(標準)</option>'
+    + '<option value=3>InstaChord Lv.3(標準+オンコード)</option>'
+    + '<option value=4>InstaChord Lv.4(上級者向け)</option>'
     + '</select>'
     + '</label>'
     + ' '
@@ -332,7 +332,7 @@ exports.updateSettings = function(rawKeyChords){
     level: 2,
     minorMode: false,
   };
-  settings.level = document.querySelector('.selectedlevel').value;
+  settings.level = document.querySelector('.selectedmode').value;
   settings.isAutoKeyDetection = document.querySelector('.selectedkey').value == -1;
   settings.minorMode = document.querySelector('.minormode').value == 1;
 
@@ -364,7 +364,7 @@ exports.updateSettings = function(rawKeyChords){
     exports.updateSettings(rawKeyChords);
   });
   
-  document.querySelector('.selectedlevel').addEventListener('change', (event) => {
+  document.querySelector('.selectedmode').addEventListener('change', (event) => {
     exports.updateSettings(rawKeyChords);
   });
 
