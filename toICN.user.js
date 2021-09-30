@@ -37,9 +37,10 @@ const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 
-//フラットをシャープに置き換える関数
+// フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
+// キーを格納するためのクラス
 exports.Key = class{
   constructor(raw="",canDetectMajorOrMinor=false){ // keyがメジャーかマイナーか特定できる場合は canDetectMajorOrMinor=true
     let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
@@ -58,6 +59,7 @@ exports.Key = class{
   }
 };
 
+// 元のchordを格納するクラス
 exports.Chord = class{
   constructor(no, onChordNo, q){
     this.no = no; // NScale
@@ -67,6 +69,7 @@ exports.Chord = class{
   }
 };
 
+// toICNのインターフェイス（黄色いやつ）を表示する関数
 exports.addToICNBar = function(){
   let barText = 
     '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
@@ -119,6 +122,7 @@ exports.addToICNBar = function(){
   if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 };
 
+// Webサイトからキーやコードを読み取り、それをもとに演奏用キーや原曲キーを推定しそれらを返す関数
 exports.readKeyChords = function(webSiteName){
   let keyElm;
   let keyChordElms;
@@ -195,6 +199,7 @@ exports.readKeyChords = function(webSiteName){
   return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey};
 };
 
+// 読み取られたchordからキーを自動で判定する関数
 exports.autoDetectKey = function(keyChords){
   let maxCount = 0;
   let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
@@ -229,6 +234,7 @@ exports.parseChord = function(raw, settings){
   return null;
 };
 
+// 渡されたchordを元にICNを返す関数
 exports.toICN = function(raw, settings){
   let s = "";
   let chord = exports.parseChord(raw, settings);
@@ -271,6 +277,7 @@ exports.toICN = function(raw, settings){
   return s;
 };
 
+// chordを書き換える関数
 exports.updateChords = function(keyChords, settings){
   let previousKey = new exports.Key(); 
   let currentSettings = {...settings};
@@ -317,6 +324,7 @@ exports.updateChords = function(keyChords, settings){
   });
 };
 
+// 設定されている情報を読み取り、それをもとにページの一部を書き換えてupdateChordsを実行する関数
 exports.updateSettings = function(rawKeyChords){
   let settings = {
     key: null,
