@@ -1,9 +1,11 @@
 function main () {
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
-
+  
+  //設定情報を読み取り、chordを書き換え
   exports.updateSettings(rawKeyChords);
 
+  //設定の書き換えがあった場合は、同様の処理を行う
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
     exports.updateSettings(rawKeyChords);
   });
