@@ -293,16 +293,6 @@ exports.updateSettings = function(rawKeyChords){
 
   exports.updateChords(rawKeyChords.keyChords, settings);
 };function main () {
-  let detectedKey;
-  let originalKey;
-  let keyChords;  
-  let settings = {
-    key: null,
-    isAutoKeyDetection: true,
-    level: 2,
-    minorMode: false,
-  };
-
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
 
