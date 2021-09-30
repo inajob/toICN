@@ -76,16 +76,14 @@ exports.addToICNBar = function(){
     + '</div>'
     + '</div>';
 
-if(webSiteName == "ufret"){
-  let e = document.getElementById('my-chord-data');
-  if(e){e.insertAdjacentHTML('beforebegin', barText);}
-  else{document.getElementsByClassName('row')[6].insertAdjacentHTML('afterend', barText);}
-}
-if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
-if(webSiteName == "gakki.me"){document.querySelector(".music_func,.fumen_func").insertAdjacentHTML('afterend', barText);}
-if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
-
-
+  if(webSiteName == "ufret"){
+    let e = document.getElementById('my-chord-data');
+    if(e){e.insertAdjacentHTML('beforebegin', barText);}
+    else{document.getElementsByClassName('row')[6].insertAdjacentHTML('afterend', barText);}
+  }
+  if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
+  if(webSiteName == "gakki.me"){document.querySelector(".music_func,.fumen_func").insertAdjacentHTML('afterend', barText);}
+  if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
 };
 
 exports.readKeyChords = function(webSiteName){
