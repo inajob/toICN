@@ -107,7 +107,7 @@ exports.readKeyChords = function(webSiteName){
     originalKey = new exports.Key(originalKeyMatch[1],true);
   }
 
-  return {keyChords: keyChords, key:detectedKey, originalKey:originalKey};
+  return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey};
 };
 
 exports.autoDetectKey = function(keyChords){
@@ -230,4 +230,33 @@ exports.updateChords = function(keyChords, settings){
       else{e.elm.parentNode.classList.add("notbluechord");}
     }
   });
+};
+
+exports.updateSettings = function(rawKeyChords){
+  let settings = {
+    key: null,
+    isAutoKeyDetection: true,
+    level: 2,
+    minorMode: false,
+  };
+  settings.level = document.querySelector('.selectedlevel').value;
+  settings.isAutoKeyDetection = document.querySelector('.selectedkey').value == -1;
+  settings.minorMode = document.querySelector('.minormode').value == 1;
+
+  if(settings.isAutoKeyDetection){
+    settings.key = rawKeyChords.detectedKey;
+    document.getElementById('toicnmessage').innerText = "";
+    document.getElementById('majorlabel').innerText =  "1=" + rawKeyChords.originalKey.majorScaleName + "(maj)";
+    document.getElementById('minorlabel').innerText =  "1=" + rawKeyChords.originalKey.minorScaleName + "(min)";
+  }
+  else{
+    settings.key = new exports.Key(scale[document.querySelector('.selectedkey').value]);
+    document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
+    document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName + "(maj)";
+    document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName + "(min)";  
+  }
+
+  document.getElementById('displayedkey').innerText = "Original Key: " + rawKeyChords.originalKey.key;
+
+  exports.updateChords(rawKeyChords.keyChords, settings);
 };
