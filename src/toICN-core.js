@@ -172,7 +172,7 @@ exports.autoDetectKey = function(keyChords){
   let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
   scale.forEach((s) => {
     let tmpKey = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,{key:tmpKey, minorMode:false, level:2})).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,{key:tmpKey, minorMode:false, mode:"ic2"})).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = tmpKey;
@@ -210,7 +210,7 @@ exports.toICN = function(raw, settings){
     let isQAvailable = false;
     let unSupported = false;
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if("ic1,ic2,ic3".split(",").includes(settings.level)){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
+    if("ic1,ic2,ic3".split(",").includes(settings.mode)){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
     if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))||
     (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))){
@@ -222,7 +222,7 @@ exports.toICN = function(raw, settings){
 
     // Level 1のときは、7・M7・9・6を表示しない
     if("7,M7,9,add9,6".split(",").includes(q)){
-      if("ic2,ic3,ic4".split(",").includes(settings.level)){
+      if("ic2,ic3,ic4".split(",").includes(settings.mode)){
         isQAvailable = true;
       }
     }
@@ -233,13 +233,13 @@ exports.toICN = function(raw, settings){
     }
     //サポートされていない記号である場合の処理（レベル4のときのみ表示）
     else{
-      if(q.length>0 && settings.level == "ic4"){
+      if(q.length>0 && settings.mode == "ic4"){
         unSupported = true;
       }
     }
     s = chord.no+(swapped?"~":"")+
       (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
-      ((chord.onChordNo!=""&&"ic3,ic4".split(",").includes(settings.level))?"/"+chord.onChordNo:"");
+      ((chord.onChordNo!=""&&"ic3,ic4".split(",").includes(settings.mode))?"/"+chord.onChordNo:"");
   }
   return s;
 };
@@ -296,10 +296,10 @@ exports.updateSettings = function(rawKeyChords){
   let settings = {
     key: null,
     isAutoKeyDetection: true,
-    level: "ic2",
+    mode: "ic2",
     minorMode: false,
   };
-  settings.level = document.querySelector('.selectedmode').value;
+  settings.mode = document.querySelector('.selectedmode').value;
   settings.isAutoKeyDetection = document.querySelector('.selectedkey').value == -1;
   settings.minorMode = document.querySelector('.minormode').value == 1;
 
