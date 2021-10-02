@@ -37,9 +37,10 @@ const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 
-//フラットをシャープに置き換える関数
+// フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
+// キーを格納するためのクラス
 exports.Key = class{
   constructor(raw="",canDetectMajorOrMinor=false){ // keyがメジャーかマイナーか特定できる場合は canDetectMajorOrMinor=true
     let rawMatch = raw.match(/([A-G](#|b|＃|♯|♭){0,1})(.{0,1})/);
@@ -58,6 +59,7 @@ exports.Key = class{
   }
 };
 
+// 元のchordを格納するクラス
 exports.Chord = class{
   constructor(no, onChordNo, q){
     this.no = no; // NScale
@@ -67,6 +69,60 @@ exports.Chord = class{
   }
 };
 
+// toICNのインターフェイス（黄色いやつ）を表示する関数
+exports.addToICNBar = function(){
+  let barText = 
+    '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
+    + '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">'
+    + '</div>'
+    + '<label style = "display: inline-block;">Level:'
+    + '<select class="selectedlevel" name="selectedlevel">'
+    + '<option value=1>1(初心者向け)</option>'
+    + '<option value=2 selected>2(標準)</option>'
+    + '<option value=3>3(オンコード有)</option>'
+    + '<option value=4>4(上級者向け)</option>'
+    + '</select>'
+    + '</label>'
+    + ' '
+    + '<label style = "display: inline-block;">Key:'
+    + '<select class="selectedkey" name="selectedkey">'
+    + '<option value=-1>Auto(推奨)</option>'
+    + '<option value=0>C/Am</option>'
+    + '<option value=1>Db/Bbm</option>'
+    + '<option value=2>D/Bm</option>'
+    + '<option value=3>Eb/Cm</option>'
+    + '<option value=4>E/C#m</option>'
+    + '<option value=5>F/Dm</option>'
+    + '<option value=6>F#/D#m</option>'
+    + '<option value=7>G/Em</option>'
+    + '<option value=8>Ab/Fm</option>'
+    + '<option value=9>A/F#m</option>'
+    + '<option value=10>Bb/Gm</option>'
+    + '<option value=11>B/G#m</option>'
+    + '</select>'
+    + '</label>'
+    + ' '
+    + '<label style = "display: inline-block;">Disp:'
+    + '<select class="minormode" name="minormode">'
+    + '<option id="majorlabel" value=0></option>'
+    + '<option id="minorlabel" value=1></option>'
+    + '</select>'
+    + '</label>'
+    + '<div id="toicnmessage">'
+    + '</div>'
+    + '</div>';
+
+  if(webSiteName == "ufret"){
+    let e = document.getElementById('my-chord-data');
+    if(e){e.insertAdjacentHTML('beforebegin', barText);}
+    else{document.getElementsByClassName('row')[6].insertAdjacentHTML('afterend', barText);}
+  }
+  if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
+  if(webSiteName == "gakki.me"){document.querySelector(".music_func,.fumen_func").insertAdjacentHTML('afterend', barText);}
+  if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
+};
+
+// Webサイトからキーやコードを読み取り、それをもとに演奏用キーや原曲キーを推定しそれらを返す関数
 exports.readKeyChords = function(webSiteName){
   let keyElm;
   let keyChordElms;
@@ -140,9 +196,10 @@ exports.readKeyChords = function(webSiteName){
     originalKey = new exports.Key(originalKeyMatch[1],true);
   }
 
-  return {keyChords: keyChords, key:detectedKey, originalKey:originalKey};
+  return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey};
 };
 
+// 読み取られたchordからキーを自動で判定する関数
 exports.autoDetectKey = function(keyChords){
   let maxCount = 0;
   let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
@@ -177,6 +234,7 @@ exports.parseChord = function(raw, settings){
   return null;
 };
 
+// 渡されたchordを元にICNを返す関数
 exports.toICN = function(raw, settings){
   let s = "";
   let chord = exports.parseChord(raw, settings);
@@ -219,6 +277,7 @@ exports.toICN = function(raw, settings){
   return s;
 };
 
+// chordを書き換える関数
 exports.updateChords = function(keyChords, settings){
   let previousKey = new exports.Key(); 
   let currentSettings = {...settings};
@@ -264,60 +323,53 @@ exports.updateChords = function(keyChords, settings){
     }
   });
 };
-function main () {
-  let detectedKey;
-  let originalKey;
-  let keyChords;  
+
+// 設定されている情報を読み取り、それをもとにページの一部を書き換えてupdateChordsを実行する関数
+exports.updateSettings = function(rawKeyChords){
   let settings = {
     key: null,
     isAutoKeyDetection: true,
     level: 2,
     minorMode: false,
   };
+  settings.level = document.querySelector('.selectedlevel').value;
+  settings.isAutoKeyDetection = document.querySelector('.selectedkey').value == -1;
+  settings.minorMode = document.querySelector('.minormode').value == 1;
 
+  if(settings.isAutoKeyDetection){
+    settings.key = rawKeyChords.detectedKey;
+    document.getElementById('toicnmessage').innerText = "";
+    document.getElementById('majorlabel').innerText =  "1=" + rawKeyChords.originalKey.majorScaleName + "(maj)";
+    document.getElementById('minorlabel').innerText =  "1=" + rawKeyChords.originalKey.minorScaleName + "(min)";
+  }
+  else{
+    settings.key = new exports.Key(scale[document.querySelector('.selectedkey').value]);
+    document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
+    document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName + "(maj)";
+    document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName + "(min)";  
+  }
+
+  document.getElementById('displayedkey').innerText = "Original Key: " + rawKeyChords.originalKey.key;
+
+  exports.updateChords(rawKeyChords.keyChords, settings);
+};function main () {
   //ChordやKeyを読む
   let rawKeyChords = exports.readKeyChords(webSiteName);
-  keyChords = rawKeyChords.keyChords;
-  detectedKey = rawKeyChords.key;
-  originalKey = rawKeyChords.originalKey;
-
-  //表示書き換え関係
-
-  settings.key = detectedKey;
   
-  exports.updateChords(keyChords, settings);
-  document.getElementById('displayedkey').innerText = "Original Key: " + originalKey.key;
-  document.getElementById('majorlabel').innerText =  "1=" + originalKey.majorScaleName;
-  document.getElementById('minorlabel').innerText =  "1=" + originalKey.minorScaleName;
+  //設定情報を読み取り、chordを書き換え
+  exports.updateSettings(rawKeyChords);
 
+  //設定の書き換えがあった場合は、同様の処理を行う
   document.querySelector('.selectedkey').addEventListener('change', (event) => {
-    if(event.target.value == -1){ //Auto
-      settings.key = detectedKey;
-      settings.isAutoKeyDetection = true;
-      document.getElementById('displayedkey').innerText = "Original Key: " + originalKey.key;
-      document.getElementById('toicnmessage').innerText = "";
-      document.getElementById('majorlabel').innerText =  "1=" + originalKey.majorScaleName;
-      document.getElementById('minorlabel').innerText =  "1=" + originalKey.minorScaleName;
-    }
-    else{
-      settings.key = new exports.Key(scale[event.target.value]);
-      settings.isAutoKeyDetection = false;
-      document.getElementById('displayedkey').innerText = "Key: " + settings.key.key + " (selected)";
-      document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
-      document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName;
-      document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName;  
-    }
-    exports.updateChords(keyChords, settings);
+    exports.updateSettings(rawKeyChords);
   });
   
   document.querySelector('.selectedlevel').addEventListener('change', (event) => {
-    settings.level = event.target.value;
-    exports.updateChords(keyChords, settings);
+    exports.updateSettings(rawKeyChords);
   });
 
   document.querySelector('.minormode').addEventListener('change', (event) => {
-    settings.minorMode = (event.target.value==1);
-    exports.updateChords(keyChords, settings);
+    exports.updateSettings(rawKeyChords);
   });
 };
 
@@ -337,55 +389,7 @@ function waitElement(webSiteName, cb) {
   }, 300);
 }
 
-let barText = 
-'<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
-+ '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">'
-+ '</div>'
-+ '<label style = "display: inline-block;">Level:'
-+ '<select class="selectedlevel" name="selectedlevel">'
-+ '<option value=1>1(初心者向け)</option>'
-+ '<option value=2 selected>2(標準)</option>'
-+ '<option value=3>3(オンコード有)</option>'
-+ '<option value=4>4(上級者向け)</option>'
-+ '</select>'
-+ '</label>'
-+ ' '
-+ '<label style = "display: inline-block;">Key:'
-+ '<select class="selectedkey" name="selectedkey">'
-+ '<option value=-1>Auto(推奨)</option>'
-+ '<option value=0>C/Am</option>'
-+ '<option value=1>Db/Bbm</option>'
-+ '<option value=2>D/Bm</option>'
-+ '<option value=3>Eb/Cm</option>'
-+ '<option value=4>E/C#m</option>'
-+ '<option value=5>F/Dm</option>'
-+ '<option value=6>F#/D#m</option>'
-+ '<option value=7>G/Em</option>'
-+ '<option value=8>Ab/Fm</option>'
-+ '<option value=9>A/F#m</option>'
-+ '<option value=10>Bb/Gm</option>'
-+ '<option value=11>B/G#m</option>'
-+ '</select>'
-+ '</label>'
-+ ' '
-+ '<label style = "display: inline-block;">Disp:'
-+ '<select class="minormode" name="minormode">'
-+ '<option id="majorlabel" value=0></option>'
-+ '<option id="minorlabel" value=1></option>'
-+ '</select>'
-+ '</label>'
-+ '<div id="toicnmessage">'
-+ '</div>'
-+ '</div>';
-
-if(webSiteName == "ufret"){
-  let e = document.getElementById('my-chord-data');
-  if(e){e.insertAdjacentHTML('beforebegin', barText);}
-  else{document.getElementsByClassName('row')[6].insertAdjacentHTML('afterend', barText);}
-}
-if(webSiteName == "chordwiki"){(document.getElementsByClassName('subtitle'))[0].insertAdjacentHTML('afterend', barText);}
-if(webSiteName == "gakki.me"){document.querySelector(".music_func,.fumen_func").insertAdjacentHTML('afterend', barText);}
-if(webSiteName == "j-total"){document.body.insertAdjacentHTML('afterbegin', barText);}
+exports.addToICNBar();
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   waitElement(webSiteName, main);
