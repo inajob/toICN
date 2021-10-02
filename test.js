@@ -4,7 +4,7 @@ const m = require("./src/toICN-core.js");
 let settings = {
   key: null,
   isAutoKeyDetection: true,
-  level: 2,
+  mode: "ic2",
   minorMode: false,
 };
 
@@ -118,7 +118,7 @@ testsMinor.forEach((t) => {
 
 settings.minorMode = false;
 
-settings.level = 1;
+settings.mode = "ic1";
 
 const testslv1 = [
   ["C7" ,"1"],
@@ -132,7 +132,7 @@ testslv1.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-settings.level = 4;
+settings.mode = "ic4";
 
 const testslv4 = [
   ["C/E" ,"1/3"],
@@ -147,7 +147,7 @@ testslv4.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-settings.level = 2;
+settings.mode = "ic2";
 settings.key = new m.Key("B");
 
 const tests2 = [
