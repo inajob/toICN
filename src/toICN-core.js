@@ -44,6 +44,7 @@ exports.addToICNBar = function(){
     + '</div>'
     + '<label>Mode:'
     + '<select class="selectedmode" name="selectedmode">'
+    + '<option value="off">Off(変換前のコードを表示)</option>'
     + '<option value="ic1">InstaChord Lv.1(初心者向け)</option>'
     + '<option value="ic2" selected>InstaChord Lv.2(標準)</option>'
     + '<option value="ic3">InstaChord Lv.3(標準+オンコード)</option>'
@@ -264,29 +265,34 @@ exports.updateChords = function(keyChords, settings){
       }
     }
     else{
-      // コードの場合
-      let icn = exports.toICN(e.v,currentSettings);
-      let isSharp = false;
-      let isSwap = false;
-      let isBlueChord = false;
-      //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
-      if(icn!=""){
-        e.elm.nodeValue = icn;
-        if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
-        if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
-        if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
-        if(!currentSettings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
-        if(currentSettings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
-      }
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
-      //chordに色を付ける
-      if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
-      else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
-      else if(!isSharp&&isSwap){e.elm.parentNode.classList.add("swap");}
-      else{e.elm.parentNode.classList.add("notsharpswap");}
-      if(isBlueChord){e.elm.parentNode.classList.add("bluechord");}
-      else{e.elm.parentNode.classList.add("notbluechord");}
+      if(settings.mode == "off"){
+        e.elm.nodeValue = e.v;
+      }
+      // インスタコードモードが選択されている場合
+      else if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+        let icn = exports.toICN(e.v,currentSettings);
+        let isSharp = false;
+        let isSwap = false;
+        let isBlueChord = false;
+        //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
+        if(icn!=""){
+          e.elm.nodeValue = icn;
+          if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
+          if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
+          if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
+          if(!currentSettings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+          if(currentSettings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        }
+        //chordに色を付ける
+        if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
+        else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
+        else if(!isSharp&&isSwap){e.elm.parentNode.classList.add("swap");}
+        else{e.elm.parentNode.classList.add("notsharpswap");}
+        if(isBlueChord){e.elm.parentNode.classList.add("bluechord");}
+        else{e.elm.parentNode.classList.add("notbluechord");}  
+      }
     }
   });
 };
