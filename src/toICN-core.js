@@ -1,5 +1,6 @@
 const NScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
 const MinorNScale = ["3","3#","4","4#","5","6","6#","7","7#","1","1#","2"];
+const NScaleKanji = ["一","一#","二","二#","三","四","四#","五","五#","六","六#","七"];
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
@@ -49,6 +50,8 @@ exports.addToICNBar = function(){
     + '<option value="ic2" selected>InstaChord Lv.2(標準)</option>'
     + '<option value="ic3">InstaChord Lv.3(標準+オンコード)</option>'
     + '<option value="ic4">InstaChord Lv.4(上級者向け)</option>'
+    + '<option value="15ichie">一五一会</option>'
+    + '<option value="15ichie_a">一五一会(アラビア数字)</option>'
     + '</select>'
     + '</label>'
     + ' '
@@ -185,16 +188,27 @@ exports.autoDetectKey = function(keyChords){
 exports.parseChord = function(raw, settings){
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
   if(m){
+    let no = "";
+    let onChordNo = "";
     let base = sharpify(m[1]);
     let q = m[3];
     let onChord = sharpify(m[5]);
     let noIndex = (scale.indexOf(base) + 12 - settings.key.keyNo)% 12;
-    let no = settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
-    let onChordNo = "";
-    if(onChord!=""){
-      let onChordNoIndex = (scale.indexOf(onChord) + 12 - settings.key.keyNo)% 12;
-      onChordNo = settings.minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
+    if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+      no = settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
+      onChordNo = "";
+      if(onChord!=""){
+        let onChordNoIndex = (scale.indexOf(onChord) + 12 - settings.key.keyNo)% 12;
+        onChordNo = settings.minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
+      }
     }
+    else if(settings.mode == "15ichie"){
+      no = NScaleKanji[noIndex];
+    }
+    else if(settings.mode == "15ichie_a"){
+      no = NScale[noIndex];
+    }
+
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
     return new exports.Chord(no, onChordNo, q);
@@ -245,6 +259,25 @@ exports.toICN = function(raw, settings){
   return s;
 };
 
+exports.to15ichie = function(raw, settings){
+  debugger;
+  let s = null;
+  let chord = exports.parseChord(raw, settings);
+  
+  if(chord){
+    let no = chord.no;
+    chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");
+    if(",7,M7,6,9,m,m7,mM7,m6,m9".split(",").includes(chord.q)){
+      s = no;
+    }
+    else{
+      s = "";
+    }
+  }
+  return s;
+};
+
+
 // chordを書き換える関数
 exports.updateChords = function(keyChords, settings){
   let previousKey = new exports.Key(); 
@@ -267,6 +300,7 @@ exports.updateChords = function(keyChords, settings){
     else{
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
+      //offモードが選択されている場合
       if(settings.mode == "off"){
         e.elm.nodeValue = e.v;
       }
@@ -292,6 +326,13 @@ exports.updateChords = function(keyChords, settings){
         else{e.elm.parentNode.classList.add("notsharpswap");}
         if(isBlueChord){e.elm.parentNode.classList.add("bluechord");}
         else{e.elm.parentNode.classList.add("notbluechord");}  
+      }
+      else if("15ichie,15ichie_a".split(",").includes(settings.mode)){
+        debugger;
+        let ichigo = exports.to15ichie(e.v,currentSettings);
+        if(ichigo != null){
+          e.elm.nodeValue = ichigo;
+        }
       }
     }
   });
