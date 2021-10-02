@@ -393,6 +393,23 @@ exports.updateSettings = function(rawKeyChords){
   settings.isAutoKeyDetection = document.querySelector('.selectedkey').value == -1;
   settings.minorMode = document.querySelector('.minormode').value == 1;
 
+  if(settings.mode == "off"){
+    document.getElementsByClassName("selectedkey")[0].disabled = true;
+    document.getElementsByClassName("minormode")[0].disabled = true;
+  }
+  // インスタコードモードが選択されている場合
+  else if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+    document.getElementsByClassName("selectedkey")[0].disabled = false;
+    document.getElementsByClassName("minormode")[0].disabled = false;
+
+  }
+  else if("15ichie,15ichie_a".split(",").includes(settings.mode)){
+    document.getElementsByClassName("selectedkey")[0].disabled = false;
+    document.getElementsByClassName("minormode")[0].disabled = true;
+    document.getElementsByClassName("minormode")[0].value = 0;
+  }
+
+
   if(settings.isAutoKeyDetection){
     settings.key = rawKeyChords.detectedKey;
     document.getElementById('toicnmessage').innerText = "";
