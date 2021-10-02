@@ -147,6 +147,7 @@ testslv4.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
+
 settings.mode = "ic2";
 settings.key = new m.Key("B");
 
@@ -201,7 +202,45 @@ tests4.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-console.log("== updateChords ==")
+console.log("== to15ichie ==");
+
+settings.key = new m.Key("C");
+settings.mode = "15ichie";
+
+const tests15ichie = [
+  ["C7" ,"一"],
+  ["C" ,"一"],
+  ["Cm" ,"一"],
+
+  ["Csus4" ,""],
+  ["Caug" ,""]
+
+];
+
+tests15ichie.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.to15ichie(t[0],settings), t[1]);
+});
+
+settings.mode = "15ichie_a";
+
+const tests15ichie_a = [
+  ["C7" ,"1"],
+  ["C" ,"1"],
+  ["Cm" ,"1"],
+
+  ["Csus4" ,""],
+  ["Caug" ,""]
+];
+
+tests15ichie_a.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.to15ichie(t[0],settings), t[1]);
+});
+
+settings.mode = "ic2";
+
+console.log("== updateChords ==");
 
 settings.key = new m.Key("C");
 // TODO: isAutokeyDetection test
