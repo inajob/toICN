@@ -265,14 +265,14 @@ exports.toICN = function(raw, settings){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
-    // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if("ic1,ic2,ic3".split(",").includes(settings.mode)){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
     if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))||
     (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))){
       swapped = true;
     }
     let q = chord.q;
+    // level 3以下のときは、インスタコードで弾けるキーに置き換える
+    if("ic1,ic2,ic3".split(",").includes(settings.mode)){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     // 処理しやすいようにマイナー記号を消す(m7-5だけは例外）
     if(q[0] == "m" && q != "m7-5"){q = q.replace(/^m/,"")}
 
