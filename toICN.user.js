@@ -301,7 +301,6 @@ exports.toICN = function(raw, settings){
 };
 
 exports.to15ichie = function(raw, settings){
-  debugger;
   let s = null;
   let chord = exports.parseChord(raw);
   
@@ -371,7 +370,6 @@ exports.updateChords = function(keyChords, settings){
         else{e.elm.parentNode.classList.add("notbluechord");}  
       }
       else if("15ichie,15ichie_a".split(",").includes(settings.mode)){
-        debugger;
         let ichigo = exports.to15ichie(e.v,currentSettings);
         if(ichigo != null){
           e.elm.nodeValue = ichigo;
