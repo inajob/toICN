@@ -77,10 +77,10 @@ exports.addToICNBar = function(){
     + '</div>'
     + '<label>Mode:'
     + '<select class="selectedmode" name="selectedmode">'
-    + '<option value=1>InstaChord Lv.1(初心者向け)</option>'
-    + '<option value=2 selected>InstaChord Lv.2(標準)</option>'
-    + '<option value=3>InstaChord Lv.3(標準+オンコード)</option>'
-    + '<option value=4>InstaChord Lv.4(上級者向け)</option>'
+    + '<option value="ic1">InstaChord Lv.1(初心者向け)</option>'
+    + '<option value="ic2" selected>InstaChord Lv.2(標準)</option>'
+    + '<option value="ic3">InstaChord Lv.3(標準+オンコード)</option>'
+    + '<option value="ic4">InstaChord Lv.4(上級者向け)</option>'
     + '</select>'
     + '</label>'
     + ' '
@@ -243,7 +243,7 @@ exports.toICN = function(raw, settings){
     let isQAvailable = false;
     let unSupported = false;
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if(settings.level <= 3){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
+    if("ic1,ic2,ic3".split(",").includes(settings.level)){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
     if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))||
     (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))){
@@ -255,7 +255,7 @@ exports.toICN = function(raw, settings){
 
     // Level 1のときは、7・M7・9・6を表示しない
     if("7,M7,9,add9,6".split(",").includes(q)){
-      if(settings.level >= 2){
+      if("ic2,ic3,ic4".split(",").includes(settings.level)){
         isQAvailable = true;
       }
     }
@@ -266,13 +266,13 @@ exports.toICN = function(raw, settings){
     }
     //サポートされていない記号である場合の処理（レベル4のときのみ表示）
     else{
-      if(q.length>0 && settings.level >= 4){
+      if(q.length>0 && settings.level == "ic4"){
         unSupported = true;
       }
     }
     s = chord.no+(swapped?"~":"")+
       (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
-      ((chord.onChordNo!=""&&settings.level>=3)?"/"+chord.onChordNo:"");
+      ((chord.onChordNo!=""&&"ic3,ic4".split(",").includes(settings.level))?"/"+chord.onChordNo:"");
   }
   return s;
 };
@@ -329,7 +329,7 @@ exports.updateSettings = function(rawKeyChords){
   let settings = {
     key: null,
     isAutoKeyDetection: true,
-    level: 2,
+    level: "ic2",
     minorMode: false,
   };
   settings.level = document.querySelector('.selectedmode').value;
