@@ -62,11 +62,32 @@ exports.Key = class{
 
 // 元のchordを格納するクラス
 exports.Chord = class{
-  constructor(no, onChordNo, q){
-    this.no = no; // NScale
-    this.onChordNo = onChordNo; // NScale
+  constructor(noIndex, onChordNoIndex, q){
+    this.noIndex = noIndex; // NScale
+    this.onChordNoIndex = onChordNoIndex; // NScale
     this.q = q; // 7, M7, 6, add9, aug, sus4, m, m7, mM7, m6, madd9, dim, m7-5, m7(9), 7(9)
     this.isMinor = "m,m7,mM7,m6,madd9,dim,m7-5,m7(9)".split(",").includes(q);
+  }
+  no(settings, modulation=0){
+    let noIndex = (this.noIndex- settings.key.keyNo + modulation + 24)% 12;
+    if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+      return settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
+    }
+    else if(settings.mode == "15ichie"){
+      return NScaleKanji[noIndex];
+    }
+    else if(settings.mode == "15ichie_a"){
+      return NScale[noIndex];
+    }
+  }
+  onChordNo(settings, modulation=0){
+    if(this.onChordNoIndex == -1){
+      return "";
+    }
+    else{
+      let onChordNoIndex = (this.onChordNoIndex - settings.key.keyNo + modulation + 24)% 12;
+      return settings.minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
+    }
   }
 };
 
@@ -218,33 +239,20 @@ exports.autoDetectKey = function(keyChords){
   return detectedKey;
 };
 
-exports.parseChord = function(raw, settings){
+exports.parseChord = function(raw){
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
   if(m){
-    let no = "";
-    let onChordNo = "";
     let base = sharpify(m[1]);
     let q = m[3];
     let onChord = sharpify(m[5]);
-    let noIndex = (scale.indexOf(base) + 12 - settings.key.keyNo)% 12;
-    if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
-      no = settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
-      onChordNo = "";
-      if(onChord!=""){
-        let onChordNoIndex = (scale.indexOf(onChord) + 12 - settings.key.keyNo)% 12;
-        onChordNo = settings.minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
-      }
+    let noIndex = scale.indexOf(base);
+    let onChordNoIndex = -1;
+    if(onChord!=""){
+      onChordNoIndex = scale.indexOf(onChord);
     }
-    else if(settings.mode == "15ichie"){
-      no = NScaleKanji[noIndex];
-    }
-    else if(settings.mode == "15ichie_a"){
-      no = NScale[noIndex];
-    }
-
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
-    return new exports.Chord(no, onChordNo, q);
+    return new exports.Chord(noIndex, onChordNoIndex, q);
   }
   return null;
 };
@@ -252,7 +260,7 @@ exports.parseChord = function(raw, settings){
 // 渡されたchordを元にICNを返す関数
 exports.toICN = function(raw, settings){
   let s = "";
-  let chord = exports.parseChord(raw, settings);
+  let chord = exports.parseChord(raw);
   if(chord){
     let swapped = false;
     let isQAvailable = false;
@@ -260,8 +268,8 @@ exports.toICN = function(raw, settings){
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
     if("ic1,ic2,ic3".split(",").includes(settings.mode)){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
-    if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))||
-    (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))){
+    if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))||
+    (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))){
       swapped = true;
     }
     let q = chord.q;
@@ -285,9 +293,9 @@ exports.toICN = function(raw, settings){
         unSupported = true;
       }
     }
-    s = chord.no+(swapped?"~":"")+
+    s = chord.no(settings)+(swapped?"~":"")+
       (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
-      ((chord.onChordNo!=""&&"ic3,ic4".split(",").includes(settings.mode))?"/"+chord.onChordNo:"");
+      ((chord.onChordNo(settings)!=""&&"ic3,ic4".split(",").includes(settings.mode))?"/"+chord.onChordNo(settings):"");
   }
   return s;
 };
@@ -295,10 +303,10 @@ exports.toICN = function(raw, settings){
 exports.to15ichie = function(raw, settings){
   debugger;
   let s = null;
-  let chord = exports.parseChord(raw, settings);
+  let chord = exports.parseChord(raw);
   
   if(chord){
-    let no = chord.no;
+    let no = chord.no(settings);
     chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");
     if(",7,M7,6,9,m,m7,mM7,m6,m9".split(",").includes(chord.q)){
       s = no;
