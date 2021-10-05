@@ -260,3 +260,19 @@ updateChordsTest.forEach((t) => {
     assert.equal(e.elm.nodeValue, t[2][i]);
   });
 })
+
+const autoDetectTest = [
+  // パッヘルベルのカノン
+  ["Pachelbel's Canon", "D,A,Bm,F#m,G,D,G,A,D,A,Bm,F#m,G,D,G,A,", "D/Bm"],
+  // きらきら星
+  ["Twinkle Twinkle Little Star", "C,C,F,C,F,C,G,C,C,F,C,G,C,F,C,G,C,C,F,C,F,C,G,C", "C/Am"],
+  // 大きな古時計
+  ["My Grandfather's Clock", "G,D7,Em7,C,G,D,G,G,D7,Em7,C,G,D,G,G,Em7,Am,D,G,Em7,A7,D,G,D,Em7,C,G,D,G", "G/Em"]
+];
+
+autoDetectTest.forEach((t) => {
+  console.log(t[0]);
+  let keyChords = t[1].split(",").map(x => ({type: "chord", v:x, elm:null}))
+  let detectedKey = m.autoDetectKey(keyChords);
+  assert.equal(detectedKey.key, t[2]);
+});
