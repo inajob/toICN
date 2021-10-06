@@ -41,6 +41,9 @@ const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 // フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
+// 算用数字を漢数字に変換
+let convertToKanji = (s) => s.replace("1","一").replace("2","二").replace("3","三").replace("4","四").replace("5","五").replace("6", "六").replace("7","七");
+
 // キーを格納するためのクラス
 exports.Key = class{
   constructor(raw="",canDetectMajorOrMinor=false){ // keyがメジャーかマイナーか特定できる場合は canDetectMajorOrMinor=true
@@ -70,15 +73,7 @@ exports.Chord = class{
   }
   no(settings, modulation=0){
     let noIndex = (this.noIndex- settings.key.keyNo + modulation + 24)% 12;
-    if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
-      return settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
-    }
-    else if(settings.mode == "15ichie"){
-      return NScaleKanji[noIndex];
-    }
-    else if(settings.mode == "15ichie_a"){
-      return NScale[noIndex];
-    }
+    return settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
   }
   onChordNo(settings, modulation=0){
     if(this.onChordNoIndex == -1){
@@ -314,6 +309,10 @@ exports.to15ichie = function(raw, settings){
     }
     else{
       s = "";
+    }
+
+    if(settings.mode == "15ichie"){
+      s = convertToKanji(s);
     }
   }
   return s;
