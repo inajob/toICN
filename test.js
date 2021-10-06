@@ -213,7 +213,9 @@ const tests15ichie = [
   ["Cm" ,"一"],
 
   ["Csus4" ,""],
-  ["Caug" ,""]
+  ["Caug" ,""],
+
+  ["Cm7-5", "二#"]
 
 ];
 
