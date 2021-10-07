@@ -213,10 +213,10 @@ const tests15ichie = [
   ["Cm" ,"一"],
   ["Csus4" ,"一"],
 
-  ["Caug" ,"一[+]"],
+  ["Caug" ,"一+"],
 
-  ["Cdim", "一[-]"],
-  ["Cm7-5", "一[-]"]
+  ["Cdim", "一-"],
+  ["Cm7-5", "一-"]
 
 ];
 
@@ -233,7 +233,7 @@ const tests15ichie_a = [
   ["Cm" ,"1"],
   ["Csus4" ,"1"],
 
-  ["Caug" ,"1[+]"]
+  ["Caug" ,"1+"]
 ];
 
 tests15ichie_a.forEach((t) => {
