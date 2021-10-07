@@ -267,14 +267,14 @@ exports.to15ichie = function(raw, settings){
   
   if(chord){
     chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");
-    if(",7,M7,6,9,m,m7,mM7,m6,m9".split(",").includes(chord.q)){
-      s = chord.no(settings);
+    if("aug" == chord.q){
+      s = chord.no(settings) + "[+]";
     }
-    else if(chord.q == "m7-5"){
-      s = chord.no(settings, 3);
+    else if("dim,dim7,m7-5".split(",").includes(chord.q)){
+      s = chord.no(settings) + "[-]";
     }
     else{
-      s = "";
+      s = chord.no(settings);
     }
 
     if(settings.mode == "15ichie"){
