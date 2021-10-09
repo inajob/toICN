@@ -25,4 +25,3 @@ jobs:
     - run: node --check toICN.user.js
     - run: sh gen.sh
     - run: git diff --exit-code
-    - run: test 0 -eq $(cat toICN.bookmarklet|wc -l)
