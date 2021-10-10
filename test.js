@@ -4,7 +4,7 @@ const m = require("./src/toICN-core.js");
 let settings = {
   key: null,
   isAutoKeyDetection: true,
-  level: 2,
+  mode: "ic2",
   minorMode: false,
 };
 
@@ -118,7 +118,7 @@ testsMinor.forEach((t) => {
 
 settings.minorMode = false;
 
-settings.level = 1;
+settings.mode = "ic1";
 
 const testslv1 = [
   ["C7" ,"1"],
@@ -132,7 +132,7 @@ testslv1.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-settings.level = 4;
+settings.mode = "ic4";
 
 const testslv4 = [
   ["C/E" ,"1/3"],
@@ -147,7 +147,8 @@ testslv4.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-settings.level = 2;
+
+settings.mode = "ic2";
 settings.key = new m.Key("B");
 
 const tests2 = [
@@ -201,7 +202,48 @@ tests4.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-console.log("== updateChords ==")
+console.log("== to15ichie ==");
+
+settings.key = new m.Key("C");
+settings.mode = "15ichie";
+
+const tests15ichie = [
+  ["C7" ,"一"],
+  ["C" ,"一"],
+  ["Cm" ,"一"],
+  ["Csus4" ,"一"],
+
+  ["Caug" ,"一+"],
+
+  ["Cdim", "一-"],
+  ["Cm7-5", "一-"]
+
+];
+
+tests15ichie.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.to15ichie(t[0],settings), t[1]);
+});
+
+settings.mode = "15ichie_a";
+
+const tests15ichie_a = [
+  ["C7" ,"1"],
+  ["C" ,"1"],
+  ["Cm" ,"1"],
+  ["Csus4" ,"1"],
+
+  ["Caug" ,"1+"]
+];
+
+tests15ichie_a.forEach((t) => {
+  console.log(t[0]);
+  assert.equal(m.to15ichie(t[0],settings), t[1]);
+});
+
+settings.mode = "ic2";
+
+console.log("== updateChords ==");
 
 settings.key = new m.Key("C");
 // TODO: isAutokeyDetection test

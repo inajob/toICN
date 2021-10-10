@@ -40,6 +40,9 @@ const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
 // フラットをシャープに置き換える関数
 let sharpify = (s) => s.replace("＃","#").replace("♯","#").replace("♭","b").replace("Db","C#").replace("Eb","D#").replace("Fb", "E").replace("Gb","F#").replace("Ab","G#").replace("Bb","A#").replace("Cb", "B");
 
+// 算用数字を漢数字に変換
+let convertToKanji = (s) => s.replace("1","一").replace("2","二").replace("3","三").replace("4","四").replace("5","五").replace("6", "六").replace("7","七");
+
 // キーを格納するためのクラス
 exports.Key = class{
   constructor(raw="",canDetectMajorOrMinor=false){ // keyがメジャーかマイナーか特定できる場合は canDetectMajorOrMinor=true
@@ -61,11 +64,24 @@ exports.Key = class{
 
 // 元のchordを格納するクラス
 exports.Chord = class{
-  constructor(no, onChordNo, q){
-    this.no = no; // NScale
-    this.onChordNo = onChordNo; // NScale
+  constructor(noIndex, onChordNoIndex, q){
+    this.noIndex = noIndex; // NScale
+    this.onChordNoIndex = onChordNoIndex; // NScale
     this.q = q; // 7, M7, 6, add9, aug, sus4, m, m7, mM7, m6, madd9, dim, m7-5, m7(9), 7(9)
     this.isMinor = "m,m7,mM7,m6,madd9,dim,m7-5,m7(9)".split(",").includes(q);
+  }
+  no(settings, modulation=0){
+    let noIndex = (this.noIndex- settings.key.keyNo + modulation + 24)% 12;
+    return settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
+  }
+  onChordNo(settings, modulation=0){
+    if(this.onChordNoIndex == -1){
+      return "";
+    }
+    else{
+      let onChordNoIndex = (this.onChordNoIndex - settings.key.keyNo + modulation + 24)% 12;
+      return settings.minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
+    }
   }
 };
 
@@ -75,12 +91,15 @@ exports.addToICNBar = function(){
     '<div class="toicnbar" style="background-color: #f4ffa2; margin: 5px auto; padding: .75rem 1.25rem;">'
     + '<div id="displayedkey" style="font-weight: bold; font-size: 150%; color: #1a4a9c">'
     + '</div>'
-    + '<label style = "display: inline-block;">Level:'
-    + '<select class="selectedlevel" name="selectedlevel">'
-    + '<option value=1>1(初心者向け)</option>'
-    + '<option value=2 selected>2(標準)</option>'
-    + '<option value=3>3(オンコード有)</option>'
-    + '<option value=4>4(上級者向け)</option>'
+    + '<label>Mode:'
+    + '<select class="selectedmode" name="selectedmode">'
+    + '<option value="off">Off(変換前のコードを表示)</option>'
+    + '<option value="ic1">InstaChord Lv.1(初心者向け)</option>'
+    + '<option value="ic2" selected>InstaChord Lv.2(標準)</option>'
+    + '<option value="ic3">InstaChord Lv.3(標準+オンコード)</option>'
+    + '<option value="ic4">InstaChord Lv.4(上級者向け)</option>'
+    + '<option value="15ichie">一五一会</option>'
+    + '<option value="15ichie_a">一五一会(アラビア数字)</option>'
     + '</select>'
     + '</label>'
     + ' '
@@ -205,7 +224,7 @@ exports.autoDetectKey = function(keyChords){
   let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
   scale.forEach((s) => {
     let tmpKey = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,{key:tmpKey, minorMode:false, level:2})).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,{key:tmpKey, minorMode:false, mode:"ic2"})).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = tmpKey;
@@ -214,22 +233,20 @@ exports.autoDetectKey = function(keyChords){
   return detectedKey;
 };
 
-exports.parseChord = function(raw, settings){
+exports.parseChord = function(raw){
   let m = raw.replace("on","/").match(/^([A-G](#|b|＃|♯|♭){0,1})([^/]*)(\/{0,1})(.*)/);
   if(m){
     let base = sharpify(m[1]);
     let q = m[3];
     let onChord = sharpify(m[5]);
-    let noIndex = (scale.indexOf(base) + 12 - settings.key.keyNo)% 12;
-    let no = settings.minorMode?MinorNScale[noIndex]:NScale[noIndex];
-    let onChordNo = "";
+    let noIndex = scale.indexOf(base);
+    let onChordNoIndex = -1;
     if(onChord!=""){
-      let onChordNoIndex = (scale.indexOf(onChord) + 12 - settings.key.keyNo)% 12;
-      onChordNo = settings.minorMode?MinorNScale[onChordNoIndex]:NScale[onChordNoIndex];
+      onChordNoIndex = scale.indexOf(onChord);
     }
     // 9を7(9), maj7をM7等表記を置き換える
     q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
-    return new exports.Chord(no, onChordNo, q);
+    return new exports.Chord(noIndex, onChordNoIndex, q);
   }
   return null;
 };
@@ -237,25 +254,25 @@ exports.parseChord = function(raw, settings){
 // 渡されたchordを元にICNを返す関数
 exports.toICN = function(raw, settings){
   let s = "";
-  let chord = exports.parseChord(raw, settings);
+  let chord = exports.parseChord(raw);
   if(chord){
     let swapped = false;
     let isQAvailable = false;
     let unSupported = false;
-    // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if(settings.level <= 3){chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     //スワップキーかどうかを判定
-    if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))||
-    (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no+(chord.isMinor?"m":"")))){
+    if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))||
+    (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))){
       swapped = true;
     }
     let q = chord.q;
+    // level 3以下のときは、インスタコードで弾けるキーに置き換える
+    if("ic1,ic2,ic3".split(",").includes(settings.mode)){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
     // 処理しやすいようにマイナー記号を消す(m7-5だけは例外）
     if(q[0] == "m" && q != "m7-5"){q = q.replace(/^m/,"")}
 
     // Level 1のときは、7・M7・9・6を表示しない
     if("7,M7,9,add9,6".split(",").includes(q)){
-      if(settings.level >= 2){
+      if("ic2,ic3,ic4".split(",").includes(settings.mode)){
         isQAvailable = true;
       }
     }
@@ -266,16 +283,40 @@ exports.toICN = function(raw, settings){
     }
     //サポートされていない記号である場合の処理（レベル4のときのみ表示）
     else{
-      if(q.length>0 && settings.level >= 4){
+      if(q.length>0 && settings.mode == "ic4"){
         unSupported = true;
       }
     }
-    s = chord.no+(swapped?"~":"")+
+    s = chord.no(settings)+(swapped?"~":"")+
       (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
-      ((chord.onChordNo!=""&&settings.level>=3)?"/"+chord.onChordNo:"");
+      ((chord.onChordNo(settings)!=""&&"ic3,ic4".split(",").includes(settings.mode))?"/"+chord.onChordNo(settings):"");
   }
   return s;
 };
+
+exports.to15ichie = function(raw, settings){
+  let s = null;
+  let chord = exports.parseChord(raw);
+  
+  if(chord){
+    chord.q = chord.q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");
+    if("aug" == chord.q){
+      s = chord.no(settings) + "+";
+    }
+    else if("dim,dim7,m7-5".split(",").includes(chord.q)){
+      s = chord.no(settings) + "-";
+    }
+    else{
+      s = chord.no(settings);
+    }
+
+    if(settings.mode == "15ichie"){
+      s = convertToKanji(s);
+    }
+  }
+  return s;
+};
+
 
 // chordを書き換える関数
 exports.updateChords = function(keyChords, settings){
@@ -297,29 +338,41 @@ exports.updateChords = function(keyChords, settings){
       }
     }
     else{
-      // コードの場合
-      let icn = exports.toICN(e.v,currentSettings);
-      let isSharp = false;
-      let isSwap = false;
-      let isBlueChord = false;
-      //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
-      if(icn!=""){
-        e.elm.nodeValue = icn;
-        if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
-        if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
-        if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
-        if(!currentSettings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
-        if(currentSettings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
-      }
       //chordの色を解除する。test.js対策のためtry-catch
       try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
-      //chordに色を付ける
-      if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
-      else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
-      else if(!isSharp&&isSwap){e.elm.parentNode.classList.add("swap");}
-      else{e.elm.parentNode.classList.add("notsharpswap");}
-      if(isBlueChord){e.elm.parentNode.classList.add("bluechord");}
-      else{e.elm.parentNode.classList.add("notbluechord");}
+      //offモードが選択されている場合
+      if(settings.mode == "off"){
+        e.elm.nodeValue = e.v;
+      }
+      // インスタコードモードが選択されている場合
+      else if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+        let icn = exports.toICN(e.v,currentSettings);
+        let isSharp = false;
+        let isSwap = false;
+        let isBlueChord = false;
+        //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
+        if(icn!=""){
+          e.elm.nodeValue = icn;
+          if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
+          if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
+          if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
+          if(!currentSettings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+          if(currentSettings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
+        }
+        //chordに色を付ける
+        if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
+        else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
+        else if(!isSharp&&isSwap){e.elm.parentNode.classList.add("swap");}
+        else{e.elm.parentNode.classList.add("notsharpswap");}
+        if(isBlueChord){e.elm.parentNode.classList.add("bluechord");}
+        else{e.elm.parentNode.classList.add("notbluechord");}  
+      }
+      else if("15ichie,15ichie_a".split(",").includes(settings.mode)){
+        let ichigo = exports.to15ichie(e.v,currentSettings);
+        if(ichigo != null){
+          e.elm.nodeValue = ichigo;
+        }
+      }
     }
   });
 };
@@ -329,12 +382,29 @@ exports.updateSettings = function(rawKeyChords){
   let settings = {
     key: null,
     isAutoKeyDetection: true,
-    level: 2,
+    mode: "ic2",
     minorMode: false,
   };
-  settings.level = document.querySelector('.selectedlevel').value;
+  settings.mode = document.querySelector('.selectedmode').value;
   settings.isAutoKeyDetection = document.querySelector('.selectedkey').value == -1;
   settings.minorMode = document.querySelector('.minormode').value == 1;
+
+  if(settings.mode == "off"){
+    document.getElementsByClassName("selectedkey")[0].disabled = true;
+    document.getElementsByClassName("minormode")[0].disabled = true;
+  }
+  // インスタコードモードが選択されている場合
+  else if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+    document.getElementsByClassName("selectedkey")[0].disabled = false;
+    document.getElementsByClassName("minormode")[0].disabled = false;
+
+  }
+  else if("15ichie,15ichie_a".split(",").includes(settings.mode)){
+    document.getElementsByClassName("selectedkey")[0].disabled = false;
+    document.getElementsByClassName("minormode")[0].disabled = true;
+    document.getElementsByClassName("minormode")[0].value = 0;
+  }
+
 
   if(settings.isAutoKeyDetection){
     settings.key = rawKeyChords.detectedKey;
@@ -364,7 +434,7 @@ exports.updateSettings = function(rawKeyChords){
     exports.updateSettings(rawKeyChords);
   });
   
-  document.querySelector('.selectedlevel').addEventListener('change', (event) => {
+  document.querySelector('.selectedmode').addEventListener('change', (event) => {
     exports.updateSettings(rawKeyChords);
   });
 
