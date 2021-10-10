@@ -212,7 +212,7 @@ exports.parseChord = function(raw){
       onChordNoIndex = scale.indexOf(onChord);
     }
     // 9を7(9), maj7をM7等表記を置き換える
-    q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
+    q = q.replace(/^maj$/,"").replace(/^min$/,"m").replace(/^maj7$/,"M7").replace(/^maj9$/,"M9").replace(/^m7b5|m7\(-5\)|m7\(b5\)$/,"m7-5").replace(/^m9$/,"m7(9)").replace(/^9$/,"7(9)");
     return new exports.Chord(noIndex, onChordNoIndex, q);
   }
   return null;
@@ -233,8 +233,8 @@ exports.toICN = function(raw, settings){
     }
     let q = chord.q;
     // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if("ic1,ic2,ic3".split(",").includes(settings.mode)){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^m7\(9\)$/,"m7");}
-    // 処理しやすいようにマイナー記号を消す(m7-5だけは例外）
+    if("ic1,ic2,ic3".split(",").includes(settings.mode)){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^M9$/,"M7").replace(/^m7\(9\)$/,"m7");}
+    // 処理しやすいようにマイナー記号を消す(m7-5 は例外）
     if(q[0] == "m" && q != "m7-5"){q = q.replace(/^m/,"")}
 
     // Level 1のときは、7・M7・9・6を表示しない
