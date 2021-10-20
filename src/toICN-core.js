@@ -255,7 +255,7 @@ exports.toICN = function(raw, settings){
       }
     }
     s = chord.no(settings)+(swapped?"~":"")+
-      (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
+      (unSupported?"["+q+"]":(isQAvailable?"["+q+"]":""))+
       ((chord.onChordNo(settings)!=""&&"ic3,ic4".split(",").includes(settings.mode))?"/"+chord.onChordNo(settings):"");
   }
   return s;
