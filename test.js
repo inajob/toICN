@@ -134,7 +134,7 @@ testslv1.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-settings.mode = "ic4";
+settings.mode = "ic3";
 
 const testslv4 = [
   ["C/E" ,"1/3"],
