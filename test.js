@@ -134,16 +134,16 @@ testslv1.forEach((t) => {
   assert.equal(m.toICN(t[0],settings), t[1]);
 });
 
-settings.mode = "ic4";
+settings.mode = "ic3";
 
 const testslv4 = [
   ["C/E" ,"1/3"],
   ["ConE" ,"1/3"],
 
-  ["Am7(9)" ,"6[!7(9)!]"],
-  ["C9" ,"1[!7(9)!]"],
-  ["CM9" ,"1[!M9!]"],
-  ["Cmaj9" ,"1[!M9!]"],
+  ["Am7(9)" ,"6[7(9)]"],
+  ["C9" ,"1[7(9)]"],
+  ["CM9" ,"1[M9]"],
+  ["Cmaj9" ,"1[M9]"],
 ];
 
 testslv4.forEach((t) => {

@@ -63,8 +63,7 @@ exports.addToICNBar = function(){
     + '<option value="off">Off(変換前のコードを表示)</option>'
     + '<option value="ic1">InstaChord Lv.1(初心者向け)</option>'
     + '<option value="ic2" selected>InstaChord Lv.2(標準)</option>'
-    + '<option value="ic3">InstaChord Lv.3(標準+オンコード)</option>'
-    + '<option value="ic4">InstaChord Lv.4(上級者向け)</option>'
+    + '<option value="ic3">InstaChord Lv.3(省略無し)</option>'
     + '<option value="15ichie">一五一会</option>'
     + '<option value="15ichie_a">一五一会(アラビア数字)</option>'
     + '</select>'
@@ -232,14 +231,14 @@ exports.toICN = function(raw, settings){
       swapped = true;
     }
     let q = chord.q;
-    // level 3以下のときは、インスタコードで弾けるキーに置き換える
-    if("ic1,ic2,ic3".split(",").includes(settings.mode)){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^M9$/,"M7").replace(/^m7\(9\)$/,"m7");}
+    // level 2以下のときは、インスタコードで弾けるキーに置き換える
+    if("ic1,ic2".split(",").includes(settings.mode)){q = q.replace(/^add9$/,"9").replace(/^7sus4$/,"sus4").replace(/^dim7$/,"dim").replace(/^7\(9\)$/,"7").replace(/^M9$/,"M7").replace(/^m7\(9\)$/,"m7");}
     // 処理しやすいようにマイナー記号を消す(m7-5 は例外）
     if(q[0] == "m" && q != "m7-5"){q = q.replace(/^m/,"")}
 
     // Level 1のときは、7・M7・9・6を表示しない
     if("7,M7,9,add9,6".split(",").includes(q)){
-      if("ic2,ic3,ic4".split(",").includes(settings.mode)){
+      if("ic2,ic3".split(",").includes(settings.mode)){
         isQAvailable = true;
       }
     }
@@ -248,15 +247,15 @@ exports.toICN = function(raw, settings){
       isQAvailable = true;
       swapped = false;
     }
-    //サポートされていない記号である場合の処理（レベル4のときのみ表示）
+    //サポートされていない記号である場合の処理（レベル3のときのみ表示）
     else{
-      if(q.length>0 && settings.mode == "ic4"){
+      if(q.length>0 && settings.mode == "ic3"){
         unSupported = true;
       }
     }
     s = chord.no(settings)+(swapped?"~":"")+
-      (unSupported?("[!"+q+"!]"):(isQAvailable?"["+q+"]":""))+
-      ((chord.onChordNo(settings)!=""&&"ic3,ic4".split(",").includes(settings.mode))?"/"+chord.onChordNo(settings):"");
+      (unSupported?"["+q+"]":(isQAvailable?"["+q+"]":""))+
+      ((chord.onChordNo(settings)!=""&&"ic3".split(",").includes(settings.mode))?"/"+chord.onChordNo(settings):"");
   }
   return s;
 };
@@ -312,7 +311,7 @@ exports.updateChords = function(keyChords, settings){
         e.elm.nodeValue = e.v;
       }
       // インスタコードモードが選択されている場合
-      else if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+      else if("ic1,ic2,ic3".split(",").includes(settings.mode)){
         let icn = exports.toICN(e.v,currentSettings);
         let isSharp = false;
         let isSwap = false;
@@ -361,7 +360,7 @@ exports.updateSettings = function(rawKeyChords){
     document.getElementsByClassName("minormode")[0].disabled = true;
   }
   // インスタコードモードが選択されている場合
-  else if("ic1,ic2,ic3,ic4".split(",").includes(settings.mode)){
+  else if("ic1,ic2,ic3".split(",").includes(settings.mode)){
     document.getElementsByClassName("selectedkey")[0].disabled = false;
     document.getElementsByClassName("minormode")[0].disabled = false;
 
