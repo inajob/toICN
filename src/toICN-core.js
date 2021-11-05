@@ -154,6 +154,7 @@ exports.readKeyChords = function(webSiteName){
   let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
   let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
   let originalKey = new exports.Key();
+  let capo = 0;
 
   // キーが書かれていないときは、キーを自動判定する
   if(detectedKey.keyNo == -1){
@@ -162,7 +163,8 @@ exports.readKeyChords = function(webSiteName){
 
   // 原曲のキーを取得する
   if(webSiteName == "ufret"){
-    originalKey = new exports.Key(scale[(detectedKey.keyNo - Number(document.getElementsByName("keyselect")[0].value)+12)%12]);
+    capo = - Number(document.getElementsByName("keyselect")[0].value);
+    originalKey = new exports.Key(scale[(detectedKey.keyNo + capo +12)%12]);
   }
   if(webSiteName =="chordwiki"){
     originalKey = detectedKey;
@@ -171,7 +173,8 @@ exports.readKeyChords = function(webSiteName){
     try{
       let capoElm = document.getElementsByClassName("gakufu_btn_capo")[0].childNodes[1];
       let capoMatch = capoElm?capoElm.firstChild.nodeValue.match(/^capo (.*)/):null;
-      originalKey = new exports.Key(scale[(detectedKey.keyNo + Number(capoMatch[1])+12)%12]);
+      capo = Number(capoMatch[1]);
+      originalKey = new exports.Key(scale[(detectedKey.keyNo + capo +12)%12]);
     }catch(e){
       originalKey = detectedKey;
     }
@@ -181,7 +184,7 @@ exports.readKeyChords = function(webSiteName){
     originalKey = new exports.Key(originalKeyMatch[1],true);
   }
 
-  return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey};
+  return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey, capo: capo};
 };
 
 // 読み取られたchordからキーを自動で判定する関数
@@ -379,7 +382,7 @@ exports.updateSettings = function(rawKeyChords){
     document.getElementById('minorlabel').innerText =  "1=" + rawKeyChords.originalKey.minorScaleName + "(min)";
   }
   else{
-    settings.key = new exports.Key(scale[document.querySelector('.selectedkey').value]);
+    settings.key = new exports.Key(scale[(Number(document.querySelector('.selectedkey').value) - rawKeyChords.capo+12)%12]);
     document.getElementById('toicnmessage').innerText = "toICNのキー変更機能は、キーが正しく認識されなかったときなどに使用するためのものです。\n演奏するキーを変えたい場合は、インスタコード本体のキー設定かカポ機能を利用してください。";
     document.getElementById('majorlabel').innerText =  "1=" + settings.key.majorScaleName + "(maj)";
     document.getElementById('minorlabel').innerText =  "1=" + settings.key.minorScaleName + "(min)";  
