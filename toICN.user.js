@@ -144,7 +144,9 @@ exports.addToICNBar = function(){
 exports.readKeyChords = function(webSiteName){
   let keyElm;
   let keyChordElms;
-  if(webSiteName == "ufret"){keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))().map((e => e.firstChild));}
+  if(webSiteName == "ufret"){
+    keyChordElms = Array.prototype.slice.bind(document.getElementsByTagName("rt"))().map((e => e.firstChild));
+  }
   if(webSiteName == "chordwiki"){
     keyChordElms = Array.prototype.slice.bind(document.querySelectorAll('.chord, .key'))().map((e => e.firstChild));
     keyElm = document.getElementsByClassName('key')[0];
@@ -187,6 +189,7 @@ exports.readKeyChords = function(webSiteName){
   let keyMatch = keyElm?keyElm.firstChild.nodeValue.match(/(: |：)([A-G](#|b){0,1}m{0,1})$/):null;
   let detectedKey = new exports.Key(keyMatch?keyMatch[2]:"",true);
   let originalKey = new exports.Key();
+  let capo = 0;
 
   // キーが書かれていないときは、キーを自動判定する
   if(detectedKey.keyNo == -1){
@@ -195,7 +198,8 @@ exports.readKeyChords = function(webSiteName){
 
   // 原曲のキーを取得する
   if(webSiteName == "ufret"){
-    originalKey = new exports.Key(scale[(detectedKey.keyNo - Number(document.getElementsByName("keyselect")[0].value)+12)%12]);
+    originalKey = new exports.Key(scale[detectedKey.keyNo%12]);
+    capo = - Number(document.getElementsByName("keyselect")[0].value);
   }
   if(webSiteName =="chordwiki"){
     originalKey = detectedKey;
@@ -204,17 +208,19 @@ exports.readKeyChords = function(webSiteName){
     try{
       let capoElm = document.getElementsByClassName("gakufu_btn_capo")[0].childNodes[1];
       let capoMatch = capoElm?capoElm.firstChild.nodeValue.match(/^capo (.*)/):null;
-      originalKey = new exports.Key(scale[(detectedKey.keyNo + Number(capoMatch[1])+12)%12]);
+      originalKey = new exports.Key(scale[detectedKey.keyNo%12]);
+      capo = Number(capoMatch[1])
     }catch(e){
       originalKey = detectedKey;
     }
   }
   if(webSiteName == "j-total"){
     let originalKeyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
+    // TODO: support capo
     originalKey = new exports.Key(originalKeyMatch[1],true);
   }
 
-  return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey};
+  return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey, capo: capo};
 };
 
 // 読み取られたchordからキーを自動で判定する関数
@@ -419,6 +425,9 @@ exports.updateSettings = function(rawKeyChords){
   }
 
   document.getElementById('displayedkey').innerText = "Original Key: " + rawKeyChords.originalKey.key;
+  if(rawKeyChords.capo != 0){
+    document.getElementById('displayedkey').innerText += ' +' + rawKeyChords.capo;
+  }
 
   exports.updateChords(rawKeyChords.keyChords, settings);
 };
