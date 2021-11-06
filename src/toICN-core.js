@@ -180,8 +180,9 @@ exports.readKeyChords = function(webSiteName){
     }
   }
   if(webSiteName == "j-total"){
-    let originalKeyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo/):null;
+    let originalKeyMatch = keyElm?keyElm.firstChild.nodeValue.match(/^Original Key：(.*) \/ Capo：(.*) \/ /):null;
     originalKey = new exports.Key(originalKeyMatch[1],true);
+    capo = Number(originalKeyMatch[2]);
   }
 
   return {keyChords: keyChords, detectedKey:detectedKey, originalKey:originalKey, capo: capo};
