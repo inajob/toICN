@@ -70,4 +70,5 @@ AndroidのChromeで実行する際は「ブックマークレットのタイト�
 
 - toICN.js
 - toICN.user.js
+- toICN.bookmarklet
 

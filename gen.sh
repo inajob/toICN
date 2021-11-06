@@ -6,6 +6,8 @@ cat ./src/toICN-core.js |sed -e 's/\/\/.*//'|sed -e 's/^ *//g'|tr -d '\n' >> toI
 cat ./src/toICN-after.js |sed -e 's/\/\/.*//'|sed -e 's/^ *//g'|tr -d '\n' >> toICN.js
 echo -n "})();" >> toICN.js
 
+cat toICN.js | sed -e 's/%/%25/g' > toICN.bookmarklet
+
 cat ./template/user.js.header > toICN.user.js
 
 cat ./src/toICN-before.js >> toICN.user.js
