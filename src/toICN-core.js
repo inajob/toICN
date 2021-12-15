@@ -1,6 +1,4 @@
-const NScaleOld = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
 const NScale = ["1","2b","2","3b","3","4","5b","5","6b","6","7b","7"];
-const MinorNScaleOld = ["3","3#","4","4#","5","6","6#","7","7#","1","1#","2"];
 const MinorNScale = ["3","4b","4","5b","5","6","7b","7","1b","1","2b","2"];
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
@@ -196,7 +194,7 @@ exports.autoDetectKey = function(keyChords){
   let chords = keyChords?(keyChords.map((e) => (e.type == "chord")?e:null)):null;
   scale.forEach((s) => {
     let tmpKey = new exports.Key(s);
-    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,{key:tmpKey, minorMode:false, mode:"ic2"})).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^#~]*$|3~[^#]*$)/.test(s)).length;
+    let notSwapCodesCount = chords.slice(0,30).map((s) => exports.toICN(s.v,{key:tmpKey, minorMode:false, mode:"ic2"})).filter((s) => !(/dim|m7-5|aug/).test(s)).filter((s) => /^([123456][^b~]*$|3~[^b]*$)/.test(s)).length;
     if(notSwapCodesCount > maxCount){
       maxCount = notSwapCodesCount;
       detectedKey = tmpKey;
@@ -232,8 +230,8 @@ exports.toICN = function(raw, settings){
     let isQAvailable = false;
     let unSupported = false;
     //スワップキーかどうかを判定
-    if((!settings.minorMode && "1m,2,3,4m,5m,6,7,1#m,2#m,4#m,5#m,6#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))||
-    (settings.minorMode && "1,2,3m,4,5m,6m,7m,1#m,3#m,4#m,6#m,7#m".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))){
+    if((!settings.minorMode && "1m,2,3,4m,5m,6,7,2bm,3bm,5bm,6bm,7bm".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))||
+    (settings.minorMode && "1,2,3m,4,5m,6m,7m,2bm,4bm,5bm,7bm,1bm".split(",").includes(chord.no(settings)+(chord.isMinor?"m":"")))){
       swapped = true;
     }
     let q = chord.q;
@@ -311,7 +309,7 @@ exports.updateChords = function(keyChords, settings){
     }
     else{
       //chordの色を解除する。test.js対策のためtry-catch
-      try{e.elm.parentNode.classList.remove("sharpswap", "sharp", "swap", "notsharpswap", "bluechord", "notbluechord");} catch(error){}
+      try{e.elm.parentNode.classList.remove("flatswap", "flat", "swap", "notflatswap", "bluechord", "notbluechord");} catch(error){}
       //offモードが選択されている場合
       if(settings.mode == "off"){
         e.elm.nodeValue = e.v;
@@ -319,23 +317,23 @@ exports.updateChords = function(keyChords, settings){
       // インスタコードモードが選択されている場合
       else if("ic1,ic2,ic3".split(",").includes(settings.mode)){
         let icn = exports.toICN(e.v,currentSettings);
-        let isSharp = false;
+        let isFlat = false;
         let isSwap = false;
         let isBlueChord = false;
         //シャープ、スワップ、特定のセブンスコード等の条件を満たすかどうかを調べる
         if(icn!=""){
           e.elm.nodeValue = icn;
-          if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[2] == "#"){isSharp = true;}
-          if(icn.match(/^([1-7])(#{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
+          if(icn.match(/^([1-7])(b{0,1})(~{0,1})/)[2] == "b"){isFlat = true;}
+          if(icn.match(/^([1-7])(b{0,1})(~{0,1})/)[3] == "~"){isSwap = true;}
           if(/\[7\]|\[M7\]|\[m7\-5\]|\[sus4\]|\[aug\]|\[dim\]$/.test(icn))isBlueChord = true;
           if(!currentSettings.minorMode && (/^(1|4).*\[M7\]$/.test(icn) || /^(2|3|5|6).*\[7\]$/.test(icn) || /^7.*\[m7-5\]$/.test(icn)))isBlueChord = false;
           if(currentSettings.minorMode && (/^(3|6).*\[M7\]$/.test(icn) || /^(1|4|5|7).*\[7\]$/.test(icn) || /^2.*\[m7-5\]$/.test(icn)))isBlueChord = false;
         }
         //chordに色を付ける
-        if(isSharp&&isSwap){e.elm.parentNode.classList.add("sharpswap");}
-        else if(isSharp&&!isSwap){e.elm.parentNode.classList.add("sharp");}
-        else if(!isSharp&&isSwap){e.elm.parentNode.classList.add("swap");}
-        else{e.elm.parentNode.classList.add("notsharpswap");}
+        if(isFlat&&isSwap){e.elm.parentNode.classList.add("flatswap");}
+        else if(isFlat&&!isSwap){e.elm.parentNode.classList.add("flat");}
+        else if(!isFlat&&isSwap){e.elm.parentNode.classList.add("swap");}
+        else{e.elm.parentNode.classList.add("notflatswap");}
         if(isBlueChord){e.elm.parentNode.classList.add("bluechord");}
         else{e.elm.parentNode.classList.add("notbluechord");}  
       }
