@@ -31,8 +31,10 @@ sheet.insertRule('.notsharpswap {background-color:#ffffff}');
 sheet.insertRule('.bluechord {color:#1a4a9c !important}');
 sheet.insertRule('.notbluechord {color:#000000 !important}');
 
-const NScale = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
-const MinorNScale = ["3","3#","4","4#","5","6","6#","7","7#","1","1#","2"];
+const NScaleOld = ["1","1#","2","2#","3","4","4#","5","5#","6","6#","7"];
+const NScale = ["1","2b","2","3b","3","4","5b","5","6b","6","7b","7"];
+const MinorNScaleOld = ["3","3#","4","4#","5","6","6#","7","7#","1","1#","2"];
+const MinorNScale = ["3","4b","4","5b","5","6","7b","7","1b","1","2b","2"];
 const scale = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const majorScale = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
 const minorScale = ["A","Bb","B","C","C#","D","D#","E","F","F#","G","G#"];
